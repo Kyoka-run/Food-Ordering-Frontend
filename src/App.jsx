@@ -1,16 +1,19 @@
 import './App.css'
 import theme from './theme/Theme'
-import Navbar from './component/navbar/Navbar'
+import Navbar from './component/shared/Navbar'
 import { ThemeProvider, CssBaseline } from '@mui/material'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
   return (
-    <div className="text-center">
-      <ThemeProvider theme={theme}>
-      <CssBaseline />
-        <Navbar />
-      </ThemeProvider>
-    </div>
+    <>
+      <Router>
+        <ThemeProvider theme={theme}>
+        <CssBaseline />
+          <Navbar />
+        </ThemeProvider>
+      </Router>
+    </>
   )
 }
 

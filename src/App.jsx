@@ -1,8 +1,8 @@
 import './App.css'
 import theme from './theme/Theme'
-import Navbar from './component/shared/Navbar'
+import { Routers } from './router/Routers'
 import { ThemeProvider, CssBaseline } from '@mui/material'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <Router>
         <ThemeProvider theme={theme}>
         <CssBaseline />
-          <Navbar />
+          <Routers />
         </ThemeProvider>
       </Router>
     </>

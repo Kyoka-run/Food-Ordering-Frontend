@@ -11,7 +11,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="px-5 z-50 py-3 bg-primary-main lg:px-20 flex justify-between">
+    <div className="px-5 z-50 py-1 bg-primary-main lg:px-20 flex justify-between">
       <div className="lg:mr-10 cursor-pointer flex items-center space-x-4">
         <span className="logo font-Arial text-white text-2xl">
             Kyoka Food

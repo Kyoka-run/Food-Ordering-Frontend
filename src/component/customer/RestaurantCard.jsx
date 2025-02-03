@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Card, Chip, IconButton } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { useDispatch, useSelector } from "react-redux";
-import { addToFavorites } from "../../../State/Authentication/Action";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { isPresentInFavorites } from "../../../config/logic";
+import { isPresentInFavorites } from "../../util/logic";
+import { addToFavorites } from '../../redux/actions/authActions';
 
 const RestaurantCard = ({ data, index }) => {
   const navigate = useNavigate();

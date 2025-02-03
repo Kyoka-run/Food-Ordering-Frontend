@@ -1,9 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
 
-export const findCartRequest = createAction('cart/findRequest');
-export const findCartSuccess = createAction('cart/findSuccess');
-export const findCartFailure = createAction('cart/findFailure');
+// Action Creators
+export const findCartRequest = createAction('cart/findCartRequest');
+export const findCartSuccess = createAction('cart/findCartSuccess'); 
+export const findCartFailure = createAction('cart/findCartFailure');
 
 export const addItemRequest = createAction('cart/addItemRequest');
 export const addItemSuccess = createAction('cart/addItemSuccess');
@@ -13,10 +14,15 @@ export const updateCartItemRequest = createAction('cart/updateItemRequest');
 export const updateCartItemSuccess = createAction('cart/updateItemSuccess');
 export const updateCartItemFailure = createAction('cart/updateItemFailure');
 
+export const removeCartItemRequest = createAction('cart/removeItemRequest');
+export const removeCartItemSuccess = createAction('cart/removeItemSuccess');
+export const removeCartItemFailure = createAction('cart/removeItemFailure');
+
 export const clearCartRequest = createAction('cart/clearRequest');
 export const clearCartSuccess = createAction('cart/clearSuccess');
 export const clearCartFailure = createAction('cart/clearFailure');
 
+// Async Actions
 export const findCart = (token) => async (dispatch) => {
   dispatch(findCartRequest());
   try {
@@ -42,5 +48,47 @@ export const addItemToCart = (reqData) => async (dispatch) => {
     dispatch(addItemSuccess(data));
   } catch (error) {
     dispatch(addItemFailure(error.message));
+  }
+};
+
+export const updateCartItem = ({data, jwt}) => async (dispatch) => {
+  dispatch(updateCartItemRequest());
+  try {
+    const response = await api.put(`/api/cart-item/update`, data, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    dispatch(updateCartItemSuccess(response.data));
+  } catch (error) {
+    dispatch(updateCartItemFailure(error.message));
+  }
+};
+
+export const removeCartItem = ({cartItemId, jwt}) => async (dispatch) => {
+  dispatch(removeCartItemRequest());
+  try {
+    const { data } = await api.delete(`/api/cart-item/${cartItemId}/remove`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    dispatch(removeCartItemSuccess(cartItemId));
+  } catch (error) {
+    dispatch(removeCartItemFailure(error.message));
+  }
+};
+
+export const clearCartAction = () => async (dispatch) => {
+  dispatch(clearCartRequest());
+  try {
+    const { data } = await api.put(`/api/cart/clear`, {}, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      },
+    });
+    dispatch(clearCartSuccess(data));
+  } catch (error) {
+    dispatch(clearCartFailure(error.message));
   }
 };

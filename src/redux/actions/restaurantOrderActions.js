@@ -1,14 +1,16 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
 
-export const getRestaurantsOrderRequest = createAction('restaurantsOrder/getRequest');
-export const getRestaurantsOrderSuccess = createAction('restaurantsOrder/getSuccess');
-export const getRestaurantsOrderFailure = createAction('restaurantsOrder/getFailure');
+// Action Creators
+export const getRestaurantOrdersRequest = createAction('restaurantOrder/getOrdersRequest');
+export const getRestaurantOrdersSuccess = createAction('restaurantOrder/getOrdersSuccess');
+export const getRestaurantOrdersFailure = createAction('restaurantOrder/getOrdersFailure');
 
-export const updateOrderStatusRequest = createAction('restaurantsOrder/updateStatusRequest');
-export const updateOrderStatusSuccess = createAction('restaurantsOrder/updateStatusSuccess');
-export const updateOrderStatusFailure = createAction('restaurantsOrder/updateStatusFailure');
+export const updateOrderStatusRequest = createAction('restaurantOrder/updateStatusRequest');
+export const updateOrderStatusSuccess = createAction('restaurantOrder/updateStatusSuccess');
+export const updateOrderStatusFailure = createAction('restaurantOrder/updateStatusFailure');
 
+// Async Actions
 export const updateOrderStatus = ({orderId, orderStatus, jwt}) => async (dispatch) => {
   dispatch(updateOrderStatusRequest());
   try {
@@ -28,19 +30,19 @@ export const updateOrderStatus = ({orderId, orderStatus, jwt}) => async (dispatc
 };
 
 export const fetchRestaurantsOrder = ({restaurantId, orderStatus, jwt}) => async (dispatch) => {
-  dispatch(getRestaurantsOrderRequest());
+  dispatch(getRestaurantOrdersRequest());
   try {
     const { data } = await api.get(
       `/api/admin/order/restaurant/${restaurantId}`,
       {
-        params: { order_status: orderStatus },
+        params: { order_status: orderStatus},
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       }
     );
-    dispatch(getRestaurantsOrderSuccess(data));
+    dispatch(getRestaurantOrdersSuccess(data));
   } catch (error) {
-    dispatch(getRestaurantsOrderFailure(error.message));
+    dispatch(getRestaurantOrdersFailure(error.message));
   }
 };

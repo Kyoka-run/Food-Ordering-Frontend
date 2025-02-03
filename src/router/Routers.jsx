@@ -1,20 +1,14 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import CustomerRoutes from "./CustomerRoutes";
-import { useSelector } from "react-redux";
-import AdminRouters from "./AdminRouters";
+import CustomerRouter from "./CustomerRouter";
+import AdminRouter from "./AdminRouter";
 
 const Routers = () => {
-  const { auth } = useSelector((store) => store);
-
   return (
     <>
     <Routes>
-      <Route
-        path="/admin/restaurant/*"
-        element={<AdminRouters/>}
-      />
-      <Route path="/*" element={<CustomerRoutes />} />
+      <Route path="/admin/restaurant/*" element={<AdminRouter/>}/>
+      <Route path="/*" element={<CustomerRouter/>} />
     </Routes>
     </>
   );

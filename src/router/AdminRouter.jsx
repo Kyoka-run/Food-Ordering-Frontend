@@ -1,10 +1,10 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Admin from "../Admin/Admin";
+import Admin from "../component/admin/Admin";
 import { useSelector } from "react-redux";
-import CreateRestaurantForm from "../Admin/AddRestaurants/CreateRestaurantForm";
+import CreateRestaurantForm from "../component/admin/CreateRestaurantForm";
 
-const AdminRouters = () => {
+const AdminRouter = () => {
   const { auth, restaurant } = useSelector((store) => store);
   return (
     <div>
@@ -24,4 +24,4 @@ const AdminRouters = () => {
   );
 };
 
-export default AdminRouters;
+export default AdminRouter;

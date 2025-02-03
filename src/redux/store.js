@@ -4,7 +4,7 @@ import restaurantReducer from './reducers/restaurantReducer';
 import menuReducer from './reducers/menuReducer';
 import cartReducer from './reducers/cartReducer';
 import orderReducer from './reducers/orderReducer';
-import restaurantsOrderReducer from './reducers/restaurantsOrderReducer';
+import restaurantsOrderReducer from './reducers/restaurantOrderReducer';
 import ingredientReducer from './reducers/ingredientReducer';
 import superAdminReducer from './reducers/superAdminReducer';
 

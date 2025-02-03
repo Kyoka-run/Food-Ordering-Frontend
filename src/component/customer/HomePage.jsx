@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import MultipleItemsCarousel from "../../shared/MultipleItemsCarousel";
-import RestaurantCard from "../../components/RestarentCard/RestaurantCard";
+import MultipleItemsCarousel from "../shared/MultiItemCarouse";
+import RestaurantCard from "./RestaurantCard";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllRestaurantsAction } from "../../../State/Customers/Restaurant/restaurant.action";
+import { getAllRestaurants } from '../../redux/actions/restaurantActions';
 
 const HomePage = () => {
   const { auth, restaurant } = useSelector((store) => store);
@@ -10,7 +10,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (auth.user) {
-      dispatch(getAllRestaurantsAction(localStorage.getItem("jwt")));
+      dispatch(getAllRestaurants(localStorage.getItem("jwt")));
     }
   }, [auth.user]);
 
@@ -30,7 +30,7 @@ const HomePage = () => {
         
         {/* Content */}
         <div className="relative z-10 w-full lg:w-[50vw] text-center">
-          <p className="text-2xl lg:text-7xl font-bold py-5">Zosh Food</p>
+          <p className="text-gray-300 text-2xl lg:text-7xl font-bold py-5">Kyoka Food</p>
           <p className="text-gray-300 text-xl lg:text-4xl">
             Taste the Convenience: Food, Fast and Delivered.
           </p>

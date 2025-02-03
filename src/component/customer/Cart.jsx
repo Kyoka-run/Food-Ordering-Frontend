@@ -6,12 +6,12 @@ import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import { Box, Modal, Grid, TextField } from "@mui/material";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { createOrder } from "../../../State/Customers/Orders/Action";
-import { findCart } from "../../../State/Customers/Cart/cart.action";
+import { createOrder } from "../../redux/actions/orderActions";
+import { findCart } from "../../redux/actions/cartActions";
 import { isValid } from "../../util/ValidToOrder";
-import { cartTotal } from "./totalPay";
-import AddressCard from "../../components/Address/AddressCard";
-import CartItemCard from "../../components/CartItem/CartItemCard";
+import { cartTotal } from "./TotalPay";
+import AddressCard from "./AddressCard";
+import CartItemCard from "./CartItemCard";
 
 const initialValues = {
   streetAddress: "",

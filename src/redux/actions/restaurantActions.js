@@ -160,7 +160,7 @@ export const updateRestaurantStatus = ({ restaurantId, jwt }) => async (dispatch
   }
 };
 
-export const createEventAction = ({ data, jwt, restaurantId }) => async (dispatch) => {
+export const createEvent = ({ data, jwt, restaurantId }) => async (dispatch) => {
   dispatch(createEventRequest());
   try {
     const response = await api.post(
@@ -192,7 +192,7 @@ export const getAllEvents = ({ jwt }) => async (dispatch) => {
   }
 };
 
-export const deleteEventAction = (eventId) => async (dispatch) => {
+export const deleteEvent = (eventId) => async (dispatch) => {
   dispatch(deleteEventRequest());
   try {
     await api.delete(`api/admin/events/${eventId}`);
@@ -219,7 +219,7 @@ export const getRestaurantEvents = ({ restaurantId, jwt }) => async (dispatch) =
   }
 };
 
-export const createCategoryAction = ({ reqData, jwt }) => async (dispatch) => {
+export const createCategory = ({ reqData, jwt }) => async (dispatch) => {
   dispatch(createCategoryRequest());
   try {
     const response = await api.post(`api/admin/category`, reqData, {

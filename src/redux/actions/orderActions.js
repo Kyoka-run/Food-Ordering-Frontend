@@ -46,7 +46,7 @@ export const getUserOrders = (jwt) => async (dispatch) => {
   }
 };
 
-export const getUsersNotification = () => async (dispatch) => {
+export const getUserNotification = () => async (dispatch) => {
   dispatch(getNotificationsRequest());
   try {
     const { data } = await api.get('/api/notifications');

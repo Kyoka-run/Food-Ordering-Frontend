@@ -30,15 +30,14 @@ export const loginUser = (reqData) => async (dispatch) => {
   dispatch(loginRequest());
   try {
     const { data } = await api.post(`/auth/signin`, reqData.data);
-    if(data.jwt) localStorage.setItem("jwt", data.jwt);
+    if(data.jwtToken) localStorage.setItem("jwt", data.jwtToken);
     
     if(data.role === "ROLE_RESTAURANT_OWNER") {
       reqData.navigate("/admin/restaurant");
     } else {
       reqData.navigate("/");
     }
-    
-    dispatch(loginSuccess(data.jwt));
+    dispatch(loginSuccess(data.jwtToken));
   } catch (error) {
     dispatch(loginFailure(error.message));
   }
@@ -61,7 +60,7 @@ export const registerUser = (sendData) => async (dispatch) => {
 export const getUser = (token) => async (dispatch) => {
   dispatch(getUserRequest());
   try {
-    const response = await api.get(`/api/users/profile`, {
+    const response = await api.get(`/auth/profile`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -100,7 +99,7 @@ export const resetPasswordRequestAction = (email) => async (dispatch) => {
   }
 };
 
-export const resetPasswordAction = (reqData) => async (dispatch) => {
+export const resetPassword = (reqData) => async (dispatch) => {
   dispatch(resetPasswordRequest());
   try {
     const { data } = await api.post(`/auth/reset-password`, reqData.data);

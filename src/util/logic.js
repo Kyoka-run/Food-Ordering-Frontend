@@ -1,6 +1,4 @@
-export const isPresentInFavorites=(favorites,restaurant)=>{
-  for(let item of favorites){
-    if(restaurant.id===item.id)return true
-  }
-  return false;
+export const isPresentInFavorites = (favorites = [], restaurant) => {
+  if (!Array.isArray(favorites) || !restaurant) return false;
+  return favorites.some(item => item.restaurantId === restaurant.restaurantId);
 }

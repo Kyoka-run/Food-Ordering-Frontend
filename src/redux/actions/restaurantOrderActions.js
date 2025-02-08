@@ -15,7 +15,7 @@ export const updateOrderStatus = ({orderId, orderStatus, jwt}) => async (dispatc
   dispatch(updateOrderStatusRequest());
   try {
     const response = await api.put(
-      `/api/admin/orders/${orderId}/${orderStatus}`,
+      `/admin/orders/${orderId}/${orderStatus}`,
       {},
       {
         headers: {
@@ -33,7 +33,7 @@ export const fetchRestaurantsOrder = ({restaurantId, orderStatus, jwt}) => async
   dispatch(getRestaurantOrdersRequest());
   try {
     const { data } = await api.get(
-      `/api/admin/order/restaurant/${restaurantId}`,
+      `/admin/order/restaurant/${restaurantId}`,
       {
         params: { order_status: orderStatus},
         headers: {

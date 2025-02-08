@@ -22,7 +22,7 @@ export const rejectCustomerFailure = createAction('superAdmin/rejectCustomerFail
 export const getCustomers = () => async (dispatch) => {
   dispatch(getCustomersRequest());
   try {
-    const { data } = await api.get("api/customers");
+    const { data } = await api.get("/customers");
     dispatch(getCustomersSuccess(data));
   } catch (error) {
     dispatch(getCustomersFailure(error.message));
@@ -32,7 +32,7 @@ export const getCustomers = () => async (dispatch) => {
 export const getPendingCustomers = () => async (dispatch) => {
   dispatch(getPendingCustomersRequest());
   try {
-    const { data } = await api.get("api/customers/pending");
+    const { data } = await api.get("/customers/pending");
     dispatch(getPendingCustomersSuccess(data));
   } catch (error) {
     dispatch(getPendingCustomersFailure(error.message));
@@ -42,7 +42,7 @@ export const getPendingCustomers = () => async (dispatch) => {
 export const approveCustomer = (customerId) => async (dispatch) => {
   dispatch(approveCustomerRequest());
   try {
-    const { data } = await api.put(`api/customers/${customerId}/approve`);
+    const { data } = await api.put(`/customers/${customerId}/approve`);
     dispatch(approveCustomerSuccess(data));
   } catch (error) {
     dispatch(approveCustomerFailure(error.message));
@@ -52,7 +52,7 @@ export const approveCustomer = (customerId) => async (dispatch) => {
 export const rejectCustomer = (customerId) => async (dispatch) => {
   dispatch(rejectCustomerRequest());
   try {
-    const { data } = await api.put(`api/customers/${customerId}/reject`);
+    const { data } = await api.put(`/customers/${customerId}/reject`);
     dispatch(rejectCustomerSuccess(data));
   } catch (error) {
     dispatch(rejectCustomerFailure(error.message));

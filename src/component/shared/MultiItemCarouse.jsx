@@ -50,7 +50,13 @@ export default class MultipleItemsCarousel extends Component {
     return (
       <div>
         <Slider {...settings}>
-            {topMeels.map((item)=><CarouselItem image={item.image} title={item.title}/>)}
+          {topMeels.map((item, index) => (
+            <CarouselItem 
+              key={index}
+              image={item.image}
+              title={item.title}
+            />
+          ))}
         </Slider>
       </div>
     );

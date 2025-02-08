@@ -1,6 +1,6 @@
 import React from "react";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import { Divider, Drawer, useMediaQuery } from "@mui/material";
+import { Divider, Drawer} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -22,7 +22,6 @@ const menu = [
 ];
 
 const ProfileNavigation = ({ handleClose, open }) => {
-  const isSmallScreen = useMediaQuery("(max-width:1080px)");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -45,12 +44,11 @@ const ProfileNavigation = ({ handleClose, open }) => {
         anchor={"left"}
         open={open}
         onClose={handleClose}
-        variant={isSmallScreen ? "temporary" : "permanent"}
-        // variant="persistent"
+        variant="permanent"
       >
         <div className="w-[50vw] lg:w-[20vw] h-[100vh] flex flex-col justify-center text-xl space-y-8 pt-16">
           {menu.map((item, i) => (
-            <>
+            <div key={item.title}>
               <div
                 onClick={() => handleNavigate(item)}
                 className="px-5 flex items-center space-x-5 cursor-pointer"
@@ -59,7 +57,7 @@ const ProfileNavigation = ({ handleClose, open }) => {
                 <span>{item.title}</span>
               </div>
               {i !== menu.length - 1 && <Divider />}
-            </>
+            </div>
           ))}
         </div>
       </Drawer>

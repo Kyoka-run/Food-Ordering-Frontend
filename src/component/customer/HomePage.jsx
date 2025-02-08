@@ -5,14 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllRestaurants } from '../../redux/actions/restaurantActions';
 
 const HomePage = () => {
-  const { auth, restaurant } = useSelector((store) => store);
+  const restaurants = useSelector(state => state.restaurant.restaurants);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (auth.user) {
-      dispatch(getAllRestaurants(localStorage.getItem("jwt")));
-    }
-  }, [auth.user]);
+    dispatch(getAllRestaurants());
+  }, []);
 
   return (
     <div>
@@ -59,8 +57,8 @@ const HomePage = () => {
             Order From Our Handpicked Favorites
           </h1>
           <div className="flex flex-wrap items-center justify-around">
-            {restaurant.restaurants.map((item, i) => (
-              <RestaurantCard key={item.id} data={item} index={i} />
+            {restaurants.map((item) => (
+              <RestaurantCard key={item.restaurantId} data={item} />
             ))}
           </div>
         </div>

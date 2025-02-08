@@ -58,12 +58,12 @@ export const getRestaurantsCategorySuccess = createAction('restaurant/getCategor
 export const getRestaurantsCategoryFailure = createAction('restaurant/getCategoryFailure');
 
 // Async Actions
-export const getAllRestaurants = (token) => async (dispatch) => {
+export const getAllRestaurants = (jwt) => async (dispatch) => {
   dispatch(getAllRestaurantsRequest());
   try {
-    const { data } = await api.get("/api/restaurants", {
+    const { data } = await api.get("/restaurants", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${jwt}`,
       },
     });
     dispatch(getAllRestaurantsSuccess(data));
@@ -75,7 +75,7 @@ export const getAllRestaurants = (token) => async (dispatch) => {
 export const getRestaurantById = ({ restaurantId, jwt }) => async (dispatch) => {
   dispatch(getRestaurantByIdRequest());
   try {
-    const response = await api.get(`api/restaurants/${restaurantId}`, {
+    const response = await api.get(`/restaurants/${restaurantId}`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -89,7 +89,7 @@ export const getRestaurantById = ({ restaurantId, jwt }) => async (dispatch) => 
 export const getRestaurantByUserId = (jwt) => async (dispatch) => {
   dispatch(getRestaurantByUserIdRequest());
   try {
-    const { data } = await api.get(`/api/admin/restaurants/user`, {
+    const { data } = await api.get(`/admin/restaurants/user`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -103,7 +103,7 @@ export const getRestaurantByUserId = (jwt) => async (dispatch) => {
 export const createRestaurant = ({ data, token }) => async (dispatch) => {
   dispatch(createRestaurantRequest());
   try {
-    const { data: responseData } = await api.post(`/api/admin/restaurants`, data, {
+    const { data: responseData } = await api.post(`/admin/restaurants`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -118,7 +118,7 @@ export const updateRestaurant = ({ restaurantId, restaurantData, jwt }) => async
   dispatch(updateRestaurantRequest());
   try {
     const response = await api.put(
-      `api/admin/restaurant/${restaurantId}`,
+      `/admin/restaurant/${restaurantId}`,
       restaurantData,
       {
         headers: {
@@ -135,7 +135,7 @@ export const updateRestaurant = ({ restaurantId, restaurantData, jwt }) => async
 export const deleteRestaurant = (restaurantId) => async (dispatch) => {
   dispatch(deleteRestaurantRequest());
   try {
-    await api.delete(`/api/admin/restaurant/${restaurantId}`);
+    await api.delete(`/admin/restaurant/${restaurantId}`);
     dispatch(deleteRestaurantSuccess(restaurantId));
   } catch (error) {
     dispatch(deleteRestaurantFailure(error.message));
@@ -146,7 +146,7 @@ export const updateRestaurantStatus = ({ restaurantId, jwt }) => async (dispatch
   dispatch(updateRestaurantStatusRequest());
   try {
     const response = await api.put(
-      `api/admin/restaurants/${restaurantId}/status`,
+      `/admin/restaurants/${restaurantId}/status`,
       {},
       {
         headers: {
@@ -164,7 +164,7 @@ export const createEvent = ({ data, jwt, restaurantId }) => async (dispatch) => 
   dispatch(createEventRequest());
   try {
     const response = await api.post(
-      `api/admin/events/restaurant/${restaurantId}`,
+      `/admin/events/restaurant/${restaurantId}`,
       data,
       {
         headers: {
@@ -181,7 +181,7 @@ export const createEvent = ({ data, jwt, restaurantId }) => async (dispatch) => 
 export const getAllEvents = ({ jwt }) => async (dispatch) => {
   dispatch(getAllEventsRequest());
   try {
-    const response = await api.get(`api/events`, {
+    const response = await api.get(`/events`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -195,7 +195,7 @@ export const getAllEvents = ({ jwt }) => async (dispatch) => {
 export const deleteEvent = (eventId) => async (dispatch) => {
   dispatch(deleteEventRequest());
   try {
-    await api.delete(`api/admin/events/${eventId}`);
+    await api.delete(`/admin/events/${eventId}`);
     dispatch(deleteEventSuccess(eventId));
   } catch (error) {
     dispatch(deleteEventFailure(error.message));
@@ -206,7 +206,7 @@ export const getRestaurantEvents = ({ restaurantId, jwt }) => async (dispatch) =
   dispatch(getRestaurantEventsRequest());
   try {
     const response = await api.get(
-      `/api/admin/events/restaurant/${restaurantId}`,
+      `/admin/events/restaurant/${restaurantId}`,
       {
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -222,7 +222,7 @@ export const getRestaurantEvents = ({ restaurantId, jwt }) => async (dispatch) =
 export const createCategory = ({ reqData, jwt }) => async (dispatch) => {
   dispatch(createCategoryRequest());
   try {
-    const response = await api.post(`api/admin/category`, reqData, {
+    const response = await api.post(`/admin/category`, reqData, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -236,7 +236,7 @@ export const createCategory = ({ reqData, jwt }) => async (dispatch) => {
 export const getRestaurantsCategory = ({ jwt, restaurantId }) => async (dispatch) => {
   dispatch(getRestaurantsCategoryRequest());
   try {
-    const response = await api.get(`/api/category/restaurant/${restaurantId}`, {
+    const response = await api.get(`/category/restaurant/${restaurantId}`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },

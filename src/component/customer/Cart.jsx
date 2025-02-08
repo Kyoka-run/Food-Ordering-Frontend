@@ -116,24 +116,24 @@ const Cart = () => {
               <div className="space-y-3">
                 <div className="flex justify-between text-gray-400">
                   <p>Item Total</p>
-                  <p>₹{cartTotal(cart.cartItems)}</p>
+                  <p>€{cartTotal(cart.cartItems)}</p>
                 </div>
                 <div className="flex justify-between text-gray-400">
                 <p>Deliver Fee</p>
-                <p>₹21</p>
+                <p>€21</p>
               </div>
                 <div className="flex justify-between text-gray-400">
                 <p>Plateform Fee</p>
-                <p>₹5</p>
+                <p>€5</p>
               </div>
                 <div className="flex justify-between text-gray-400">
                 <p>GST and Restaurant Charges</p>
-                <p>₹33</p>
+                <p>€33</p>
               </div>
                 <Divider />
                 <div className="flex justify-between text-gray-400">
                   <p>Total Pay</p>
-                  <p>₹{cartTotal(cart.cartItems)+33}</p>
+                  <p>€{cartTotal(cart.cartItems)+33}</p>
                 </div>
               </div>
             </div>
@@ -177,24 +177,24 @@ const Cart = () => {
                 <div className="space-y-3">
                   <div className="flex justify-between text-gray-400">
                     <p>Item Total</p>
-                    <p>₹{cartTotal(cart.cartItems)}</p>
+                    <p>€{cartTotal(cart.cartItems)}</p>
                   </div>
                   <div className="flex justify-between text-gray-400">
                 <p>Deliver Fee</p>
-                <p>₹21</p>
+                <p>€21</p>
               </div> 
                   <div className="flex justify-between text-gray-400">
                 <p>Plateform Fee</p>
-                <p>₹5</p>
+                <p>€5</p>
               </div> 
                   <div className="flex justify-between text-gray-400">
                 <p>GST and Restaurant Charges</p>
-                <p>₹33</p>
+                <p>€33</p>
               </div>
                   <Divider />
                   <div className="flex justify-between text-gray-400">
                     <p>Total Pay</p>
-                    <p>₹{cartTotal(cart.cartItems)}</p>
+                    <p>€{cartTotal(cart.cartItems)}</p>
                   </div>
                 </div>
                 <Button

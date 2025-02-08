@@ -18,7 +18,7 @@ export const getNotificationsFailure = createAction('order/getNotificationsFailu
 export const createOrder = ({ order, jwt }) => async (dispatch) => {
   dispatch(createOrderRequest());
   try {
-    const { data } = await api.post('/api/order', order, {
+    const { data } = await api.post('/order', order, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -35,7 +35,7 @@ export const createOrder = ({ order, jwt }) => async (dispatch) => {
 export const getUserOrders = (jwt) => async (dispatch) => {
   dispatch(getUserOrdersRequest());
   try {
-    const { data } = await api.get(`/api/order/user`, {
+    const { data } = await api.get(`/order/user`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -49,7 +49,7 @@ export const getUserOrders = (jwt) => async (dispatch) => {
 export const getUserNotification = () => async (dispatch) => {
   dispatch(getNotificationsRequest());
   try {
-    const { data } = await api.get('/api/notifications');
+    const { data } = await api.get('/notifications');
     dispatch(getNotificationsSuccess(data));
   } catch (error) {
     dispatch(getNotificationsFailure(error.message));

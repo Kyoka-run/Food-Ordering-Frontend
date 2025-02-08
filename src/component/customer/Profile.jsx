@@ -1,12 +1,12 @@
 import React from "react";
-import ProfileNavigation from "./ProfileNavigation";
+import ProfileNavigation from "../shared/ProfileNavigation";
 import { Route, Routes } from "react-router-dom";
 import Orders from "./Order";
 import UsersAddresses from "./UserAddress";
 import Favorite from "./Favorite";
 import UserProfile from "./UserProfile";
 import CustomerEvents from "./CustomerEvents";
-import Notifications from "./Notification";
+import Notification from "./Notification";
 
 const Profile = () => {
   return (
@@ -14,7 +14,6 @@ const Profile = () => {
       <div className="sticky h-[80vh] lg:w-[20%]">
         <ProfileNavigation />
       </div>
-      {/* <Divider orientation="vertical" flexItem /> */}
       <div className="lg:w-[80%]">
         <Routes>
         <Route path="/" element={<UserProfile/>} />
@@ -23,7 +22,7 @@ const Profile = () => {
           <Route path="/favorites" element={<Favorite/>} />
           <Route path="/payments" element={<Orders/>} />
           <Route path="/events" element={<CustomerEvents/>} />
-          <Route path="/notification" element={<Notifications/>} />
+          <Route path="/notification" element={<Notification/>} />
         </Routes>
       </div>
     </div>

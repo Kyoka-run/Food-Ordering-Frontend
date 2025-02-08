@@ -26,7 +26,7 @@ export const clearCartFailure = createAction('cart/clearFailure');
 export const findCart = (token) => async (dispatch) => {
   dispatch(findCartRequest());
   try {
-    const response = await api.get(`/api/cart/`, {
+    const response = await api.get(`/cart`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -40,7 +40,7 @@ export const findCart = (token) => async (dispatch) => {
 export const addItemToCart = (reqData) => async (dispatch) => {
   dispatch(addItemRequest());
   try {
-    const { data } = await api.put(`/api/cart/add`, reqData.cartItem, {
+    const { data } = await api.put(`/cart/add`, reqData.cartItem, {
       headers: {
         Authorization: `Bearer ${reqData.token}`,
       },
@@ -54,7 +54,7 @@ export const addItemToCart = (reqData) => async (dispatch) => {
 export const updateCartItem = ({data, jwt}) => async (dispatch) => {
   dispatch(updateCartItemRequest());
   try {
-    const response = await api.put(`/api/cart-item/update`, data, {
+    const response = await api.put(`/cart-item/update`, data, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -68,7 +68,7 @@ export const updateCartItem = ({data, jwt}) => async (dispatch) => {
 export const removeCartItem = ({cartItemId, jwt}) => async (dispatch) => {
   dispatch(removeCartItemRequest());
   try {
-    const { data } = await api.delete(`/api/cart-item/${cartItemId}/remove`, {
+    const { data } = await api.delete(`/cart-item/${cartItemId}/remove`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -82,7 +82,7 @@ export const removeCartItem = ({cartItemId, jwt}) => async (dispatch) => {
 export const clearCartAction = () => async (dispatch) => {
   dispatch(clearCartRequest());
   try {
-    const { data } = await api.put(`/api/cart/clear`, {}, {
+    const { data } = await api.put(`/cart/clear`, {}, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },

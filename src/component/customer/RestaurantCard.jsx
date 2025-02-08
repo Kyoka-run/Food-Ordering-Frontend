@@ -7,15 +7,18 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { isPresentInFavorites } from "../../util/logic";
 import { addToFavorites } from '../../redux/actions/authActions';
 
-const RestaurantCard = ({ data, index }) => {
+const RestaurantCard = ({ data }) => {
   const navigate = useNavigate();
-  const { auth } = useSelector((store) => store);
+  const jwt = useSelector((store) => store.auth.jwt);
+  const favorites = useSelector((store) => store.auth.favorites);
   const dispatch = useDispatch();
 
   const handleAddToFavorites = () => {
+    if (!jwt) return;
+    
     dispatch(addToFavorites({
       restaurantId: data.id,
-      jwt: auth.jwt
+      jwt: jwt
     }));
   };
 
@@ -56,7 +59,7 @@ const RestaurantCard = ({ data, index }) => {
 
           <div>
             <IconButton onClick={handleAddToFavorites}>
-              {isPresentInFavorites(auth.favorites, data) ? (
+              {isPresentInFavorites(favorites, data) ? (
                 <FavoriteIcon color="primary" />
               ) : (
                 <FavoriteBorderIcon />

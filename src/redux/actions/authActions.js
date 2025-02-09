@@ -113,5 +113,4 @@ export const resetPassword = (reqData) => async (dispatch) => {
 export const logoutUser = (navigate) => (dispatch) => {
   dispatch(logout());
   localStorage.removeItem("jwt");
-  navigate("/login");
 };

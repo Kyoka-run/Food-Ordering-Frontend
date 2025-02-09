@@ -33,11 +33,6 @@ export const topMeels=[
   }
   ,
   {
-      image:"https://images.pexels.com/photos/4331490/pexels-photo-4331490.jpeg?auto=compress&cs=tinysrgb&w=600",
-      title:"North Indian Food"
-  }
-  ,
-  {
       image:"https://cdn.pixabay.com/photo/2017/08/25/15/10/egg-roll-2680478_640.jpg",
       title:"Rolls"
   }

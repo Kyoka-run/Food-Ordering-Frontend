@@ -49,7 +49,11 @@ export const getUserOrders = (jwt) => async (dispatch) => {
 export const getUserNotification = () => async (dispatch) => {
   dispatch(getNotificationsRequest());
   try {
-    const { data } = await api.get('/notifications');
+    const { data } = await api.get('/notifications', {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     dispatch(getNotificationsSuccess(data));
   } catch (error) {
     dispatch(getNotificationsFailure(error.message));

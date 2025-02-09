@@ -14,7 +14,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <section className="relative flex flex-col justify-center items-center h-[90vh] lg:h-[90vh]">
+      <section className="relative flex flex-col justify-center items-center h-[70vh] lg:h-[70vh]">
         {/* Background Image */}
         <div 
           className="absolute inset-0 w-full h-full bg-cover bg-no-repeat"

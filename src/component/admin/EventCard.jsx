@@ -14,7 +14,7 @@ import { deleteEvent } from "../../redux/actions/restaurantActions";
 const EventCard = ({ item,isCustomer }) => {
   const dispatch=useDispatch();
   const handleDeleteEvent = () => {
-    dispatch(deleteEvent(item.id))
+    dispatch(deleteEvent(item.eventId))
   };
   return (
     <div>

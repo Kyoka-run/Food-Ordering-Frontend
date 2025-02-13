@@ -1,16 +1,9 @@
-import React, { useEffect } from "react";
 import MultipleItemsCarousel from "../shared/MultiItemCarouse";
 import RestaurantCard from "./RestaurantCard";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllRestaurants } from '../../redux/actions/restaurantActions';
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
   const restaurants = useSelector(state => state.restaurant.restaurants);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getAllRestaurants());
-  }, []);
 
   return (
     <div>

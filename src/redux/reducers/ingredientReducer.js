@@ -68,7 +68,7 @@ const ingredientReducer = createReducer(initialState, (builder) => {
     .addCase(actions.updateStockSuccess, (state, action) => {
       state.update = action.payload;
       state.ingredients = state.ingredients.map((item) =>
-        item.id === action.payload.id ? action.payload : item
+        item.cartItemId === action.payload.cartItemId ? action.payload : item
       );
     });
 });

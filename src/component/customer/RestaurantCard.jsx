@@ -17,7 +17,7 @@ const RestaurantCard = ({ data }) => {
     if (!jwt) return;
     
     dispatch(addToFavorites({
-      restaurantId: data.id,
+      restaurantId: data.restaurantId,
       jwt: jwt
     }));
   };

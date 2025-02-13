@@ -2,9 +2,9 @@ import { createReducer } from '@reduxjs/toolkit';
 import * as actions from '../actions/restaurantActions';
 
 const initialState = {
-  restaurants: [],
+  restaurants: [], // All Restaurants
   usersRestaurant: null,
-  restaurant: null,
+  restaurant: null, // Selected Restaurant
   loading: false,
   error: null,
   events: [],
@@ -91,8 +91,8 @@ const restaurantReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actions.deleteRestaurantSuccess, (state, action) => {
       state.loading = false;
-      state.restaurants = state.restaurants.filter(item => item.id !== action.payload);
-      state.usersRestaurant = state.usersRestaurant.filter(item => item.id !== action.payload);
+      state.restaurants = state.restaurants.filter(item => item.restaurantId !== action.payload);
+      state.usersRestaurant = state.usersRestaurant.filter(item => item.restaurantId !== action.payload);
     })
     .addCase(actions.deleteRestaurantFailure, (state, action) => {
       state.loading = false;
@@ -163,8 +163,8 @@ const restaurantReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actions.deleteEventSuccess, (state, action) => {
       state.loading = false;
-      state.events = state.events.filter(item => item.id !== action.payload);
-      state.restaurantsEvents = state.restaurantsEvents.filter(item => item.id !== action.payload);
+      state.events = state.events.filter(item => item.restaurantId !== action.payload);
+      state.restaurantsEvents = state.restaurantsEvents.filter(item => item.restaurantId !== action.payload);
     })
     .addCase(actions.deleteEventFailure, (state, action) => {
       state.loading = false;

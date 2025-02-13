@@ -1,29 +1,31 @@
-import { Button, Chip, Divider, IconButton } from "@mui/material";
+import { Chip, IconButton } from "@mui/material";
 import React from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addItemToCart,
   removeCartItem,
   updateCartItem,
 } from "../../redux/actions/cartActions";
 
 const CartItemCard = ({ item }) => {
   const dispatch = useDispatch();
-  const jwt=localStorage.getItem("jwt");
-  const {auth}=useSelector(store=>store)
+  const jwt = localStorage.getItem("jwt");
+  const {auth} = useSelector(state => state)
+
   const handleUpdateCartItem = (value) => {
     if(value===-1 && item.quantity==1){
       handleRemoveCartItem()
     }
-    const data={ cartItemId: item.id, quantity: item.quantity + value }
+
+  const data={ cartItemId: item.cartItemId, quantity: item.quantity + value }
     dispatch(
-      updateCartItem({data,jwt:auth.jwt || jwt})
+      updateCartItem({data, jwt})
     );
   };
+  
   const handleRemoveCartItem=()=>{
-    dispatch(removeCartItem({cartItemId:item.id,jwt:auth.jwt || jwt}))
+    dispatch(removeCartItem({cartItemId:item.cartItemId, jwt:auth.jwt || jwt}))
     
   }
   return (

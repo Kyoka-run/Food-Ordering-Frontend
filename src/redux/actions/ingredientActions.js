@@ -26,7 +26,7 @@ export const updateStockFailure = createAction('ingredients/updateStockFailure')
 export const getIngredientsOfRestaurant = ({id, jwt}) => async (dispatch) => {
   try {
     dispatch(getIngredientsRequest());
-    const response = await api.get(`/admin/ingredients/restaurant/${id}`, {
+    const response = await api.get(`/admin/ingredients/restaurant/${restaurantId}`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -68,7 +68,7 @@ export const createIngredientCategory = ({data, jwt}) => async (dispatch) => {
 export const getIngredientCategory = ({id, jwt}) => async (dispatch) => {
   try {
     dispatch(getCategoryRequest());
-    const response = await api.get(`/admin/ingredients/restaurant/${id}/category`, {
+    const response = await api.get(`/admin/ingredients/restaurant/${restaurantId}/category`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -82,7 +82,7 @@ export const getIngredientCategory = ({id, jwt}) => async (dispatch) => {
 export const updateStockOfIngredient = ({id, jwt}) => async (dispatch) => {
   try {
     dispatch(updateStockRequest());
-    const { data } = await api.put(`/admin/ingredients/${id}/stoke`, {}, {
+    const { data } = await api.put(`/admin/ingredients/${restaurantId}/stoke`, {}, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },

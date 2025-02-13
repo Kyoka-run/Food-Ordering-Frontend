@@ -17,8 +17,6 @@ import { categorizedIngredients } from "../../util/CategorizeIngredients";
 const MenuItemCard = ({ item }) => {
   const dispatch = useDispatch();
 
-  
-
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
   const handleCheckboxChange = (itemName) => {
@@ -38,7 +36,7 @@ const MenuItemCard = ({ item }) => {
     const data = {
       token: localStorage.getItem("jwt"),
       cartItem: {
-        menuItemId: item.id,
+        foodId: item.foodId,
         quantity: 1,
         ingredients:selectedIngredients
       },

@@ -3,7 +3,7 @@ export function isValid(cartItems){
   const restaurantId=cartItems[0]?.food?.restaurant.id
  
   for(let item of cartItems){
-      console.log("item ---- ", item.restaurant?.id)
+      console.log("item ---- ", item.restaurant?.restaurantId)
     if(item.food?.restaurant.id!==restaurantId){
       return false;
     }

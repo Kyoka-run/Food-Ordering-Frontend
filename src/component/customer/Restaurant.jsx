@@ -88,7 +88,7 @@ const Restaurant = () => {
         <section>
           <h3 className="text-gray-500 py-2 mt-10">
             Home/{restaurant.restaurant?.address.country}/
-            {restaurant.restaurant?.name}/{restaurant.restaurant?.id}/Order Online
+            {restaurant.restaurant?.name}/{restaurant.restaurant?.restaurantId}/Order Online
           </h3>
           <div>
           

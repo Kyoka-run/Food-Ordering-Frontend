@@ -60,7 +60,7 @@ const menuReducer = createReducer(initialState, (builder) => {
     .addCase(actions.updateMenuItemAvailabilitySuccess, (state, action) => {
       state.loading = false;
       state.menuItems = state.menuItems.map(item => 
-        item.id === action.payload.id ? action.payload : item
+        item.foodId === action.payload.foodId ? action.payload : item
       );
     })
     .addCase(actions.updateMenuItemAvailabilityFailure, (state, action) => {
@@ -70,7 +70,7 @@ const menuReducer = createReducer(initialState, (builder) => {
 
     // Delete Menu Item
     .addCase(actions.deleteMenuItemSuccess, (state, action) => {
-      state.menuItems = state.menuItems.filter(item => item.id !== action.payload);
+      state.menuItems = state.menuItems.filter(item => item.foodId !== action.payload);
     });
 });
 

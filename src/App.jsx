@@ -6,14 +6,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getUser } from "./redux/actions/authActions";
 import { findCart } from "./redux/actions/cartActions";
-import {
-  getRestaurantByUserId,
-} from "./redux/actions/restaurantActions";
+import { getRestaurantByUserId, getAllRestaurants} from "./redux/actions/restaurantActions";
 
 function App() {
   const dispatch = useDispatch();
-  const { auth } = useSelector((store) => store);
+  const { auth } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
+
+  useEffect(() => {
+    dispatch(getAllRestaurants());
+  }, []);
   
   useEffect(() => {
     if (jwt) {
@@ -23,8 +25,8 @@ function App() {
   }, [auth.jwt]);
 
   useEffect(() => {
-    if (auth.user?.role == "ROLE_RESTAURANT_OWNER") {
-      dispatch(getRestaurantByUserId(auth.jwt || jwt));
+    if (auth.user?.roles?.includes("ROLE_RESTAURANT_OWNER")) {
+      dispatch(getRestaurantByUserId(jwt));
     }
   }, [auth.user]);
 

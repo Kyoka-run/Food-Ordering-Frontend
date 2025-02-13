@@ -11,7 +11,7 @@ const SearchDishCard = ({item}) => {
     const data = {
       token: localStorage.getItem("jwt"),
       cartItem: {
-        menuItemId: item.id,
+        menuItemId: item.menuItemId,
         quantity: 1,
       },
     };

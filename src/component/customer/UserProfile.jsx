@@ -11,8 +11,8 @@ const UserProfile = () => {
   const dispatch = useDispatch();
 
   const handleLogout=()=>{
-    navigate("/")
     dispatch(logout());
+    navigate("/")
   }
 
   return (

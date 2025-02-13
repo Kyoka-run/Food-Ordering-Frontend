@@ -206,7 +206,7 @@ export const getRestaurantEvents = ({ restaurantId, jwt }) => async (dispatch) =
   dispatch(getRestaurantEventsRequest());
   try {
     const response = await api.get(
-      `/admin/events/restaurant/${restaurantId}`,
+      `/events/restaurant/${restaurantId}`,
       {
         headers: {
           Authorization: `Bearer ${jwt}`,

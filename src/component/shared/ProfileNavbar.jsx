@@ -30,7 +30,7 @@ const ProfileNavbar = () => {
   const currentPath = location.pathname.split("/").pop();
   const value = tabs.some(tab => tab.path === currentPath) ? currentPath : "my-profile";
 
-  const handleChange = (event, newPath) => {
+  const handleChange = (newPath) => {
     if (newPath === "logout") {
       dispatch(logout());
       navigate("/");

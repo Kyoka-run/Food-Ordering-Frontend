@@ -19,14 +19,14 @@ import { useDispatch } from "react-redux";
 import { registerUser } from "../../redux/actions/authActions";
 
 const initialValues = {
-  fullName: "",
+  username: "",
   email: "",
   password: "",
   role: "ROLE_CUSTOMER",
 };
 
 const validationSchema = Yup.object({
-  fullName: Yup.string()
+  username: Yup.string()
     .required("Full Name is required")
     .min(2, "Full Name must be at least 2 characters")
     .matches(/^[a-zA-Z\s]+$/, "Full Name can only contain letters and spaces"),
@@ -94,7 +94,7 @@ const Registration = () => {
 
               {/* Full Name Input */}
               <div className="mb-4">
-                <Field name="fullName">
+                <Field name="username">
                   {({ field, meta }) => (
                     <TextField
                       {...field}

@@ -63,8 +63,8 @@ const authReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actions.addToFavoritesSuccess, (state, action) => {
       state.isLoading = false;
-      state.favorites = state.favorites.some(item => item.id === action.payload.id)
-        ? state.favorites.filter(item => item.id !== action.payload.id)
+      state.favorites = state.favorites.some(item => item.restaurantId === action.payload.restaurantId)
+        ? state.favorites.filter(item => item.restaurantId !== action.payload.restaurantId)
         : [action.payload, ...state.favorites];
     })
     .addCase(actions.addToFavoritesFailure, (state, action) => {

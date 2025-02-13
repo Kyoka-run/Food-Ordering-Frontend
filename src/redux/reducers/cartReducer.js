@@ -45,7 +45,7 @@ const cartReducer = createReducer(initialState, (builder) => {
     .addCase(actions.updateCartItemSuccess, (state, action) => {
       state.loading = false;
       state.cartItems = state.cartItems.map((item) =>
-        item.id === action.payload.id ? action.payload : item
+        item.cartItemId === action.payload.cartItemId ? action.payload : item
       );
     })
     .addCase(actions.updateCartItemFailure, (state, action) => {
@@ -55,7 +55,7 @@ const cartReducer = createReducer(initialState, (builder) => {
 
     // Remove Cart Item
     .addCase(actions.removeCartItemSuccess, (state, action) => {
-      state.cartItems = state.cartItems.filter(item => item.id !== action.payload);
+      state.cartItems = state.cartItems.filter(item => item.cartItemId !== action.payload);
     })
 
     // Clear Cart

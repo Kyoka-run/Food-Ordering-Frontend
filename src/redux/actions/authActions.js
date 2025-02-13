@@ -31,12 +31,8 @@ export const loginUser = (reqData) => async (dispatch) => {
   try {
     const { data } = await api.post(`/auth/signin`, reqData.data);
     if(data.jwtToken) localStorage.setItem("jwt", data.jwtToken);
-    
-    if(data.role === "ROLE_RESTAURANT_OWNER") {
-      reqData.navigate("/admin/restaurant");
-    } else {
-      reqData.navigate("/");
-    }
+    reqData.navigate("/");
+
     dispatch(loginSuccess(data.jwtToken));
   } catch (error) {
     dispatch(loginFailure(error.message));

@@ -64,7 +64,7 @@ const Cart = () => {
       order: {
         restaurantId: cart.cartItems[0].food?.restaurant.id,
         deliveryAddress: {
-          fullName: auth.user?.fullName,
+          username: auth.user?.username,
           streetAddress: values.streetAddress,
           city: values.city,
           state: values.state,
@@ -85,7 +85,7 @@ const Cart = () => {
       order: {
         restaurantId: cart.cartItems[0].food.restaurant.id,
         deliveryAddress: {
-          fullName: "ashok",
+          username: "ashok",
           streetAddress: "gujrat",
           city: "gujrat",
           state: "gujrat",

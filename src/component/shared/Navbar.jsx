@@ -20,19 +20,20 @@ const Navbar = () => {
   const user = useSelector((state) => state.auth.user);
   const cartItems = useSelector((state) => state.cart.cartItems);
   const dispatch = useDispatch();
-
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
   const navigateToProfile = (e) => {
-    user?.role === "ROLE_ADMIN" 
-    || user?.role === "ROLE_RESTAURANT_OWNER"
+    user?.roles?.includes("ROLE_ADMIN")
+    || user?.roles?.includes("ROLE_RESTAURANT_OWNER")
       ? navigate("/admin/restaurant")
       : navigate("/my-profile");
   };
@@ -60,9 +61,9 @@ const Navbar = () => {
           onClick={() => navigate("/")}
           className="lg:mr-10 cursor-pointer flex items-center space-x-4"
         >
-          <li className="logo font-semibold text-gray-300 text-2xl">
-            Kyoka Food
-          </li>
+          <span className="logo font-semibold text-gray-300 text-2xl text-center">
+            Home
+          </span>
         </div>
       </div>
 
@@ -114,7 +115,7 @@ const Navbar = () => {
           >
             <MenuItem
               onClick={() =>
-                user?.role === "ROLE_ADMIN"
+                user?.roles?.includes("ROLE_RESTAURANT_OWNER")
                   ? navigate("/admin")
                   : navigate("/super-admin")
               }

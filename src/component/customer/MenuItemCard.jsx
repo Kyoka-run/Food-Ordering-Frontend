@@ -51,7 +51,7 @@ const MenuItemCard = ({ item }) => {
       <div className="lg:flex items-center lg:space-x-5">
         <img
           className="w-[7rem] h-[7rem] object-cover"
-          src={item.imageUrl}
+          src={item.image}
           alt=""
         />
 
@@ -63,9 +63,7 @@ const MenuItemCard = ({ item }) => {
       </div>
       <div>
         <Button onClick={handleAddItemToCart}>Add To Cart</Button>
-      </div>
-
-     
+      </div>  
     </div> */}
       <Accordion>
         <AccordionSummary
@@ -77,10 +75,10 @@ const MenuItemCard = ({ item }) => {
             <div className="lg:flex items-center lg:space-x-5">
               <img
                 className="w-[7rem] h-[7rem] object-cover"
-                src={item.images[0]}
+                src={item.image}
                 alt=""
               />
-
+              
               <div className="space-y-1 lg:space-y-5 lg:max-w-2xl">
                 <p className="font-semibold text-xl">{item.name}</p>
                 <p>€{item.price}</p>
@@ -115,7 +113,7 @@ const MenuItemCard = ({ item }) => {
                           onChange={() =>
                             handleCheckboxChange(ingredient.name)
                           }
-                          disabled={!ingredient.inStoke}
+                          disabled={!ingredient.inStock}
                         />
                       }
                       label={ingredient.name}

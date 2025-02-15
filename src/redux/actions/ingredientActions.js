@@ -22,11 +22,19 @@ export const updateStockRequest = createAction('ingredients/updateStockRequest')
 export const updateStockSuccess = createAction('ingredients/updateStockSuccess');
 export const updateStockFailure = createAction('ingredients/updateStockFailure');
 
+export const updateIngredientRequest = createAction('ingredients/updateRequest');
+export const updateIngredientSuccess = createAction('ingredients/updateSuccess');
+export const updateIngredientFailure = createAction('ingredients/updateFailure');
+
+export const updateIngredientCategoryRequest = createAction('ingredients/updateCategoryRequest');
+export const updateIngredientCategorySuccess = createAction('ingredients/updateCategorySuccess');
+export const updateIngredientCategoryFailure = createAction('ingredients/updateCategoryFailure');
+
 // Async Actions
 export const getIngredientsOfRestaurant = ({id, jwt}) => async (dispatch) => {
   try {
     dispatch(getIngredientsRequest());
-    const response = await api.get(`/admin/ingredients/restaurant/${restaurantId}`, {
+    const response = await api.get(`/admin/ingredients/restaurant/${id}`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -68,7 +76,7 @@ export const createIngredientCategory = ({data, jwt}) => async (dispatch) => {
 export const getIngredientCategory = ({id, jwt}) => async (dispatch) => {
   try {
     dispatch(getCategoryRequest());
-    const response = await api.get(`/admin/ingredients/restaurant/${restaurantId}/category`, {
+    const response = await api.get(`/admin/ingredients/restaurant/${id}/category`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -79,10 +87,10 @@ export const getIngredientCategory = ({id, jwt}) => async (dispatch) => {
   }
 };
 
-export const updateStockOfIngredient = ({id, jwt}) => async (dispatch) => {
+export const updateStockOfIngredient = ({ingredientsItemId, jwt}) => async (dispatch) => {
   try {
     dispatch(updateStockRequest());
-    const { data } = await api.put(`/admin/ingredients/${restaurantId}/stoke`, {}, {
+    const { data } = await api.put(`/admin/ingredients/${ingredientsItemId}/stock`, {}, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
@@ -90,5 +98,33 @@ export const updateStockOfIngredient = ({id, jwt}) => async (dispatch) => {
     dispatch(updateStockSuccess(data));
   } catch (error) {
     dispatch(updateStockFailure(error.message));
+  }
+};
+
+export const updateIngredient = ({ data, jwt }) => async (dispatch) => {
+  dispatch(updateIngredientRequest());
+  try {
+    const response = await api.put(`/admin/ingredients/${data.ingredientsItemId}`, data, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    dispatch(updateIngredientSuccess(response.data));
+  } catch (error) {
+    dispatch(updateIngredientFailure(error.message));
+  }
+};
+
+export const updateIngredientCategory = ({ data, jwt }) => async (dispatch) => {
+  dispatch(updateIngredientCategoryRequest());
+  try {
+    const response = await api.put(`/admin/ingredients/category/${data.ingredientCategoryId}`, data, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    dispatch(updateIngredientCategorySuccess(response.data));
+  } catch (error) {
+    dispatch(updateIngredientCategoryFailure(error.message));
   }
 };

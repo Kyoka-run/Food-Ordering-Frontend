@@ -53,10 +53,10 @@ const RestaurantsOrder = () => {
   return (
     <div className="px-2">
       <Card className="p-5">
-        <Typography sx={{ paddingBottom: "1rem" }} variant="h5">
+        <Typography variant="h5">
           Order Status
         </Typography>
-        <FormControl className="py-10" component="fieldset">
+        <FormControl className="py-2" component="fieldset">
           <RadioGroup
             row
             name="category"

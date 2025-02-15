@@ -9,19 +9,13 @@ import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import CloseIcon from "@mui/icons-material/Close";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { useParams } from "react-router-dom";
 import {
   Alert,
   Box,
   Chip,
-  CircularProgress,
-  IconButton,
   OutlinedInput,
   Snackbar,
 } from "@mui/material";
-import uploadToCloudinary from "../../util/UploadToCloudinary";
 import { createMenuItem } from "../../redux/actions/menuActions";
 
 const ITEM_HEIGHT = 48;
@@ -42,10 +36,7 @@ const validationSchema = Yup.object({
     .typeError("Price must be a number")
     .required("Price is required")
     .min(0, "Price must be greater than or equal to 0"),
-
-  imageUrl: Yup.string()
-    .url("Invalid URL format")
-    .required("Image URL is required"),
+  image: Yup.string().url("Invalid URL format").required("Image URL is required"),
   vegetarian: Yup.boolean().required("Is Vegetarian is required"),
   seasonal: Yup.boolean().required("Is Gluten Free is required"),
   quantity: Yup.number()
@@ -53,14 +44,14 @@ const validationSchema = Yup.object({
     .required("Quantity is required")
     .min(0, "Quantity must be greater than or equal to 0"),
 });
+
 const initialValues = {
   name: "",
   description: "",
   price: "",
   category: "",
-  images: [],
+  image: "",
   restaurantId: "",
-
   vegetarian: true,
   seasonal: false,
   quantity: 0,
@@ -69,34 +60,18 @@ const initialValues = {
 
 const AddMenuForm = () => {
   const dispatch = useDispatch();
-  const { id } = useParams();
-  const { restaurant, ingredients, auth ,menu} = useSelector((store) => store);
-  const [uploadImage, setUploadingImage] = useState("");
+  const { restaurant, ingredients, auth, menu} = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
 
   const formik = useFormik({
     initialValues,
+    validationSchema,
     onSubmit: (values) => {
       values.restaurantId = restaurant.usersRestaurant.restaurantId;
-
-      dispatch(createMenuItem({ menu: values, jwt: auth.jwt || jwt }));
+      dispatch(createMenuItem({ menu: values, jwt }));
       console.log("values ----- ", values);
     },
   });
-
-  const handleImageChange = async (event) => {
-    const file = event.target.files[0];
-    setUploadingImage(true);
-    const image = await uploadToCloudinary(file);
-    formik.setFieldValue("images", [...formik.values.images, image]);
-    setUploadingImage(false);
-  };
-
-  const handleRemoveImage = (index) => {
-    const updatedImages = [...formik.values.images];
-    updatedImages.splice(index, 1);
-    formik.setFieldValue("images", updatedImages);
-  };
 
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
@@ -117,50 +92,18 @@ const AddMenuForm = () => {
           </h1>
           <form onSubmit={formik.handleSubmit} className="space-y-4 ">
             <Grid container spacing={2}>
-              <Grid className="flex flex-wrap gap-5" item xs={12}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  id="fileInput"
-                  style={{ display: "none" }}
-                  onChange={handleImageChange}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  id="image"
+                  name="image"
+                  label="Image URL"
+                  variant="outlined"
+                  onChange={formik.handleChange}
+                  value={formik.values.image}
+                  error={formik.touched.image && Boolean(formik.errors.image)}
+                  helperText={formik.touched.image && formik.errors.image}
                 />
-
-                <label className="relative" htmlFor="fileInput">
-                  <span className="w-24 h-24 cursor-pointer flex items-center justify-center p-3 border rounded-md border-gray-600">
-                    <AddPhotoAlternateIcon className="text-white" />
-                  </span>
-                  {uploadImage && (
-                    <div className="absolute left-0 right-0 top-0 bottom-0 w-24 h-24 flex justify-center items-center">
-                      <CircularProgress />
-                    </div>
-                  )}
-                </label>
-
-                <div className="flex flex-wrap gap-2">
-                  {formik.values.images.map((image, index) => (
-                    <div className="relative">
-                      <img
-                        className="w-24 h-24 object-cover"
-                        key={index}
-                        src={image}
-                        alt={`ProductImage ${index + 1}`}
-                      />
-                      <IconButton
-                        onClick={() => handleRemoveImage(index)}
-                        size="small"
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          outline: "none",
-                        }}
-                      >
-                        <CloseIcon sx={{ fontSize: "1rem" }} />
-                      </IconButton>
-                    </div>
-                  ))}
-                </div>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -255,7 +198,6 @@ const AddMenuForm = () => {
                       <MenuItem
                         key={item.ingredientId}
                         value={item}
-                        // style={getStyles(name, personName, theme)}
                       >
                         {item.name}
                       </MenuItem>
@@ -294,21 +236,6 @@ const AddMenuForm = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              {/* <Grid item xs={6}>
-              <FormControl fullWidth variant="outlined">
-                <InputLabel htmlFor="isVegan">Is Vegan</InputLabel>
-                <Select
-                  id="isVegan"
-                  name="isVegan"
-                  label="Is Vegan"
-                  onChange={formik.handleChange}
-                  value={formik.values.isVegan}
-                >
-                  <MenuItem value={true}>Yes</MenuItem>
-                  <MenuItem value={false}>No</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid> */}
             </Grid>
             <Button variant="contained" color="primary" type="submit">
               Create Menu Item

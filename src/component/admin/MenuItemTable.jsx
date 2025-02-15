@@ -26,7 +26,8 @@ import {
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { categorizedIngredients } from "../../util/CategorizeIngredients";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Create } from "@mui/icons-material";
+import EditIcon from "@mui/icons-material/Edit";
+import { Add } from "@mui/icons-material";
 
 const MenuItemTable = ({ isDashboard, name }) => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
       if(restaurant.usersRestaurant){
        dispatch( getMenuItemsByRestaurantId({
         restaurantId: restaurant.usersRestaurant?.restaurantId,
-        jwt: localStorage.getItem("jwt"),
+        jwt,
         seasonal: false,
         vegetarian: false,
         nonveg: false,
@@ -55,6 +56,10 @@ const MenuItemTable = ({ isDashboard, name }) => {
     dispatch(deleteFoodAction({foodId, jwt}));
   };
 
+  const handleUpdateFood = (foodId) => {
+    navigate(`/admin/restaurant/menu/update/${foodId}`);
+  };
+
   return (
     <Box width={"100%"}>
       {/* Card header section with title and add menu item button */}
@@ -68,7 +73,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
           }}
           action={
             <IconButton onClick={() => navigate("/admin/restaurant/add-menu")}>
-              <Create />
+              <Add />
             </IconButton>
           }
         />
@@ -106,7 +111,7 @@ const MenuItemTable = ({ isDashboard, name }) => {
                 >
                   {/* Item image column */}
                   <TableCell>
-                    <Avatar alt={item.name} src={item.images[0]} />
+                    <Avatar alt={item.name} src={item.image} />
                   </TableCell>
 
                   {/* Item title and description column */}
@@ -118,40 +123,15 @@ const MenuItemTable = ({ isDashboard, name }) => {
                     </Box>
                   </TableCell>
 
-                  {/* Ingredients column - only shown in full view */}
-                  {!isDashboard && (
-                    <TableCell>
-                      {Object.keys(
-                        categorizedIngredients(item?.ingredients)
-                      )?.map((category) => (
-                        <div key={category}>
-                          <p className="font-semibold">{category}</p>
-                          <div className="pl-5">
-                            {categorizedIngredients(item?.ingredients)[
-                              category
-                            ].map((ingredient, index) => (
-                              <div
-                                key={ingredient.id}
-                                className="flex gap-1 items-center"
-                              >
-                                <div>
-                                  <HorizontalRuleIcon
-                                    sx={{ fontSize: "1rem" }}
-                                  />
-                                </div>
-                                <div
-                                  key={ingredient.id}
-                                  className="flex gap-4 items-center"
-                                >
-                                  <p>{ingredient.name}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </TableCell>
-                  )}
+                  {/* Ingredients column */}
+                  <TableCell>
+                    {item.ingredients.map((ingredient, index) => (
+                      <span key={ingredient.ingredientsItemId}>
+                        {ingredient.name}
+                        {index !== item.ingredients.length - 1 ? ', ' : ''}
+                      </span>
+                    ))}
+                  </TableCell>
 
                   {/* Price column */}
                   <TableCell sx={{ textAlign: "center" }}>
@@ -172,8 +152,17 @@ const MenuItemTable = ({ isDashboard, name }) => {
                   {/* Delete action column - only shown in full view */}
                   {!isDashboard && (
                     <TableCell sx={{ textAlign: "center" }}>
-                      <IconButton onClick={() => handleDeleteFood(item.foodId)}>
-                        <DeleteIcon color="error" />
+                      <IconButton
+                        onClick={() => handleUpdateFood(item.foodId)}
+                        color="primary"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDeleteFood(item.foodId)}
+                        color="error"
+                      >
+                        <DeleteIcon />
                       </IconButton>
                     </TableCell>
                   )}

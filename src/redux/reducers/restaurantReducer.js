@@ -197,6 +197,22 @@ const restaurantReducer = createReducer(initialState, (builder) => {
     .addCase(actions.getRestaurantsCategoryFailure, (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    })
+
+    // Update Restaurants Category
+    .addCase(actions.updateCategoryRequest, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(actions.updateCategorySuccess, (state, action) => {
+      state.loading = false;
+      state.categories = state.categories.map(category => 
+        category.categoryId === action.payload.categoryId ? action.payload : category
+      );
+    })
+    .addCase(actions.updateCategoryFailure, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     });
 });
 

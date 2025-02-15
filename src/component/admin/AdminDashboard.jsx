@@ -16,14 +16,11 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="lg:px-20">
-     
-      <div className="lg:flex flex-wrap justify-center">
-        {restaurant.usersRestaurant.map((item) => (
-          <RestaurantCard item={item}/>
-        ))}
-        {restaurant.usersRestaurant.length<1 && <AddRestaurantCard/>}
-      </div>
+    <div className="lg:px-20 lg:flex flex-wrap justify-center">
+      {restaurant.usersRestaurant.map((item) => (
+        <RestaurantCard item={item}/>
+      ))}
+      {restaurant.usersRestaurant.length<1 && <AddRestaurantCard/>}
     </div>
   );
 };

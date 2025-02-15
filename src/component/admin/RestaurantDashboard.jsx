@@ -1,20 +1,30 @@
-import React from "react";
-import { Grid } from "@mui/material";
-import OrdersTable from "./OrderTable";
-import MenuItemTable from "./MenuItemTable";
+import React, { useEffect } from "react";
+import RestaurantTable from "./RestaurantTable";
+import { useDispatch, useSelector } from "react-redux";
+import { getRestaurantByUserId } from "../../redux/actions/restaurantActions";
+import AddRestaurantCard from "./AddRestaurantCard";
 
 const RestaurantDashboard = () => {
+  const dispatch = useDispatch();
+  const { restaurant } = useSelector(state => state);
+  const jwt = localStorage.getItem("jwt");
+
+  useEffect(() => {
+    dispatch(getRestaurantByUserId(jwt));
+  }, [dispatch, jwt]);
 
   return (
-    <div className="px-2">
-      <Grid container spacing={1}>
-        <Grid lg={6} xs={12} item>
-          <OrdersTable name={"Recent Order"} isDashboard={true} />
-        </Grid>
-        <Grid lg={6} xs={12} item>
-          <MenuItemTable isDashboard={true} name={"Recently Added Menu"} />
-        </Grid>
-      </Grid>
+    <div>
+      {/* Restaurant Cards Section */}
+      <div className="p-5">
+        <div className="flex gap-5">
+          {restaurant.usersRestaurant ? (
+            <RestaurantTable item={restaurant.usersRestaurant} />
+          ) : (
+            <AddRestaurantCard />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { Card } from "@mui/material";
 import React from "react";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
-const AvgCard = ({ title, icon, value,isGrow,growValue }) => {
+const AvgCard = ({ title, icon, value, growValue }) => {
   return (
     <Card className=" p-5 px-6 flex justify-between space-x-10">
       <div>

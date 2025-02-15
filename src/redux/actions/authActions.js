@@ -71,7 +71,7 @@ export const addToFavorites = ({restaurantId, jwt}) => async (dispatch) => {
   dispatch(addToFavoritesRequest());
   try {
     const { data } = await api.put(
-      `api/restaurants/${restaurantId}/add-favorites`,
+      `/restaurants/${restaurantId}/add-favorites`,
       {},
       {
         headers: {

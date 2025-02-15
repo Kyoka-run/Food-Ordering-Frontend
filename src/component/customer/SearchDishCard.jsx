@@ -43,7 +43,7 @@ const SearchDishCard = ({item}) => {
           <div className="flex flex-col justify-center items-center space-y-2">
             <img
               className="w-[5rem] h-[5rem]"
-              src={item.images[0]}
+              src={item.image}
               alt=""
             />
             <Button onClick={handleAddItemToCart} size="small">Add</Button>

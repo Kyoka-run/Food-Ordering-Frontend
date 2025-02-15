@@ -70,6 +70,42 @@ const ingredientReducer = createReducer(initialState, (builder) => {
       state.ingredients = state.ingredients.map((item) =>
         item.cartItemId === action.payload.cartItemId ? action.payload : item
       );
+    })
+
+    // Update Ingredient
+    .addCase(actions.updateIngredientRequest, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(actions.updateIngredientSuccess, (state, action) => {
+      state.loading = false;
+      state.ingredients = state.ingredients.map(ingredient => 
+        ingredient.ingredientsItemId === action.payload.ingredientsItemId 
+          ? action.payload 
+          : ingredient
+      );
+    })
+    .addCase(actions.updateIngredientFailure, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+
+    // Update Ingredient Category
+    .addCase(actions.updateIngredientCategoryRequest, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(actions.updateIngredientCategorySuccess, (state, action) => {
+      state.loading = false;
+      state.category = state.category.map(category =>   
+        category.ingredientCategoryId === action.payload.ingredientCategoryId 
+          ? action.payload 
+          : category
+      );
+    })
+    .addCase(actions.updateIngredientCategoryFailure, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     });
 });
 

@@ -1,4 +1,4 @@
-import { Create } from "@mui/icons-material";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -14,13 +14,13 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { Add, Edit } from "@mui/icons-material";
 import CreateIngredientCategoryForm from "./CreateIngredientCategory";
-import { useState } from "react";
 import CreateIngredientForm from "./CreateIngredientForm";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  updateStockOfIngredient
-} from "../../redux/actions/ingredientActions";
+import { updateStockOfIngredient, getIngredientCategory, getIngredientsOfRestaurant  } from "../../redux/actions/ingredientActions";
+import UpdateIngredientForm from "./UpdateIngredientForm";
+import UpdateIngredientCategoryForm from "./UpdateIngredientCategoryForm";
 
 const style = {
   position: "absolute",
@@ -36,25 +36,62 @@ const style = {
 
 const Ingredients = () => {
   const dispatch = useDispatch();
-  const { ingredients } = useSelector((store) => store);
+  const { restaurant, ingredients } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
 
   const [openIngredientCategory, setOpenIngredientCategory] = useState(false);
+  const [openIngredient, setOpenIngredient] = useState(false);
+  const [openUpdateIngredient, setOpenUpdateIngredient] = useState(false);
+  const [openUpdateIngredientCategory, setOpenUpdateIngredientCategory] = useState(false);
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
+  const [selectedIngredientCategory, setSelectedIngredientCategory] = useState(null);
+
   const handleOpenIngredientCategory = () => setOpenIngredientCategory(true);
   const handleCloseIngredientCategory = () => setOpenIngredientCategory(false);
-
-  const [openIngredient, setOpenIngredient] = useState(false);
   const handleOpenIngredient = () => setOpenIngredient(true);
   const handleCloseIngredient = () => setOpenIngredient(false);
+
+  const handleOpenUpdateIngredient = (ingredient) => {
+    setSelectedIngredient(ingredient);
+    setOpenUpdateIngredient(true);
+  };
+
+  const handleOpenUpdateIngredientCategory = (category) => {
+    setSelectedIngredientCategory(category);
+    setOpenUpdateIngredientCategory(true);
+  };
+
+  const handleCloseUpdateIngredient = () => {
+    setSelectedIngredient(null);
+    setOpenUpdateIngredient(false);
+  };
+
+  const handleCloseUpdateIngredientCategory = () => {
+    setSelectedIngredientCategory(null);
+    setOpenUpdateIngredientCategory(false);
+  };
 
   const handleUpdateStock = (ingredientsItemId) => {
     dispatch(updateStockOfIngredient({ ingredientsItemId, jwt }));
   };
 
+  useEffect(() => {
+    if (restaurant.usersRestaurant) {
+      dispatch(getIngredientCategory({ 
+        jwt, 
+        id: restaurant.usersRestaurant?.restaurantId 
+      }));
+      dispatch(getIngredientsOfRestaurant({ 
+        jwt, 
+        id: restaurant.usersRestaurant?.restaurantId 
+      }));
+    }
+  }, [restaurant.usersRestaurant]);
+
   return (
     <div className="px-2">
-      <Grid container spacing={1}>
-        <Grid  item xs={12} lg={8}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} lg={8}>
           <Card className="mt-1">
             <CardHeader
               title={"Ingredients"}
@@ -65,28 +102,24 @@ const Ingredients = () => {
               }}
               action={
                 <IconButton onClick={handleOpenIngredient}>
-                  {" "}
-                  <Create />
+                  <Add />
                 </IconButton>
               }
             />
-            <TableContainer className="h-[88vh] overflow-y-scroll">
-              <Table sx={{}} aria-label="table in dashboard">
+            <TableContainer className="h-[60vh] overflow-y-scroll">
+              <Table aria-label="ingredients table">
                 <TableHead>
                   <TableRow>
                     <TableCell>Id</TableCell>
-
                     <TableCell>Name</TableCell>
-
                     <TableCell>Category</TableCell>
-
-                    <TableCell>Availability</TableCell>
+                    <TableCell align="center">Availability</TableCell>
+                    <TableCell align="center">Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {ingredients.ingredients.map((item) => (
                     <TableRow
-                      className="cursor-pointer"
                       hover
                       key={item.ingredientsItemId}
                       sx={{
@@ -94,15 +127,20 @@ const Ingredients = () => {
                       }}
                     >
                       <TableCell>{item?.ingredientsItemId}</TableCell>
-                      <TableCell className="">{item.name}</TableCell>
-                      <TableCell className="">{item.category.name}</TableCell>
-                      <TableCell className="">
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.categoryName}</TableCell>
+                      <TableCell align="center">
                         <Button
                           onClick={() => handleUpdateStock(item.ingredientsItemId)}
-                          color={item.inStoke ? "success" : "primary"}
+                          color={item.inStock ? "success" : "primary"}
                         >
-                          {item.inStoke ? "in stock" : "out of stock"}
+                          {item.inStock ? "in stock" : "out of stock"}
                         </Button>
+                      </TableCell>
+                      <TableCell align="center">
+                        <IconButton onClick={() => handleOpenUpdateIngredient(item)}>
+                          <Edit />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -111,6 +149,7 @@ const Ingredients = () => {
             </TableContainer>
           </Card>
         </Grid>
+
         <Grid item xs={12} lg={4}>
           <Card className="mt-1">
             <CardHeader
@@ -122,33 +161,35 @@ const Ingredients = () => {
               }}
               action={
                 <IconButton onClick={handleOpenIngredientCategory}>
-                  {" "}
-                  <Create />
+                  <Add />
                 </IconButton>
               }
             />
-            <TableContainer>
-              <Table sx={{}} aria-label="table in dashboard">
+            <TableContainer className="h-[60vh] overflow-y-scroll">
+              <Table aria-label="category table">
                 <TableHead>
                   <TableRow>
                     <TableCell>Id</TableCell>
-
                     <TableCell>Name</TableCell>
+                    <TableCell align="center">Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {ingredients.category?.map((item, index) => (
+                  {ingredients.category?.map((item) => (
                     <TableRow
-                      className="cursor-pointer"
                       hover
-                      key={item.ingredientsItemId}
+                      key={item.ingredientCategoryId}
                       sx={{
                         "&:last-of-type td, &:last-of-type th": { border: 0 },
                       }}
                     >
-                      <TableCell>{item?.ingredientsItemId}</TableCell>
-
-                      <TableCell className="">{item.name}</TableCell>
+                      <TableCell>{item?.ingredientCategoryId}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell align="center">
+                        <IconButton onClick={() => handleOpenUpdateIngredientCategory(item)}>
+                          <Edit />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -161,8 +202,6 @@ const Ingredients = () => {
       <Modal
         open={openIngredient}
         onClose={handleCloseIngredient}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
           <CreateIngredientForm handleClose={handleCloseIngredient} />
@@ -172,12 +211,32 @@ const Ingredients = () => {
       <Modal
         open={openIngredientCategory}
         onClose={handleCloseIngredientCategory}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <CreateIngredientCategoryForm
-            handleClose={handleCloseIngredientCategory}
+          <CreateIngredientCategoryForm handleClose={handleCloseIngredientCategory} />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openUpdateIngredient}
+        onClose={handleCloseUpdateIngredient}
+      >
+        <Box sx={style}>
+          <UpdateIngredientForm 
+            handleClose={handleCloseUpdateIngredient}
+            selectedIngredient={selectedIngredient}
+          />
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openUpdateIngredientCategory}
+        onClose={handleCloseUpdateIngredientCategory}
+      >
+        <Box sx={style}>
+          <UpdateIngredientCategoryForm 
+            handleClose={handleCloseUpdateIngredientCategory}
+            selectedIngredientCategory={selectedIngredientCategory}
           />
         </Box>
       </Modal>

@@ -71,6 +71,24 @@ const menuReducer = createReducer(initialState, (builder) => {
     // Delete Menu Item
     .addCase(actions.deleteMenuItemSuccess, (state, action) => {
       state.menuItems = state.menuItems.filter(item => item.foodId !== action.payload);
+    })
+    
+    // Update Menu Item
+    .addCase(actions.updateMenuItemRequest, (state) => {
+      state.loading = true;
+      state.error = null;
+      state.message = null;
+    })
+    .addCase(actions.updateMenuItemSuccess, (state, action) => {
+      state.loading = false;
+      state.menuItems = state.menuItems.map(item =>
+        item.foodId === action.payload.foodId ? action.payload : item
+      );
+      state.message = "Menu Item Updated Successfully";
+    })
+    .addCase(actions.updateMenuItemFailure, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     });
 });
 

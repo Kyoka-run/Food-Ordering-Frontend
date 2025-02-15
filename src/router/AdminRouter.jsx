@@ -12,6 +12,8 @@ import Category from "../component/admin/Category";
 import Ingredients from "../component/admin/Ingredients";
 import Details from "../component/admin/Details";
 import AdminNavbar from "../component/admin/AdminNavbar";
+import UpdateRestaurantForm from "../component/admin/UpdateRestaurantForm";
+import UpdateMenuForm from "../component/admin/UpdateMenuForm";
 import {
   getIngredientCategory,
   getIngredientsOfRestaurant,
@@ -53,12 +55,11 @@ const AdminRouter = () => {
   return (
     <div>
       <AdminNavbar handleOpenSideBar={handleOpenSideBar} />
-      <div className="lg:flex justify-between">
+      <div className="lg:px-5 lg:py-5 justify-center">
         <div>
           <AdminSidebar handleClose={handleCloseSideBar} open={openSideBar} />
         </div>
-
-        <div className="lg:w-[80vw]">
+        <div>
           <Routes>
             <Route path="/" element={<RestaurantDashboard />} />
             <Route path="/orders" element={<RestaurantsOrder />} />
@@ -69,6 +70,8 @@ const AdminRouter = () => {
             <Route path="/ingredients" element={<Ingredients />} />
             <Route path="/category" element={<Category />} />
             <Route path="/details" element={<Details />} />
+            <Route path="/update/:id" element={<UpdateRestaurantForm />} />
+            <Route path="/menu/update/:foodId" element={<UpdateMenuForm />} />
           </Routes>
         </div>
       </div>

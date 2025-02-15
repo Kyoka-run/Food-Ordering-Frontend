@@ -18,7 +18,6 @@ import {
   TableRow,
 } from "@mui/material";
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { updateOrderStatus } from "../../redux/actions/restaurantOrderActions";
 
@@ -103,7 +102,7 @@ const OrdersTable = ({ isDashboard, name }) => {
                         {item.items.map((orderItem) => (
                           <Avatar
                             alt={orderItem.food.name}
-                            src={orderItem.food?.images[0]}
+                            src={orderItem.food?.image}
                           />
                         ))}
                       </AvatarGroup>{" "}

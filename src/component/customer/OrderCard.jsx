@@ -7,7 +7,7 @@ const OrderCard = ({order,status}) => {
       <div className="flex items-center space-x-5">
         <img
           className="h-16 w-16"
-          src={order.food.images[0]}
+          src={order.food.image}
           alt=""
         />
         <div>

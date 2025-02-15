@@ -57,6 +57,10 @@ export const getRestaurantsCategoryRequest = createAction('restaurant/getCategor
 export const getRestaurantsCategorySuccess = createAction('restaurant/getCategorySuccess');
 export const getRestaurantsCategoryFailure = createAction('restaurant/getCategoryFailure');
 
+export const updateCategoryRequest = createAction('restaurant/updateCategoryRequest');
+export const updateCategorySuccess = createAction('restaurant/updateCategorySuccess');
+export const updateCategoryFailure = createAction('restaurant/updateCategoryFailure');
+
 // Async Actions
 export const getAllRestaurants = (jwt) => async (dispatch) => {
   dispatch(getAllRestaurantsRequest());
@@ -118,7 +122,7 @@ export const updateRestaurant = ({ restaurantId, restaurantData, jwt }) => async
   dispatch(updateRestaurantRequest());
   try {
     const response = await api.put(
-      `/admin/restaurant/${restaurantId}`,
+      `/admin/restaurants/${restaurantId}`,
       restaurantData,
       {
         headers: {
@@ -135,7 +139,7 @@ export const updateRestaurant = ({ restaurantId, restaurantData, jwt }) => async
 export const deleteRestaurant = (restaurantId) => async (dispatch) => {
   dispatch(deleteRestaurantRequest());
   try {
-    await api.delete(`/admin/restaurant/${restaurantId}`);
+    await api.delete(`/admin/restaurants/${restaurantId}`);
     dispatch(deleteRestaurantSuccess(restaurantId));
   } catch (error) {
     dispatch(deleteRestaurantFailure(error.message));
@@ -244,5 +248,19 @@ export const getRestaurantsCategory = ({ jwt, restaurantId }) => async (dispatch
     dispatch(getRestaurantsCategorySuccess(response.data));
   } catch (error) {
     dispatch(getRestaurantsCategoryFailure(error.message));
+  }
+};
+
+export const updateCategory = ({ reqData, jwt }) => async (dispatch) => {
+  dispatch(updateCategoryRequest());
+  try {
+    const { data } = await api.put(`/admin/category/${reqData.categoryId}`, reqData, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    dispatch(updateCategorySuccess(data));
+  } catch (error) {
+    dispatch(updateCategoryFailure(error.message));
   }
 };

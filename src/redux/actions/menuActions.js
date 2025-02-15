@@ -22,7 +22,10 @@ export const deleteMenuItemRequest = createAction('menu/deleteRequest');
 export const deleteMenuItemSuccess = createAction('menu/deleteSuccess');
 export const deleteMenuItemFailure = createAction('menu/deleteFailure');
 
-// Async Actions
+export const updateMenuItemRequest = createAction('menu/updateRequest');
+export const updateMenuItemSuccess = createAction('menu/updateSuccess');
+export const updateMenuItemFailure = createAction('menu/updateFailure');
+
 export const createMenuItem = ({menu, jwt}) => async (dispatch) => {
   dispatch(createMenuItemRequest());
   try {
@@ -72,13 +75,13 @@ export const searchMenuItem = ({keyword, jwt}) => async (dispatch) => {
 export const updateMenuItemsAvailability = ({foodId, jwt}) => async (dispatch) => {
   dispatch(updateMenuItemAvailabilityRequest());
   try {
-    const { data } = await api.put(`/admin/food/${foodId}`, {}, {
+    const { data } = await api.put(`/admin/food/${foodId}/availability`, {}, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
     });
     dispatch(updateMenuItemAvailabilitySuccess(data));
-  } catch (error) {
+  } catch (error) { 
     dispatch(updateMenuItemAvailabilityFailure(error.message));
   }
 };
@@ -94,5 +97,19 @@ export const deleteFoodAction = ({foodId, jwt}) => async (dispatch) => {
     dispatch(deleteMenuItemSuccess(foodId));
   } catch (error) {
     dispatch(deleteMenuItemFailure(error.message));
+  }
+};
+
+export const updateMenuItem = ({ menuItem, foodId, jwt }) => async (dispatch) => {
+  dispatch(updateMenuItemRequest());
+  try {
+    const { data } = await api.put(`/admin/food/${foodId}`, menuItem, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    dispatch(updateMenuItemSuccess(data));
+  } catch (error) {
+    dispatch(updateMenuItemFailure(error.message));
   }
 };

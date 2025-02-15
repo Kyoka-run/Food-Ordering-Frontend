@@ -86,7 +86,7 @@ const Navbar = () => {
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
               onClick={
-                user?.role === "ROLE_ADMIN"
+                user?.roles?.includes("ROLE_ADMIN")
                   ? handleOpenMenu
                   : navigateToProfile
               }

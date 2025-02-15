@@ -2,7 +2,7 @@ import { Chip, IconButton } from "@mui/material";
 import React from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   removeCartItem,
   updateCartItem,
@@ -11,7 +11,6 @@ import {
 const CartItemCard = ({ item }) => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const {auth} = useSelector(state => state)
 
   const handleUpdateCartItem = (value) => {
     if(value===-1 && item.quantity==1){
@@ -25,23 +24,24 @@ const CartItemCard = ({ item }) => {
   };
   
   const handleRemoveCartItem=()=>{
-    dispatch(removeCartItem({cartItemId:item.cartItemId, jwt:auth.jwt || jwt}))
+    dispatch(removeCartItem({cartItemId:item.cartItemId, jwt}))
     
   }
+
   return (
     <div className="px-5">
       <div className="lg:flex items-center lg:space-x-5">
         <div>
           <img
             className="w-[5rem] h-[5rem] object-cover"
-            src={item.food.image}
+            src={item.foodImage}
             alt=""
           />
         </div>
 
         <div className="flex items-center justify-between lg:w-[70%]">
           <div className="space-y-1 lg:space-y-3 w-full ">
-            <p className="">{item.food.name}</p>
+            <p className="">{item.foodName}</p>
             {
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-1">

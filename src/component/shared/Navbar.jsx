@@ -4,36 +4,23 @@ import {
   Avatar,
   Badge,
   IconButton,
-  Menu,
-  MenuItem,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import Auth from "../customer/Auth";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../../redux/actions/authActions";
 import { pink } from "@mui/material/colors";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
-  const handleOpenMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-
   const navigateToProfile = (e) => {
-    user?.roles?.includes("ROLE_ADMIN")
-    || user?.roles?.includes("ROLE_RESTAURANT_OWNER")
+    user?.roles?.includes("ROLE_RESTAURANT_OWNER")
       ? navigate("/admin/restaurant")
       : navigate("/my-profile");
   };
@@ -47,11 +34,6 @@ const Navbar = () => {
       navigate("/");
     }
   },[user])
-
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    handleCloseMenu();
-  };
 
   return (
     <div className="h-16 px-5 z-50 bg-[#e91e63] lg:px-20 flex justify-between items-center">
@@ -87,7 +69,7 @@ const Navbar = () => {
               aria-expanded={open ? "true" : undefined}
               onClick={
                 user?.roles?.includes("ROLE_ADMIN")
-                  ? handleOpenMenu
+                  ? () => navigate("/super-admin")
                   : navigateToProfile
               }
               className=" font-semibold cursor-pointer"
@@ -102,28 +84,6 @@ const Navbar = () => {
               <PersonIcon sx={{ fontSize: "2rem" }} />
             </IconButton>
           )}
-
-          {/* User menu */}
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleCloseMenu}
-            MenuListProps={{
-              "aria-labelledby": "basic-button",
-            }}
-          >
-            <MenuItem
-              onClick={() =>
-                user?.roles?.includes("ROLE_RESTAURANT_OWNER")
-                  ? navigate("/admin")
-                  : navigate("/super-admin")
-              }
-            >
-              Profile
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          </Menu>
         </div>
 
         {/* Shopping cart button with item count */}

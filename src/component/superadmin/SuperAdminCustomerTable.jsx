@@ -1,10 +1,8 @@
+import React, { useEffect } from "react";
 import {
-  Avatar,
-  Backdrop,
   Box,
   Card,
   CardHeader,
-  CircularProgress,
   Table,
   TableBody,
   TableCell,
@@ -12,75 +10,95 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Avatar,
+  Chip,
+  Backdrop,
+  CircularProgress
 } from "@mui/material";
-
-import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCustomers } from "../../redux/actions/superAdminActions";
 
-const SuperAdminCustomerTable = ({ isDashboard, name }) => {
+const SuperAdminCustomerTable = ({ isDashboard }) => {
   const dispatch = useDispatch();
   const { superAdmin } = useSelector((store) => store);
+  const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
-    dispatch(getCustomers())
-  }, []);
+    dispatch(getCustomers(jwt));
+  }, [dispatch]);
+
+  const getRoleColor = (role) => {
+    switch (role) {
+      case "ROLE_CUSTOMER":
+        return "primary";
+      case "ROLE_RESTAURANT_OWNER":
+        return "secondary";
+      case "ROLE_ADMIN":
+        return "error";
+      default:
+        return "default";
+    }
+  };
 
   return (
-    <Box width={"100%"}>
-      <Card className="mt-1">
+    <Box className="p-4">
+      <Card>
         <CardHeader
-          title={name}
+          title={
+            <Typography variant="h5" className="text-gray-600">
+              Customer Management
+            </Typography>
+          }
           sx={{
             pt: 2,
-            alignItems: "center",
-            "& .MuiCardHeader-action": { mt: 0.6 },
+            "& .MuiCardHeader-action": { mt: 0.6 }
           }}
         />
-        <TableContainer>
-          <Table  aria-label="table in dashboard">
+        <TableContainer className="max-h-[70vh] overflow-auto">
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell>Image</TableCell>
-                <TableCell>Full Name</TableCell>
-                <TableCell >User Id</TableCell>
-                <TableCell >Email</TableCell>
-                <TableCell >User Role</TableCell>
+                <TableCell>User</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell align="center">User ID</TableCell>
+                <TableCell align="center">Roles</TableCell>
+                <TableCell align="center">Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {superAdmin.customers.slice(0,isDashboard?7:superAdmin.customers.length).map((item) => (
+              {superAdmin.customers.slice(0, isDashboard ? 5 : undefined).map((customer) => (
                 <TableRow
                   hover
-                  key={item.name}
+                  key={customer.userId}
                   sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
                 >
                   <TableCell>
-                    <Avatar alt={item.name} src={item.imageUrl} />
-                  </TableCell>
-
-                  <TableCell
-                    sx={{ py: (theme) => `${theme.spacing(0.5)} !important` }}
-                  >
-                    <Box sx={{ display: "flex", flexDirection: "column" }}>
-                      <Typography
-                        sx={{
-                          fontWeight: 500,
-                          fontSize: "0.875rem !important",
-                        }}
-                      >
-                        {item.username}
-                      </Typography>
+                    <Box className="flex items-center gap-3">
+                      <Avatar sx={{ bgcolor: "#e91e63" }}>
+                        {customer.username?.[0]?.toUpperCase()}
+                      </Avatar>
+                      <Typography>{customer.username}</Typography>
                     </Box>
                   </TableCell>
-                  <TableCell >
-                    {item.userId}
+                  <TableCell>{customer.email}</TableCell>
+                  <TableCell align="center">{customer.userId}</TableCell>
+                  <TableCell align="center">
+                    {customer.roles?.map((role) => (
+                      <Chip
+                        key={role}
+                        label={role.replace('ROLE_', '')}
+                        color={getRoleColor(role)}
+                        size="small"
+                        className="m-1"
+                      />
+                    ))}
                   </TableCell>
-                  <TableCell >
-                    {item.email}
-                  </TableCell>
-                  <TableCell >
-                    {item.roles}
+                  <TableCell align="center">
+                    <Chip
+                      label={customer.status || "ACTIVE"}
+                      color="success"
+                      size="small"
+                    />
                   </TableCell>
                 </TableRow>
               ))}

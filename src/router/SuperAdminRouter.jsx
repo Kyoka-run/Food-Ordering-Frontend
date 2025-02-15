@@ -1,25 +1,35 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import SuperAdminSidebar from "../component/superadmin/SuperAdminSideBar";
+import SuperAdminNavbar from "../component/superadmin/SuperAdminNavbar";
 import Customers from "../component/superadmin/Customers";
 import SuperAdminRestaurant from "../component/superadmin/SuperAdminRestaurant";
 import RestaurantRequest from "../component/superadmin/RestaurantRequest";
 import SuperAdminDashboard from "../component/superadmin/SuperAdminDashboard";
 
 const SuperAdminRouter = () => {
-  return (
-    <div className="lg:flex justify-between">
-      <div>
-        <SuperAdminSidebar />
-      </div>
+  const [openSideBar, setOpenSideBar] = React.useState(false);
+  const handleOpenSideBar = () => setOpenSideBar(true);
+  const handleCloseSideBar = () => setOpenSideBar(false);
 
-      <div className="w-[80vw]">
-        <Routes>
-          <Route path="/" element={<SuperAdminDashboard/>}></Route>
-          <Route path="/customers" element={<Customers/>}></Route>
-          <Route path="/restaurants" element={<SuperAdminRestaurant/>}></Route>
-          <Route path="/restaurant-request" element={<RestaurantRequest/>}></Route>
-        </Routes>
+  return (
+    <div>
+      <SuperAdminNavbar handleOpenSideBar={handleOpenSideBar} />
+      <div className="lg:px-5 lg:py-5 justify-center">
+        <div>
+          <SuperAdminSidebar 
+            open={openSideBar} 
+            handleClose={handleCloseSideBar} 
+          />
+        </div>
+        <div>
+          <Routes>
+            <Route path="/" element={<SuperAdminDashboard />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/restaurants" element={<SuperAdminRestaurant />} />
+            <Route path="/restaurant-request" element={<RestaurantRequest />} />
+          </Routes>
+        </div>
       </div>
     </div>
   );

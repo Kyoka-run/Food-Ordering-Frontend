@@ -106,8 +106,8 @@ const Cart = () => {
       {cart.cartItems.length > 0 ? (
         <main className="lg:flex justify-between">
           <section className="lg:w-[30%] space-y-6 lg:min-h-screen pt-10">
-            {cart.cartItems.map((item, i) => (
-              <CartItemCard item={item} />
+            {cart.cartItems.map((item) => (
+              <CartItemCard item = {item} />
             ))}
 
             <Divider />
@@ -120,20 +120,20 @@ const Cart = () => {
                 </div>
                 <div className="flex justify-between text-gray-400">
                 <p>Deliver Fee</p>
-                <p>€21</p>
+                <p>€2</p>
               </div>
                 <div className="flex justify-between text-gray-400">
                 <p>Plateform Fee</p>
-                <p>€5</p>
+                <p>€1</p>
               </div>
                 <div className="flex justify-between text-gray-400">
-                <p>GST and Restaurant Charges</p>
-                <p>€33</p>
+                <p>Restaurant Charges</p>
+                <p>€2</p>
               </div>
                 <Divider />
                 <div className="flex justify-between text-gray-400">
                   <p>Total Pay</p>
-                  <p>€{cartTotal(cart.cartItems)+33}</p>
+                  <p>€{cartTotal(cart.cartItems)+5}</p>
                 </div>
               </div>
             </div>
@@ -215,6 +215,7 @@ const Cart = () => {
           </div>
         </div>
       )}
+      
       <Modal open={openAddressModal} onClose={handleCloseAddressModal}>
         <Box sx={style}>
           <Formik

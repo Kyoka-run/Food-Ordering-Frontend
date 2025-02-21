@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import * as actions from '../actions/cartActions';
+import { logout } from '../actions/authActions';
 
 const initialState = {
   cart: null,
@@ -60,6 +61,12 @@ const cartReducer = createReducer(initialState, (builder) => {
 
     // Clear Cart
     .addCase(actions.clearCartSuccess, (state) => {
+      state.cart = null;
+      state.cartItems = [];
+    })
+
+    // Logout clear cart
+    .addCase(logout, (state) => {
       state.cart = null;
       state.cartItems = [];
     });

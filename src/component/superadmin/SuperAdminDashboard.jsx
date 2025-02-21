@@ -37,7 +37,7 @@ const SuperAdminDashboard = () => {
       title: "Total Restaurants",
       value: restaurants?.length || 0,
       icon: <RestaurantIcon />,
-      color: "#e91e63"
+      color: "#ff6f00"
     },
     {
       title: "Total Customers",

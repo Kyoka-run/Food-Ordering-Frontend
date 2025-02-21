@@ -19,7 +19,7 @@ const UpdateIngredientCategoryForm = ({ handleClose, selectedIngredientCategory 
       ...formData,
       restaurantId: restaurant.usersRestaurant.restaurantId
     };
-    dispatch(updateIngredientCategory({ data, jwt: auth.jwt || jwt }));
+    dispatch(updateIngredientCategory({ data, jwt }));
     handleClose();
   };
 

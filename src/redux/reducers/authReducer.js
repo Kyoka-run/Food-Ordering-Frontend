@@ -5,7 +5,7 @@ const initialState = {
   user: null,
   isLoading: false,
   error: null,
-  jwt: null,
+  jwt: localStorage.getItem('jwt') || null,
   favorites: [],
   success: null,
 };
@@ -93,6 +93,7 @@ const authReducer = createReducer(initialState, (builder) => {
       state.user = null;
       state.success = "logout success";
       state.favorites = [];
+      localStorage.removeItem('jwt');
     });
 });
 

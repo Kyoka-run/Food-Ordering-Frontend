@@ -65,9 +65,6 @@ const Events = () => {
         jwt
       })
     );
-    console.log("Image URL:", formValues, restaurant.usersRetaurant?.restaurantId);
-    // setFormValues(initialValues);
-    // handleCloseModal();
   };
 
   useEffect(() => {
@@ -75,7 +72,7 @@ const Events = () => {
       dispatch(
         getRestaurantEvents({
           restaurantId: restaurant.usersRestaurant?.restaurantId,
-          jwt: auth.jwt || jwt,
+          jwt,
         })
       );
     }

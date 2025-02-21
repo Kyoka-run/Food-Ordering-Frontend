@@ -69,7 +69,6 @@ const AddMenuForm = () => {
     onSubmit: (values) => {
       values.restaurantId = restaurant.usersRestaurant.restaurantId;
       dispatch(createMenuItem({ menu: values, jwt }));
-      console.log("values ----- ", values);
     },
   });
 

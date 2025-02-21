@@ -15,7 +15,6 @@ const CreateIngredientForm = ({handleClose}) => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    console.log('Form submitted:', formData);
 
     setFormData({
       name: '',

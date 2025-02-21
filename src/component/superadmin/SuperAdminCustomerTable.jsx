@@ -74,7 +74,7 @@ const SuperAdminCustomerTable = ({ isDashboard }) => {
                 >
                   <TableCell>
                     <Box className="flex items-center gap-3">
-                      <Avatar sx={{ bgcolor: "#e91e63" }}>
+                      <Avatar sx={{ bgcolor: "#ff6f00" }}>
                         {customer.username?.[0]?.toUpperCase()}
                       </Avatar>
                       <Typography>{customer.username}</Typography>

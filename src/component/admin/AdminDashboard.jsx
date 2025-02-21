@@ -6,9 +6,7 @@ import { getRestaurantByUserId } from "../../redux/actions/restaurantActions";
 import AddRestaurantCard from "./AddRestaurantCard";
 
 const AdminDashboard = () => {
-  const params = useParams();
-  const {restaurant}=useSelector(state=>state);
-  console.log("params", params);
+  const {restaurant} = useSelector(state=>state);
   const dispatch = useDispatch();
 
   useEffect(() => {

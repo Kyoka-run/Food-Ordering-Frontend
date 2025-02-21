@@ -1,6 +1,7 @@
-// redux/actions/authActions.js
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
+import { findCart } from "./cartActions";
+import { getRestaurantByUserId } from "./restaurantActions";
 
 // Action Creators
 export const loginRequest = createAction('auth/loginRequest');
@@ -34,6 +35,11 @@ export const loginUser = (reqData) => async (dispatch) => {
     reqData.navigate("/");
 
     dispatch(loginSuccess(data.jwtToken));
+    dispatch(getUser(data.jwtToken));
+    dispatch(findCart(data.jwtToken));
+    if (data.roles.includes("ROLE_RESTAURANT_OWNER")) {
+      dispatch(getRestaurantByUserId(data.jwtToken));
+    }
   } catch (error) {
     dispatch(loginFailure(error.message));
   }
@@ -42,7 +48,7 @@ export const loginUser = (reqData) => async (dispatch) => {
 export const registerUser = (sendData) => async (dispatch) => {
   try {
     sendData.setLoader(true);
-    const { data } = await api.post("/auth/signup", sendData);
+    const { data } = await api.post("/auth/signup", sendData.userData);
     sendData.reset();
     sendData.toast.success(data?.message || "User Registered Successfully");
     sendData.navigate("/login");
@@ -108,5 +114,4 @@ export const resetPassword = (reqData) => async (dispatch) => {
 
 export const logoutUser = (navigate) => (dispatch) => {
   dispatch(logout());
-  localStorage.removeItem("jwt");
 };

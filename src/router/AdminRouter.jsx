@@ -39,14 +39,14 @@ const AdminRouter = () => {
       );
       dispatch(
         getRestaurantsCategory({
-          jwt: auth.jwt || jwt,
+          jwt,
           restaurantId: restaurant.usersRestaurant?.restaurantId,
         })
       );
       dispatch(
         fetchRestaurantsOrder({
           restaurantId: restaurant.usersRestaurant?.restaurantId,
-          jwt: auth.jwt || jwt,
+          jwt,
         })
       );
     }

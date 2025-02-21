@@ -20,7 +20,7 @@ const UpdateIngredientForm = ({ handleClose, selectedIngredient }) => {
       ...formData,
       restaurantId: restaurant.usersRestaurant.restaurantId
     };
-    dispatch(updateIngredient({ data, jwt: auth.jwt || jwt }));
+    dispatch(updateIngredient({ data, jwt }));
     handleClose();
   };
 

@@ -15,7 +15,7 @@ const UpdateCategoryForm = ({ handleClose, selectedCategory }) => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    dispatch(updateCategory({ reqData: formData, jwt: auth.jwt || jwt }));
+    dispatch(updateCategory({ reqData: formData, jwt }));
     handleClose();
   };
 

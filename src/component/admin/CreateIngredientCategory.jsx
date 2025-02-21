@@ -14,7 +14,6 @@ const CreateIngredientCategoryForm = ({ handleClose }) => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    console.log("Form submitted:", formData);
     setFormData({
       name: "",
     });
@@ -22,7 +21,7 @@ const CreateIngredientCategoryForm = ({ handleClose }) => {
       name: formData.name,
       restaurantId: restaurant.usersRestaurant.restaurantId,
     };
-    dispatch(createIngredientCategory({ data, jwt: auth.jwt || jwt }));
+    dispatch(createIngredientCategory({ data, jwt }));
     handleClose();
   };
 

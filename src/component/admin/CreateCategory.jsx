@@ -23,13 +23,12 @@ const CreateCategory = ({handleClose}) => {
           restaurantId
         }
     }
-    dispatch(createCategory({reqData:data, jwt: auth.jwt || jwt}))
+    dispatch(createCategory({reqData:data, jwt}))
     setFormData({
       categoryName: '',
       restaurantId: '',
     })
     handleClose()
-    console.log('Form submitted:', formData);
   };
 
   const handleInputChange = (event) => {

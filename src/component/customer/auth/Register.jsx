@@ -163,6 +163,7 @@ const Registration = () => {
                       >
                         <MenuItem value="customer">Customer</MenuItem>
                         <MenuItem value="owner">Restaurant Owner</MenuItem>
+                        <MenuItem value="admin">Admin</MenuItem>
                       </Select>
                       {meta.touched && meta.error && (
                         <FormHelperText>{meta.error}</FormHelperText>

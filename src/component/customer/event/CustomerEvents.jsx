@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllEvents } from '../../../redux/actions/restaurantActions';
-import EventCard from '../../admin/EventCard';
+import EventCard from '../../admin/event/EventCard';
 
 const CustomerEvents = () => {
   const dispatch = useDispatch()

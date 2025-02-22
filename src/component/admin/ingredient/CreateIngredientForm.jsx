@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { createIngredient } from '../../redux/actions/ingredientActions';
+import { createIngredient } from '../../../redux/actions/ingredientActions';
 
 const CreateIngredientForm = ({handleClose}) => {
     const dispatch=useDispatch();
-    const {auth,restaurant,ingredients}=useSelector(store=>store)
+    const { restaurant, ingredients }=useSelector(store => store)
     const jwt = localStorage.getItem("jwt")
 
   const [formData, setFormData] = useState({
@@ -22,7 +22,7 @@ const CreateIngredientForm = ({handleClose}) => {
     })
     handleClose()
     const data={...formData,restaurantId:restaurant.usersRestaurant.restaurantId}
-    dispatch(createIngredient({jwt:auth.jwt || jwt,data}))
+    dispatch(createIngredient({data, jwt}))
     
   };
 

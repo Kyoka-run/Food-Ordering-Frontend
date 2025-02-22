@@ -1,10 +1,10 @@
 export const categorizedIngredients = (ingredients) => {
   return ingredients.reduce((acc, ingredient) => {
-    const { category } = ingredient;
-    if (!acc[category.name]) {
-      acc[category.name] = [];
+    const { ingredientCategory } = ingredient;
+    if (!acc[ingredientCategory.name]) {
+      acc[ingredientCategory.name] = [];
     }
-    acc[category.name].push(ingredient);
+    acc[ingredientCategory.name].push(ingredient);
     return acc;
   }, {});
 };

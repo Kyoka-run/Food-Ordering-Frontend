@@ -15,7 +15,7 @@ import {
   Chip,
   OutlinedInput,
 } from "@mui/material";
-import { updateMenuItem } from "../../redux/actions/menuActions";
+import { updateMenuItem } from "../../../redux/actions/menuActions";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

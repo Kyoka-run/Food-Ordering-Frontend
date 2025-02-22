@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateOrderStatus } from "../../redux/actions/restaurantOrderActions";
+import { updateOrderStatus } from "../../../redux/actions/restaurantOrderActions";
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },

@@ -82,10 +82,7 @@ const SuperAdminRestaurant = () => {
                   </TableCell>
                   <TableCell align="center">
                     <Typography variant="body2">
-                      {restaurant.address?.city}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {restaurant.address?.country}
+                      {restaurant.address}
                     </Typography>
                   </TableCell>
                   <TableCell align="center">

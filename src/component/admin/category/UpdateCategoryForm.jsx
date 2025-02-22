@@ -1,25 +1,21 @@
 import React from 'react';
 import { TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateIngredientCategory } from '../../redux/actions/ingredientActions';
+import { updateCategory } from '../../../redux/actions/restaurantActions';
 
-const UpdateIngredientCategoryForm = ({ handleClose, selectedIngredientCategory }) => {
+const UpdateCategoryForm = ({ handleClose, selectedCategory }) => {
   const dispatch = useDispatch();
-  const { auth, restaurant } = useSelector(store => store);
+  const { auth } = useSelector(store => store);
   const jwt = localStorage.getItem("jwt");
 
   const [formData, setFormData] = React.useState({
-    ingredientCategoryId: selectedIngredientCategory?.ingredientCategoryId || '',
-    name: selectedIngredientCategory?.name || '',
+    categoryId: selectedCategory?.categoryId || '',
+    name: selectedCategory?.name || '',
   });
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    const data = {
-      ...formData,
-      restaurantId: restaurant.usersRestaurant.restaurantId
-    };
-    dispatch(updateIngredientCategory({ data, jwt }));
+    dispatch(updateCategory({ reqData: formData, jwt }));
     handleClose();
   };
 
@@ -33,9 +29,7 @@ const UpdateIngredientCategoryForm = ({ handleClose, selectedIngredientCategory 
 
   return (
     <div className="p-5">
-      <h1 className="text-gray-400 text-center text-xl pb-10">
-        Update Ingredient Category
-      </h1>
+      <h1 className="text-gray-400 text-center text-xl pb-10">Update Category</h1>
       <form className="space-y-5" onSubmit={handleFormSubmit}>
         <TextField
           label="Category Name"
@@ -52,4 +46,4 @@ const UpdateIngredientCategoryForm = ({ handleClose, selectedIngredientCategory 
   );
 };
 
-export default UpdateIngredientCategoryForm;
+export default UpdateCategoryForm;

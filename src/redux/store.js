@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './reducers/authReducer';
+import addressReducer from './reducers/addressReducer';
 import restaurantReducer from './reducers/restaurantReducer';
 import menuReducer from './reducers/menuReducer';
 import cartReducer from './reducers/cartReducer';
@@ -17,6 +18,7 @@ const initialState = {
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    address: addressReducer,
     restaurant: restaurantReducer,
     menu: menuReducer, 
     cart: cartReducer,

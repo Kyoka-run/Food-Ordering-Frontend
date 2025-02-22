@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { createCategory } from '../../redux/actions/restaurantActions';
+import { createCategory } from '../../../redux/actions/restaurantActions';
 
 const CreateCategory = ({handleClose}) => {
   const {restaurantId} = useParams();

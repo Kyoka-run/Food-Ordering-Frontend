@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { deleteRestaurant, updateRestaurantStatus } from '../../redux/actions/restaurantActions';
+import { deleteRestaurant, updateRestaurantStatus } from '../../../redux/actions/restaurantActions';
 
 const RestaurantTable = () => {
   const dispatch = useDispatch();
@@ -90,8 +90,7 @@ const RestaurantTable = () => {
                     {restaurant.usersRestaurant.description}
                   </TableCell>
                   <TableCell align="center">
-                    {restaurant.usersRestaurant.address?.city}, 
-                    {restaurant.usersRestaurant.address?.country}
+                    {restaurant.usersRestaurant.address}, 
                   </TableCell>
                   <TableCell align="center">
                     <Chip

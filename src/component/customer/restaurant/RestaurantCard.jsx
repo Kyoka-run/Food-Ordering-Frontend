@@ -27,7 +27,7 @@ const RestaurantCard = ({ data }) => {
 
   const navigateToRestaurant = () => {
     if(data.open) {
-      navigate(`/restaurant/${data.address.city}/${data.name}/${data.restaurantId}`);
+      navigate(`/restaurant/${data.restaurantId}`);
     }
   };
 

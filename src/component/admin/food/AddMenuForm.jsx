@@ -16,7 +16,7 @@ import {
   OutlinedInput,
   Snackbar,
 } from "@mui/material";
-import { createMenuItem } from "../../redux/actions/menuActions";
+import { createMenuItem } from "../../../redux/actions/menuActions";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;

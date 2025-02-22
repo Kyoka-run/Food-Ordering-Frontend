@@ -36,7 +36,7 @@ const Restaurant = () => {
   const searchParams = new URLSearchParams(decodedQueryString);
   const foodType = searchParams.get("food_type");
   const foodCategory = searchParams.get("food_category");
-  const jwt=localStorage.getItem("jwt")
+  const jwt = localStorage.getItem("jwt")
 
   useEffect(() => {
     dispatch(
@@ -75,10 +75,10 @@ const Restaurant = () => {
     <>
       <div className="px-5 lg:px-20 ">
         <section>
-          <h3 className="text-gray-500 py-2 mt-10">
-            Home/{restaurant.restaurant?.address.country}/
-            {restaurant.restaurant?.name}/{restaurant.restaurant?.restaurantId}/Order Online
-          </h3>
+          <h1 className="text-gray-600 py-2 mt-10">
+            {restaurant.restaurant?.name}/
+            {restaurant.restaurant?.address}/Order Online
+          </h1>
           <div>
           
             <Grid container spacing={2}>
@@ -112,7 +112,7 @@ const Restaurant = () => {
             <p className="text-gray-500 mt-1">{restaurant.restaurant?.description}</p>
             <div className="space-y-3 mt-3">
                 <p className="text-gray-500 flex items-center gap-3">
-              <LocationOnIcon/> <span>{restaurant.restaurant?.address.streetAddress}
+              <LocationOnIcon/> <span>{restaurant.restaurant?.address}
                 </span> 
             </p>
             <p className="flex items-center gap-3 text-gray-500">
@@ -180,7 +180,7 @@ const Restaurant = () => {
           </div>
           <div className="lg:w-[80%] space-y-5 lg:pl-10">
             {menu?.menuItems.map((item) => (
-              <MenuItemCard item={item} />
+              <MenuItemCard item={item} key={item.foodId} />
             ))}
           </div>
         </section>

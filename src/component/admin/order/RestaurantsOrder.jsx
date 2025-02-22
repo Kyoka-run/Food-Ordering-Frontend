@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchRestaurantsOrder } from "../../redux/actions/restaurantOrderActions";
+import { fetchRestaurantsOrder } from "../../../redux/actions/restaurantOrderActions";
 
 const orderStatus = [
   { label: "Pending", value: "PENDING" },

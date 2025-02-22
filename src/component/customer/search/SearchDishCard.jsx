@@ -11,7 +11,7 @@ const SearchDishCard = ({ item }) => {
 
   // Navigate to restaurant page
   const handleNavigateToRestaurant = () => {
-    navigate(`/restaurant/${item.restaurantAddress.city}/${item.restaurantName}/${item.restaurantId}`);
+    navigate(`/restaurant/${item.restaurantId}`);
   };
 
   return (

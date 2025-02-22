@@ -22,9 +22,7 @@ import {
   deleteFoodAction,
   getMenuItemsByRestaurantId,
   updateMenuItemsAvailability,
-} from "../../redux/actions/menuActions";
-import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
-import { categorizedIngredients } from "../../util/CategorizeIngredients";
+} from "../../../redux/actions/menuActions";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Add } from "@mui/icons-material";

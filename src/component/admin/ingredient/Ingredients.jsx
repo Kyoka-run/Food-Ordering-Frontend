@@ -18,9 +18,9 @@ import { Add, Edit } from "@mui/icons-material";
 import CreateIngredientCategoryForm from "./CreateIngredientCategory";
 import CreateIngredientForm from "./CreateIngredientForm";
 import { useDispatch, useSelector } from "react-redux";
-import { updateStockOfIngredient, getIngredientCategory, getIngredientsOfRestaurant  } from "../../redux/actions/ingredientActions";
-import UpdateIngredientForm from "./UpdateIngredientForm";
-import UpdateIngredientCategoryForm from "./UpdateIngredientCategoryForm";
+import { updateStockOfIngredient, getIngredientCategory, getIngredientsOfRestaurant  } from "../../../redux/actions/ingredientActions";
+import UpdateIngredientForm from "../ingredient/UpdateIngredientForm";
+import UpdateIngredientCategoryForm from "../ingredient/UpdateIngredientCategoryForm";
 
 const style = {
   position: "absolute",
@@ -128,7 +128,7 @@ const Ingredients = () => {
                     >
                       <TableCell>{item?.ingredientsItemId}</TableCell>
                       <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.categoryName}</TableCell>
+                      <TableCell>{item.ingredientCategoryName}</TableCell>
                       <TableCell align="center">
                         <Button
                           onClick={() => handleUpdateStock(item.ingredientsItemId)}

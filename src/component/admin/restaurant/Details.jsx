@@ -13,7 +13,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import {
   updateRestaurantStatus,
-} from "../../redux/actions/restaurantActions";
+} from "../../../redux/actions/restaurantActions";
 
 const Details = () => {
   const dispatch = useDispatch();
@@ -115,35 +115,10 @@ const Details = () => {
             <CardContent>
               <div className="space-y-3 text-gray-200">
                 <div className="flex">
-                  <p className="w-48">Country</p>
+                  <p className="w-48">Address</p>
                   <p className="text-gray-400">
-                    {" "}
-                    <span className="pr-5">-</span>{" "}
-                    {restaurant.usersRestaurant?.address.country}
-                  </p>
-                </div>
-                <div className="flex">
-                  <p className="w-48">City</p>
-                  <p className="text-gray-400">
-                    {" "}
-                    <span className="pr-5">-</span>{" "}
-                    {restaurant.usersRestaurant?.address.city}
-                  </p>
-                </div>
-                <div className="flex">
-                  <p className="w-48">Postal Code</p>
-                  <p className="text-gray-400">
-                    {" "}
-                    <span className="pr-5">-</span>{" "}
-                    {restaurant.usersRestaurant?.address.postalCode}
-                  </p>
-                </div>
-                <div className="flex">
-                  <p className="w-48">Street Address</p>
-                  <p className="text-gray-400">
-                    {" "}
-                    <span className="pr-5">-</span>{" "}
-                    {restaurant.usersRestaurant?.address.streetAddress}
+                    <span className="pr-5">-</span>
+                    {restaurant.usersRestaurant?.address}
                   </p>
                 </div>
               </div>

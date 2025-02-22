@@ -17,10 +17,7 @@ const AdminNavbar = ({handleOpenSideBar}) => {
             Home
           </span>
         </div>
-        {/* <li className="font font-semibold">Home</li> */}
       </div>
-      
-
     </div>
   );
 };

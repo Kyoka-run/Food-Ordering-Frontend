@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createEvent,
   getRestaurantEvents,
-} from "../../redux/actions/restaurantActions";
+} from "../../../redux/actions/restaurantActions";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";

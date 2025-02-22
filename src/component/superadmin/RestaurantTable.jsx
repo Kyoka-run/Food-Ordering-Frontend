@@ -70,7 +70,7 @@ const RestaurantTable = ({ isDashboard, name }) => {
                     {item.cuisineType}
                   </TableCell>
                   <TableCell sx={{ textAlign: "center" }}>
-                    {item.address.city}
+                    {item.address}
                   </TableCell>
 
                   {!isDashboard && <TableCell sx={{ textAlign: "center" }}>

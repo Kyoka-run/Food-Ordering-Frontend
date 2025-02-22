@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateIngredient } from '../../redux/actions/ingredientActions';
+import { updateIngredient } from '../../../redux/actions/ingredientActions';
 
 const UpdateIngredientForm = ({ handleClose, selectedIngredient }) => {
   const dispatch = useDispatch();

@@ -9,7 +9,7 @@ import {
 import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch } from "react-redux";
-import { deleteEvent } from "../../redux/actions/restaurantActions";
+import { deleteEvent } from "../../../redux/actions/restaurantActions";
 
 const EventCard = ({ item,isCustomer }) => {
   const dispatch=useDispatch();

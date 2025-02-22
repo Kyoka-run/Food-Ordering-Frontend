@@ -4,7 +4,7 @@ import HomePage from '../component/customer/home/HomePage'
 import Navbar from '../component/Navbar'
 import Cart from '../component/customer/cart/Cart'
 import Profile from '../component/customer/profile/Profile'
-import PaymentSuccess from '../component/customer/payment/PaymentSuccess'
+import PaymentSuccess from '../component/customer/checkout/PaymentSuccess'
 import Search from '../component/customer/search/Search'
 import Restaurant from '../component/customer/restaurant/Restaurant'
 import PasswordChangeSuccess from '../component/customer/auth/PasswordChangeSuccess'
@@ -18,7 +18,7 @@ const CustomerRouter = () => {
       <Routes>
         <Route exact path='/' element={<HomePage/>}/>
         <Route exact path='/account/:register' element={<HomePage/>}/>
-        <Route exact path='/restaurant/:city/:title/:id' element={<Restaurant/>}/>
+        <Route exact path='/restaurant/:id' element={<Restaurant/>}/>
         <Route path='/cart' element={<Cart/>}/>
         <Route path='/payment/success/:id' element={<PaymentSuccess/>}/>
         <Route path='/my-profile/*' element={<Profile/>}/>

@@ -2,22 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import AdminSidebar from "../component/admin/AdminSidebar";
-import RestaurantDashboard from "../component/admin/RestaurantDashboard";
-import RestaurantsOrder from "../component/admin/RestaurantsOrder";
-import RestaurantsMenu from "../component/admin/RestaurantsMenu";
-import AddMenuForm from "../component/admin/AddMenuForm";
-import CreateRestaurantForm from "../component/admin/CreateRestaurantForm";
-import Events from "../component/admin/Events";
-import Category from "../component/admin/Category";
-import Ingredients from "../component/admin/Ingredients";
-import Details from "../component/admin/Details";
+import RestaurantDashboard from "../component/admin/restaurant/RestaurantDashboard";
+import RestaurantsOrder from "../component/admin/order/RestaurantsOrder";
+import RestaurantsMenu from "../component/admin/food/RestaurantsMenu";
+import AddMenuForm from "../component/admin/food/AddMenuForm";
+import CreateRestaurantForm from "../component/admin/restaurant/CreateRestaurantForm";
+import Events from "../component/admin/event/Events";
+import Category from "../component/admin/category/Category";
+import Ingredients from "../component/admin/ingredient/Ingredients";
+import Details from "../component/admin/restaurant/Details";
 import AdminNavbar from "../component/admin/AdminNavbar";
-import UpdateRestaurantForm from "../component/admin/UpdateRestaurantForm";
-import UpdateMenuForm from "../component/admin/UpdateMenuForm";
-import {
-  getIngredientCategory,
-  getIngredientsOfRestaurant,
-} from "../redux/actions/ingredientActions";
+import UpdateRestaurantForm from "../component/admin/restaurant/UpdateRestaurantForm";
+import UpdateMenuForm from "../component/admin/food/UpdateMenuForm";
+import { getIngredientCategory, getIngredientsOfRestaurant } from "../redux/actions/ingredientActions";
 import { getRestaurantsCategory } from "../redux/actions/restaurantActions";
 import { fetchRestaurantsOrder } from "../redux/actions/restaurantOrderActions";
 
@@ -26,7 +23,7 @@ const AdminRouter = () => {
   const [openSideBar, setOpenSideBar] = useState(false);
   const handleOpenSideBar = () => setOpenSideBar(true);
   const handleCloseSideBar = () => setOpenSideBar(false);
-  const { auth, restaurant } = useSelector((store) => store);
+  const { restaurant } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {

@@ -5,18 +5,8 @@ const OrderCard = ({order,status}) => {
   return (
     <Card className="flex justify-between items-center p-5 ">
       <div className="flex items-center space-x-5">
-        <img
-          className="h-16 w-16"
-          src={order.food.image}
-          alt=""
-        />
-        <div>
-          <p>{order.food.name}</p>
-          <p className="text-gray-400">€{order.food.price}</p>
-        </div>
-      </div>
-      <div>
-        <Button className="cursor-not-allowed" variant="contained">{status}</Button>
+        <p>{order.restaurantName}</p>
+        <p className="text-gray-600">€{order.totalAmount}</p>
       </div>
     </Card>
   );

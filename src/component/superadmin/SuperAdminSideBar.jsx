@@ -8,13 +8,11 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { Dashboard } from "@mui/icons-material";
 import ShopTwoIcon from "@mui/icons-material/ShopTwo";
 import { logout } from "../../redux/actions/authActions";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const menu = [
   { title: "Dashboard", icon: <Dashboard />, path: "/" },
   { title: "Restaurants", icon: <ShoppingBagIcon />, path: "/restaurants" },
   { title: "Customers", icon: <ShopTwoIcon />, path: "/customers" },
-  { title: "Restaurant Request", icon: <AddCircleIcon />, path: "/restaurant-request" },
   { title: "Logout", icon: <LogoutIcon />, path: "/" },
 ];
 export default function SuperAdminSidebar({ handleClose, open }) {

@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
+import { getUser } from './authActions';
 
 // Action Creators
 export const findCartRequest = createAction('cart/findCartRequest');
@@ -88,6 +89,7 @@ export const clearCartAction = () => async (dispatch) => {
       },
     });
     dispatch(clearCartSuccess(data));
+    dispatch(getUser(jwt));
   } catch (error) {
     dispatch(clearCartFailure(error.message));
   }

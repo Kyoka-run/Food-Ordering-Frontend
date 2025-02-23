@@ -4,7 +4,6 @@ import SuperAdminSidebar from "../component/superadmin/SuperAdminSideBar";
 import SuperAdminNavbar from "../component/superadmin/SuperAdminNavbar";
 import Customers from "../component/superadmin/Customers";
 import SuperAdminRestaurant from "../component/superadmin/SuperAdminRestaurant";
-import RestaurantRequest from "../component/superadmin/RestaurantRequest";
 import SuperAdminDashboard from "../component/superadmin/SuperAdminDashboard";
 
 const SuperAdminRouter = () => {
@@ -27,7 +26,6 @@ const SuperAdminRouter = () => {
             <Route path="/" element={<SuperAdminDashboard />} />
             <Route path="/customers" element={<Customers />} />
             <Route path="/restaurants" element={<SuperAdminRestaurant />} />
-            <Route path="/restaurant-request" element={<RestaurantRequest />} />
           </Routes>
         </div>
       </div>

@@ -45,18 +45,6 @@ const SuperAdminDashboard = () => {
       icon: <PeopleIcon />,
       color: "#2196f3"
     },
-    {
-      title: "Active Orders",
-      value: "24",
-      icon: <LocalShippingIcon />,
-      color: "#4caf50"
-    },
-    {
-      title: "Pending Requests",
-      value: "8",
-      icon: <StorefrontIcon />,
-      color: "#ff9800"
-    }
   ];
 
   return (

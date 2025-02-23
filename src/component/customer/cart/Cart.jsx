@@ -15,6 +15,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const { cart, auth } = useSelector((store) => store);
+  const amount = cartTotal(cart.cartItems);
   
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -58,12 +59,8 @@ const Cart = () => {
     }
 
     const orderData = {
-      restaurantId: cart.cartItems[0]?.food?.restaurant.id,
-      items: cart.cartItems.map(item => ({
-        foodId: item.foodId,
-        quantity: item.quantity,
-        ingredients: item.ingredients
-      })),
+      restaurantId: cart.cartItems[0]?.foodRestaurantId,
+      amount: amount + 5,
       addressId: selectedAddressId
     };
 
@@ -117,7 +114,7 @@ const Cart = () => {
               <Divider />
               <div className="flex justify-between font-semibold">
                 <span>Total</span>
-                <span>€{cartTotal(cart.cartItems) + 5}</span>
+                <span>€{amount + 5}</span>
               </div>
             </div>
           </div>

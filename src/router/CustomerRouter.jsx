@@ -20,7 +20,7 @@ const CustomerRouter = () => {
         <Route exact path='/account/:register' element={<HomePage/>}/>
         <Route exact path='/restaurant/:id' element={<Restaurant/>}/>
         <Route path='/cart' element={<Cart/>}/>
-        <Route path='/payment/success/:id' element={<PaymentSuccess/>}/>
+        <Route path='/payment/success' element={<PaymentSuccess/>}/>
         <Route path='/my-profile/*' element={<Profile/>}/>
         <Route path='/search' element={<Search/>}/>
         <Route exact path='/password_change_success' element={<PasswordChangeSuccess/>}/>

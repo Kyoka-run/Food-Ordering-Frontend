@@ -1,144 +1,97 @@
 import React from 'react';
+import { Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { createAddress, updateAddress } from '../../../redux/actions/addressActions';
 
 const addressValidationSchema = Yup.object({
-  street: Yup.string()
-    .required('Street address is required')
-    .min(5, 'Please enter a valid street address'),
-  city: Yup.string()
-    .required('City is required'),
-  postalCode: Yup.string()
-    .required('Postal code is required')
-    .matches(/^[0-9A-Z]{3,7}$/, 'Please enter a valid postal code'),
-  country: Yup.string()
-    .required('Country is required')
+  street: Yup.string().required('Street is required'),
+  city: Yup.string().required('City is required'),
+  postalCode: Yup.string().required('Postal code is required'),
+  country: Yup.string().required('Country is required')
 });
 
-// Modal component for adding/editing addresses
-const AddressFormModal = ({ 
-  initialValues, 
-  onClose, 
-  onSubmit,
-  isEditing = false
-}) => {
-  // Initialize formik
+const AddressFormModal = ({ open, onClose, initialValues, isEditing }) => {
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem('jwt');
+
   const formik = useFormik({
-    initialValues,
-    validationSchema: addressValidationSchema,
-    onSubmit: (values) => {
-      onSubmit(values);
+    enableReinitialize: true,
+    initialValues: initialValues || {
+      street: '',
+      city: '',
+      postalCode: '',
+      country: 'Ireland'
     },
+    validationSchema: addressValidationSchema,
+
+    onSubmit: (values) => {
+      if (isEditing) {
+        dispatch(updateAddress({
+          addressId: initialValues.addressId,
+          addressData: values,
+          jwt
+        }));
+      } else {
+        dispatch(createAddress({ addressData: values, jwt }));
+      }
+      onClose();
+    }
   });
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4">
-          {isEditing ? 'Edit Address' : 'Add New Address'}
-        </h2>
-
-        <form onSubmit={formik.handleSubmit} className="space-y-4">
-          {/* Street Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Street
-            </label>
-            <input
-              type="text"
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <DialogTitle>{isEditing ? 'Edit Address' : 'Add New Address'}</DialogTitle>
+      <form onSubmit={formik.handleSubmit}>
+        <DialogContent>
+          <div className="space-y-4">
+            <TextField
+              fullWidth
               name="street"
-              className="w-full px-3 py-2 border rounded-md"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              label="Street"
               value={formik.values.street}
-            />
-            {formik.touched.street && formik.errors.street && (
-              <div className="text-red-500 text-sm mt-1">
-                {formik.errors.street}
-              </div>
-            )}
-          </div>
-
-          {/* City Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              City
-            </label>
-            <input
-              type="text"
-              name="city"
-              className="w-full px-3 py-2 border rounded-md"
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.city}
+              error={formik.touched.street && Boolean(formik.errors.street)}
+              helperText={formik.touched.street && formik.errors.street}
             />
-            {formik.touched.city && formik.errors.city && (
-              <div className="text-red-500 text-sm mt-1">
-                {formik.errors.city}
-              </div>
-            )}
+            <TextField
+              fullWidth
+              name="city"
+              label="City"
+              value={formik.values.city}
+              onChange={formik.handleChange}
+              error={formik.touched.city && Boolean(formik.errors.city)}
+              helperText={formik.touched.city && formik.errors.city}
+            />
+            <TextField
+              fullWidth
+              name="postalCode"
+              label="Postal Code"
+              value={formik.values.postalCode}
+              onChange={formik.handleChange}
+              error={formik.touched.postalCode && Boolean(formik.errors.postalCode)}
+              helperText={formik.touched.postalCode && formik.errors.postalCode}
+            />
+            <TextField
+              fullWidth
+              name="country"
+              label="Country"
+              value={formik.values.country}
+              onChange={formik.handleChange}
+              error={formik.touched.country && Boolean(formik.errors.country)}
+              helperText={formik.touched.country && formik.errors.country}
+            />
           </div>
-
-          {/* Country Fields */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Country
-              </label>
-              <input
-                type="text"
-                name="country"
-                className="w-full px-3 py-2 border rounded-md"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.country}
-              />
-              {formik.touched.country && formik.errors.country && (
-                <div className="text-red-500 text-sm mt-1">
-                  {formik.errors.country}
-                </div>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                PostalCode
-              </label>
-              <input
-                type="text"
-                name="postalCode"
-                className="w-full px-3 py-2 border rounded-md"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.postalCode}
-              />
-              {formik.touched.postalCode && formik.errors.postalCode && (
-                <div className="text-red-500 text-sm mt-1">
-                  {formik.errors.postalCode}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex justify-end space-x-3 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border rounded-md hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark"
-              disabled={formik.isSubmitting}
-            >
-              {formik.isSubmitting ? 'Saving...' : 'Save Address'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button type="submit" variant="contained">
+            {isEditing ? 'Update' : 'Add'} Address
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
   );
 };
 

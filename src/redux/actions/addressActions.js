@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
+import { getUser } from './authActions';
 
 // Action Types
 export const getUserAddressesRequest = createAction('address/getUserAddressesRequest');
@@ -42,6 +43,7 @@ export const createAddress = ({addressData, jwt}) => async (dispatch) => {
       }
     });
     dispatch(createAddressSuccess(response.data));
+    dispatch(getUser(jwt));
     return response.data;
   } catch (error) {
     dispatch(createAddressFailure(error.message));
@@ -58,6 +60,7 @@ export const updateAddress = ({addressId, addressData, jwt}) => async (dispatch)
       }
     });
     dispatch(updateAddressSuccess(response.data));
+    dispatch(getUser(jwt));
     return response.data;
   } catch (error) {
     dispatch(updateAddressFailure(error.message));
@@ -74,6 +77,7 @@ export const deleteAddress = ({addressId, jwt}) => async (dispatch) => {
       }
     });
     dispatch(deleteAddressSuccess(addressId));
+    dispatch(getUser(jwt));
   } catch (error) {
     dispatch(deleteAddressFailure(error.message));
     throw error;

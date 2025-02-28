@@ -10,7 +10,6 @@ import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
 import CategoryIcon from "@mui/icons-material/Category";
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import EventIcon from "@mui/icons-material/Event";
-import InfoIcon from "@mui/icons-material/Info";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 const menuItems = [
@@ -20,7 +19,6 @@ const menuItems = [
   { path: "category", label: "Food Category", icon: <CategoryIcon /> },
   { path: "ingredients", label: "Ingredients", icon: <FastfoodIcon /> },
   { path: "event", label: "Events", icon: <EventIcon /> },
-  { path: "details", label: "Details", icon: <InfoIcon /> }
 ];
 
 const AdminNavbar = () => {

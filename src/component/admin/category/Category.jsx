@@ -14,7 +14,7 @@ import {
   TableRow,
   Paper,
   Tooltip,
-  Button 
+  Typography,
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import CategoryForm from './CategoryForm';
@@ -51,7 +51,10 @@ const Category = () => {
   return (
     <div className="p-4">
       <Box className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-semibold">Food Categories</h1>
+        <Typography variant="h5" className="mb-4">
+          Category Management
+        </Typography>
+
         <IconButton
           variant="contained"
           color="primary"

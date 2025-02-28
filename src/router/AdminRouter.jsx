@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import RestaurantDashboard from "../component/admin/restaurant/RestaurantDashboard";
@@ -7,7 +7,6 @@ import RestaurantsMenu from "../component/admin/food/RestaurantsMenu";
 import Events from "../component/admin/event/Events";
 import Category from "../component/admin/category/Category";
 import Ingredients from "../component/admin/ingredient/Ingredients";
-import Details from "../component/admin/restaurant/Details";
 import AdminNavbar from "../component/admin/AdminNavbar";
 import Navbar from "../component/Navbar";
 import { getIngredientCategory, getIngredientsOfRestaurant } from "../redux/actions/ingredientActions";
@@ -56,7 +55,6 @@ const AdminRouter = () => {
           <Route path="/event" element={<Events />} />
           <Route path="/ingredients" element={<Ingredients />} />
           <Route path="/category" element={<Category />} />
-          <Route path="/details" element={<Details />} />
         </Routes>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import { Box, Button, Modal } from "@mui/material";
 import React, { useEffect } from "react";
-import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import LoginForm from "./Login";
@@ -23,17 +22,6 @@ const style = {
 const Auth = ({ handleClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const success = useSelector((state) => state.auth.success);
-  const error = useSelector((state) => state.auth.error);
-
-  useEffect(() => {
-    if (success) {
-      toast.success(success);
-    }
-    if (error) {
-      toast.error(error);
-    }
-  }, [success, error]);
 
   return (
     <>

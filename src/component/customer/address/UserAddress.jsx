@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@mui/material';
+import { Box, CircularProgress, Button, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import AddressCard from './AddressCard';
@@ -28,6 +28,22 @@ const UserAddress = () => {
   return (
     <div className="flex items-center flex-col">
       <h1 className="text-xl text-center py-5 font-semibold">Addresses</h1>
+      
+      {/* Loading indicator */}
+      {auth.loading && (
+        <Box className="flex justify-center py-8">
+          <CircularProgress />
+        </Box>
+      )}
+      
+      {/* Empty state */}
+      {!auth.loading && auth?.user?.addresses?.length === 0 && (
+        <Box className="text-center py-8">
+          <Typography variant="body1" color="text.secondary">
+            You haven't created any addresses yet.
+          </Typography>
+        </Box>
+      )}
       
       <div className="flex justify-center flex-wrap gap-3">
         {auth.user?.addresses.map((item) => (

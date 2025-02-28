@@ -52,7 +52,7 @@ const Navbar = () => {
         </div>
 
         {/* Admin button */}
-        {isAdmin || isSuperAdmin && (
+        {(isAdmin || isSuperAdmin) && (
           <Button
             className="text-white hover:text-gray-300"
             onClick={() => navigate("/admin/restaurant")}

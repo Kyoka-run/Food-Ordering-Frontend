@@ -107,7 +107,6 @@ export const getRestaurantByUserId = (jwt) => async (dispatch) => {
     dispatch(getRestaurantByUserIdSuccess(data));
   } catch (error) {
     dispatch(getRestaurantByUserIdFailure(error.message));
-    toast.error("Failed to load your restaurant");
   }
 };
 

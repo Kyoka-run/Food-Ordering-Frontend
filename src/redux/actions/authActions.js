@@ -40,7 +40,7 @@ export const loginUser = (reqData) => async (dispatch) => {
     dispatch(findCart(data.jwtToken));
 
     toast.success("Logged in successfully");
-
+    
     if (data.roles.includes("ROLE_RESTAURANT_OWNER")) {
       dispatch(getRestaurantByUserId(data.jwtToken));
     }
@@ -56,7 +56,6 @@ export const registerUser = (sendData) => async (dispatch) => {
     const { data } = await api.post("/auth/signup", sendData.userData);
     dispatch(registerSuccess());
     sendData.reset();
-    toast.success(data?.message || "User Registered Successfully");
     sendData.navigate("/login");
   } catch (error) {
     dispatch(registerFailure(error.message));
@@ -94,7 +93,7 @@ export const addToFavorites = ({restaurantId, jwt}) => async (dispatch) => {
       }
     );
     dispatch(addToFavoritesSuccess(data));
-    toast.success("Favorites updated successfully");
+    toast.success("Favorites added successfully");
   } catch (error) {
     dispatch(addToFavoritesFailure(error.message));
     toast.error("Failed to update favorites");

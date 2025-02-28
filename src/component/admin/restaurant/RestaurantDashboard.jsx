@@ -3,25 +3,20 @@ import {
   Box, 
   Button, 
   Card, 
-  IconButton, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
   Typography, 
-  Avatar, 
-  Chip, 
-  AvatarGroup, 
   Modal,
-  Paper,
+  Grid,
+  IconButton,
   Tooltip
 } from "@mui/material";
-import { Add, Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete } from "@mui/icons-material";
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { useDispatch, useSelector } from "react-redux";
-import { deleteRestaurant, getRestaurantByUserId, updateRestaurantStatus } from "../../../redux/actions/restaurantActions";
+import { 
+  deleteRestaurant, 
+  getRestaurantByUserId, 
+  updateRestaurantStatus 
+} from "../../../redux/actions/restaurantActions";
 import RestaurantForm from "./RestaurantForm";
 
 const RestaurantDashboard = () => {
@@ -60,83 +55,14 @@ const RestaurantDashboard = () => {
     dispatch(updateRestaurantStatus({ restaurantId, jwt }));
   };
 
-  return (
-    <div className="p-4">
-      <Typography variant="h5" className="mb-4">
-        My Restaurant
-      </Typography>
-
-      {restaurant.usersRestaurant ? (
-        <Card className="shadow-md">
-          <TableContainer component={Paper}>
-            <Table aria-label="restaurant table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center">Images</TableCell>
-                  <TableCell align="center">Name</TableCell>
-                  <TableCell align="center">Description</TableCell>
-                  <TableCell align="center">Location</TableCell>
-                  <TableCell align="center">Status</TableCell>
-                  <TableCell align="center">Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow hover>
-                  <TableCell align="center">
-                    <AvatarGroup max={3}>
-                      {restaurant.usersRestaurant.images.map((image, index) => (
-                        <Avatar
-                          key={index}
-                          src={image}
-                          alt={`Restaurant image ${index + 1}`}
-                          sx={{ width: 60, height: 60 }}
-                        />
-                      ))}
-                    </AvatarGroup>
-                  </TableCell>
-                  <TableCell align="center">
-                    {restaurant.usersRestaurant.name}
-                  </TableCell>
-                  <TableCell align="center">
-                    {restaurant.usersRestaurant.description}
-                  </TableCell>
-                  <TableCell align="center">
-                    {restaurant.usersRestaurant.address}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Chip
-                      label={restaurant.usersRestaurant.open ? "Open" : "Closed"}
-                      color={restaurant.usersRestaurant.open ? "success" : "error"}
-                      onClick={() => handleUpdateStatus(restaurant.usersRestaurant.restaurantId)}
-                      className="cursor-pointer"
-                    />
-                  </TableCell>
-                  <TableCell align="center">
-                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                      <Tooltip title="Edit Restaurant">
-                        <IconButton 
-                          onClick={() => handleOpenModal(restaurant.usersRestaurant)}
-                          color="primary"
-                        >
-                          <Edit />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete Restaurant">
-                        <IconButton 
-                          onClick={() => handleDeleteRestaurant(restaurant.usersRestaurant.restaurantId)}
-                          color="error"
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card>
-      ) : (
+  // If no restaurant is found, show the create restaurant UI
+  if (!restaurant.usersRestaurant) {
+    return (
+      <div className="p-4">
+        <Typography variant="h5" className="mb-4">
+          Restaurant Dashboard
+        </Typography>
+        
         <Box className="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
           <RestaurantIcon sx={{ fontSize: 60, color: 'primary.main', marginBottom: 2 }}/>
           <Typography variant="h6" color="text.secondary" gutterBottom>
@@ -145,15 +71,152 @@ const RestaurantDashboard = () => {
           <Button
             variant="contained"
             color="primary"
-            startIcon={<Add />}
             onClick={() => handleOpenModal()}
             sx={{ mt: 2 }}
           >
             Create Your First Restaurant
           </Button>
         </Box>
-      )}
+        
+        {/* Restaurant Form Modal */}
+        <Modal
+          open={openModal}
+          onClose={handleCloseModal}
+          aria-labelledby="restaurant-modal-title"
+        >
+          <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-4xl">
+            <RestaurantForm 
+              handleClose={handleCloseModal}
+              restaurant={null}
+            />
+          </Box>
+        </Modal>
+      </div>
+    );
+  }
 
+  return (
+    <div className="p-4">
+      <Typography variant="h5" className="mb-4">
+        Restaurant Dashboard
+      </Typography>
+      
+      {/* Restaurant Basic Information Section */}
+      <Card className="p-4 mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <Typography variant="h4" className="font-bold">
+              {restaurant.usersRestaurant.name}
+            </Typography>
+            <Typography variant="body1" color="text.secondary" className="mt-1">
+              {restaurant.usersRestaurant.description}
+            </Typography>
+          </div>
+          
+          <div className="flex gap-2">
+            <Button
+              onClick={() => handleUpdateStatus(restaurant.usersRestaurant.restaurantId)}
+              variant="contained"
+              color={restaurant.usersRestaurant.open ? "error" : "success"}
+            >
+              {restaurant.usersRestaurant.open ? "Close Restaurant" : "Open Restaurant"}
+            </Button>
+            
+            <Tooltip title="Edit Restaurant">
+              <IconButton 
+                onClick={() => handleOpenModal(restaurant.usersRestaurant)}
+                color="primary"
+              >
+                <Edit />
+              </IconButton>
+            </Tooltip>
+            
+            <Tooltip title="Delete Restaurant">
+              <IconButton 
+                onClick={() => handleDeleteRestaurant(restaurant.usersRestaurant.restaurantId)}
+                color="error"
+              >
+                <Delete />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+        
+        {/* Restaurant Images */}
+        <Typography variant="subtitle1" className="mb-2 font-medium">
+          Restaurant Images
+        </Typography>
+        <div className="flex gap-3 flex-wrap mb-4">
+          {restaurant.usersRestaurant.images?.map((image, index) => (
+            <img 
+              key={index} 
+              src={image} 
+              alt={`${restaurant.usersRestaurant.name} - Image ${index+1}`} 
+              className="w-32 h-32 object-cover rounded-lg"
+            />
+          ))}
+        </div>
+        
+        {/* Restaurant Details */}
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle1" className="mb-2 font-medium">
+              Business Information
+            </Typography>
+            <div className="space-y-2">
+              <div className="flex">
+                <Typography variant="body2" className="w-32 text-gray-500">
+                  Cuisine Type:
+                </Typography>
+                <Typography variant="body2">
+                  {restaurant.usersRestaurant.cuisineType}
+                </Typography>
+              </div>
+              <div className="flex">
+                <Typography variant="body2" className="w-32 text-gray-500">
+                  Opening Hours:
+                </Typography>
+                <Typography variant="body2">
+                  {restaurant.usersRestaurant.openingHours}
+                </Typography>
+              </div>
+              <div className="flex">
+                <Typography variant="body2" className="w-32 text-gray-500">
+                  Address:
+                </Typography>
+                <Typography variant="body2">
+                  {restaurant.usersRestaurant.address}
+                </Typography>
+              </div>
+            </div>
+          </Grid>
+          
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle1" className="mb-2 font-medium">
+              Contact Information
+            </Typography>
+            <div className="space-y-2">
+              <div className="flex">
+                <Typography variant="body2" className="w-32 text-gray-500">
+                  Email:
+                </Typography>
+                <Typography variant="body2">
+                  {restaurant.usersRestaurant.contactInformation?.email}
+                </Typography>
+              </div>
+              <div className="flex">
+                <Typography variant="body2" className="w-32 text-gray-500">
+                  Mobile:
+                </Typography>
+                <Typography variant="body2">
+                  {restaurant.usersRestaurant.contactInformation?.mobile}
+                </Typography>
+              </div>
+            </div>
+          </Grid>
+        </Grid>
+      </Card>
+      
       {/* Restaurant Form Modal */}
       <Modal
         open={openModal}

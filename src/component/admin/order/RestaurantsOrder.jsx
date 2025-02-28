@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import OrdersTable from "./OrderTable";
 import {
   Card,
   FormControl,
@@ -7,76 +6,132 @@ import {
   Radio,
   RadioGroup,
   Typography,
+  Grid,
+  Paper
 } from "@mui/material";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchRestaurantsOrder } from "../../../redux/actions/restaurantOrderActions";
+import OrderTable from "./OrderTable";
 
-const orderStatus = [
+const orderStatusFilters = [
+  { label: "All Orders", value: "all" },
   { label: "Pending", value: "PENDING" },
   { label: "Completed", value: "COMPLETED" },
-  { label: "All", value: "all" },
+  { label: "Cancelled", value: "CANCELLED" }
 ];
 
 const RestaurantsOrder = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { restaurant, restaurantsOrder } = useSelector((store) => store);
   const jwt = localStorage.getItem("jwt");
-  const { restaurant, auth } = useSelector((store) => store);
-  const decodedQueryString = decodeURIComponent(location.search);
-  const searchParams = new URLSearchParams(decodedQueryString);
-  const filterValue = searchParams.get("order_status");
 
+  // Get current status filter from URL query params
+  const searchParams = new URLSearchParams(location.search);
+  const currentStatusFilter = searchParams.get("order_status") || "all";
+
+  // Fetch orders based on current filter when component mounts or filter changes
   useEffect(() => {
-    dispatch(
-      fetchRestaurantsOrder({
-        restaurantId: restaurant.usersRestaurant?.restaurantId,
-        orderStatus: filterValue,
-        jwt: jwt,
-      })
-    );
-  }, [auth.jwt, filterValue]);
+    if (restaurant.usersRestaurant?.restaurantId) {
+      dispatch(fetchRestaurantsOrder({
+        restaurantId: restaurant.usersRestaurant.restaurantId,
+        orderStatus: currentStatusFilter !== "all" ? currentStatusFilter : null,
+        jwt
+      }))
+    }
+  }, [dispatch, restaurant.usersRestaurant, currentStatusFilter, jwt]);
 
-  const handleFilter = (e, value) => {
+  // Handle filter change
+  const handleFilterChange = (event) => {
+    const value = event.target.value;
     const searchParams = new URLSearchParams(location.search);
-
+    
     if (value === "all") {
       searchParams.delete("order_status");
-    } else searchParams.set("order_status", e.target.value);
-
-    const query = searchParams.toString();
-    navigate({ search: `?${query}` });
+    } else {
+      searchParams.set("order_status", value);
+    }
+    
+    navigate({ search: searchParams.toString() });
   };
-  
-  return (
-    <div className="px-2">
-      <Card className="p-5">
-        <Typography variant="h5">
-          Order Status
-        </Typography>
-        <FormControl className="py-2" component="fieldset">
-          <RadioGroup
-            row
-            name="category"
-            value={filterValue ? filterValue : "all"}
-            onChange={handleFilter}
-          >
-            {orderStatus.map((item, index) => (
-              <FormControlLabel
-                key={index}
-                value={item.value}
-                control={<Radio />}
-                label={item.label}
-                sx={{ color: "gray" }}
-              />
-            ))}
-          </RadioGroup>
-        </FormControl>
-      </Card>
 
-      <OrdersTable name={"All Orders"} />
+  return (
+    <div className="p-4">
+      <Typography variant="h5" className="mb-4">
+        Orders Management
+      </Typography>
+      
+      <Grid container spacing={3}>
+        {/* Filter Card */}
+        <Grid item xs={12}>
+          <Paper className="p-4 mb-4">
+            <Typography variant="h6" className="mb-2">
+              Filter by Status
+            </Typography>
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                value={currentStatusFilter}
+                onChange={handleFilterChange}
+              >
+                {orderStatusFilters.map((filter) => (
+                  <FormControlLabel
+                    key={filter.value}
+                    value={filter.value}
+                    control={<Radio color="primary" />}
+                    label={filter.label}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Paper>
+        </Grid>
+        
+        {/* Order Stats */}
+        <Grid item xs={12} md={4}>
+          <Card className="p-4 bg-blue-50 h-full">
+            <Typography variant="h6" gutterBottom>
+              Total Orders
+            </Typography>
+            <Typography variant="h4">
+              {restaurantsOrder.orders.length}
+            </Typography>
+          </Card>
+        </Grid>
+        
+        <Grid item xs={12} md={4}>
+          <Card className="p-4 bg-yellow-50 h-full">
+            <Typography variant="h6" gutterBottom>
+              Pending Orders
+            </Typography>
+            <Typography variant="h4">
+              {restaurantsOrder.orders.filter(order => order.orderStatus === "PENDING").length}
+            </Typography>
+          </Card>
+        </Grid>
+        
+        <Grid item xs={12} md={4}>
+          <Card className="p-4 bg-green-50 h-full">
+            <Typography variant="h6" gutterBottom>
+              Completed Orders
+            </Typography>
+            <Typography variant="h4">
+              {restaurantsOrder.orders.filter(order => order.orderStatus === "COMPLETED").length}
+            </Typography>
+          </Card>
+        </Grid>
+        
+        {/* Orders Table */}
+        <Grid item xs={12}>
+          <OrderTable 
+            title={`${currentStatusFilter !== "all" 
+              ? orderStatusFilters.find(f => f.value === currentStatusFilter)?.label 
+              : "All Orders"}`} 
+          />
+        </Grid>
+      </Grid>
     </div>
   );
 };

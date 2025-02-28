@@ -12,9 +12,9 @@ import PasswordChangeSuccess from '../component/customer/auth/PasswordChangeSucc
 const CustomerRouter = () => {
   return (
     <div className='relative'>
-      <nav className="sticky top-0 z-50">
-        <Navbar/>
-      </nav>
+      <div className="sticky top-0 z-50">
+        <Navbar />
+      </div>
       <Routes>
         <Route exact path='/' element={<HomePage/>}/>
         <Route exact path='/account/:register' element={<HomePage/>}/>

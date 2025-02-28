@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
+import toast from 'react-hot-toast';
 
 // Action Creators
 export const createMenuItemRequest = createAction('menu/createRequest');
@@ -35,8 +36,10 @@ export const createMenuItem = ({menu, jwt}) => async (dispatch) => {
       },
     });
     dispatch(createMenuItemSuccess(data));
+    toast.success("Menu item created successfully");
   } catch (error) {
     dispatch(createMenuItemFailure(error.message));
+    toast.error("Failed to create menu item");
   }
 };
 
@@ -55,6 +58,7 @@ export const getMenuItemsByRestaurantId = (reqData) => async (dispatch) => {
     dispatch(getMenuItemsSuccess(data));
   } catch (error) {
     dispatch(getMenuItemsFailure(error.message));
+    toast.error("Failed to load menu items");
   }
 };
 
@@ -69,6 +73,7 @@ export const searchMenuItem = ({keyword, jwt}) => async (dispatch) => {
     dispatch(searchMenuItemSuccess(data));
   } catch (error) {
     dispatch(searchMenuItemFailure(error.message));
+    toast.error("Failed to search menu items");
   }
 };
 
@@ -81,8 +86,10 @@ export const updateMenuItemsAvailability = ({foodId, jwt}) => async (dispatch) =
       },
     });
     dispatch(updateMenuItemAvailabilitySuccess(data));
+    toast.success("Menu item availability updated");
   } catch (error) { 
     dispatch(updateMenuItemAvailabilityFailure(error.message));
+    toast.error("Failed to update menu item availability");
   }
 };
 
@@ -95,8 +102,10 @@ export const deleteFoodAction = ({foodId, jwt}) => async (dispatch) => {
       },
     });
     dispatch(deleteMenuItemSuccess(foodId));
+    toast.success("Menu item deleted successfully");
   } catch (error) {
     dispatch(deleteMenuItemFailure(error.message));
+    toast.error("Failed to delete menu item");
   }
 };
 
@@ -109,7 +118,9 @@ export const updateMenuItem = ({ menuItem, foodId, jwt }) => async (dispatch) =>
       },
     });
     dispatch(updateMenuItemSuccess(data));
+    toast.success("Menu item updated successfully");
   } catch (error) {
     dispatch(updateMenuItemFailure(error.message));
+    toast.error("Failed to update menu item");
   }
 };

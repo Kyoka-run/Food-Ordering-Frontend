@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
+import toast from 'react-hot-toast';
 
 // Action Creators
 export const getRestaurantOrdersRequest = createAction('restaurantOrder/getOrdersRequest');
@@ -24,8 +25,10 @@ export const updateOrderStatus = ({orderId, orderStatus, jwt}) => async (dispatc
       }
     );
     dispatch(updateOrderStatusSuccess(response.data));
+    toast.success(`Order status updated to ${orderStatus}`);
   } catch (error) {
     dispatch(updateOrderStatusFailure(error.message));
+    toast.error('Failed to update order status');
   }
 };
 
@@ -44,5 +47,6 @@ export const fetchRestaurantsOrder = ({restaurantId, orderStatus, jwt}) => async
     dispatch(getRestaurantOrdersSuccess(data));
   } catch (error) {
     dispatch(getRestaurantOrdersFailure(error.message));
+    toast.error('Failed to load restaurant orders');
   }
 };

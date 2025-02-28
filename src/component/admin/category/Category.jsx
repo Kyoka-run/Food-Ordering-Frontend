@@ -1,111 +1,136 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Box, Card, CardHeader, IconButton, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { Add, Edit } from '@mui/icons-material';
-import CreateCategory from './CreateCategory';
-import UpdateCategoryForm from './UpdateCategoryForm';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  outline: "none",
-  p: 4,
-};
+import { useDispatch, useSelector } from 'react-redux';
+import { 
+  Box, 
+  Card, 
+  CardHeader, 
+  IconButton, 
+  Modal, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow,
+  Paper,
+  Tooltip,
+  Button 
+} from '@mui/material';
+import { Add, Edit, Delete } from '@mui/icons-material';
+import CategoryForm from './CategoryForm';
+import { deleteCategory } from '../../../redux/actions/restaurantActions';
 
 const Category = () => {
+  const dispatch = useDispatch();
   const { restaurant } = useSelector(store => store);
   const jwt = localStorage.getItem("jwt");
   
-  const [openCreateCategory, setOpenCreateCategory] = useState(false);
-  const [openUpdateCategory, setOpenUpdateCategory] = useState(false);
+  // Modal state
+  const [openModal, setOpenModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const handleOpenCreateCategory = () => setOpenCreateCategory(true);
-  const handleCloseCreateCategory = () => setOpenCreateCategory(false);
-  
-  const handleOpenUpdateCategory = (category) => {
+  // Modal open handler - accepts category for edit mode or null for create mode
+  const handleOpenModal = (category = null) => {
     setSelectedCategory(category);
-    setOpenUpdateCategory(true);
+    setOpenModal(true);
   };
 
-  const handleCloseUpdateCategory = () => {
+  // Modal close handler
+  const handleCloseModal = () => {
     setSelectedCategory(null);
-    setOpenUpdateCategory(false);
+    setOpenModal(false);
+  };
+
+  // Handle category deletion
+  const handleDeleteCategory = (categoryId) => {
+    if (window.confirm("Are you sure you want to delete this category? This may affect menu items using this category.")) {
+      dispatch(deleteCategory(categoryId));
+    }
   };
 
   return (
-    <div>
-      <Card className="mt-1">
+    <div className="p-4">
+      <Box className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-semibold">Food Categories</h1>
+        <IconButton
+          variant="contained"
+          color="primary"
+          onClick={() => handleOpenModal()}
+        >
+          <Add />
+        </IconButton>
+      </Box>
+
+      <Card className="shadow-md">
         <CardHeader
-          title={"Categories"}
-          sx={{
-            pt: 2,
-            alignItems: "center",
-            "& .MuiCardHeader-action": { mt: 0.6 },
-          }}
-          action={<IconButton onClick={handleOpenCreateCategory}><Add/></IconButton>}
+          title="Food Categories"
+          className="border-b"
         />
-        <TableContainer>
-          <Table sx={{}} aria-label="table in dashboard">
+        
+        <TableContainer component={Paper} className="max-h-[70vh]">
+          <Table stickyHeader aria-label="categories table">
             <TableHead>
               <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell align="center">Actions</TableCell>
+                <TableCell className="font-medium">ID</TableCell>
+                <TableCell className="font-medium">Name</TableCell>
+                <TableCell align="center" className="font-medium">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {restaurant.categories.map((item) => (
                 <TableRow
-                  className="cursor-pointer"
                   hover
                   key={item.categoryId}
-                  sx={{
-                    "&:last-of-type td, &:last-of-type th": { border: 0 },
-                  }}
+                  className="transition-colors hover:bg-gray-50"
                 >
-                  <TableCell>{item?.categoryId}</TableCell>
+                  <TableCell>{item.categoryId}</TableCell>
                   <TableCell>{item.name}</TableCell>
                   <TableCell align="center">
-                    <IconButton onClick={() => handleOpenUpdateCategory(item)}>
-                      <Edit />
-                    </IconButton>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                      <Tooltip title="Edit Category">
+                        <IconButton 
+                          onClick={() => handleOpenModal(item)}
+                          color="primary"
+                          size="small"
+                        >
+                          <Edit fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete Category">
+                        <IconButton 
+                          onClick={() => handleDeleteCategory(item.categoryId)}
+                          color="error"
+                          size="small"
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
+              {restaurant.categories.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center py-8 text-gray-500">
+                    No categories found. Create your first category.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       </Card>
 
-      {/* Create Category Modal */}
+      {/* Shared Modal for Create/Update */}
       <Modal
-        open={openCreateCategory}
-        onClose={handleCloseCreateCategory}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="category-modal-title"
       >
-        <Box sx={style}>
-          <CreateCategory handleClose={handleCloseCreateCategory}/>
-        </Box>
-      </Modal>
-
-      {/* Update Category Modal */}
-      <Modal
-        open={openUpdateCategory}
-        onClose={handleCloseUpdateCategory}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <UpdateCategoryForm
-            handleClose={handleCloseUpdateCategory}
-            selectedCategory={selectedCategory}
+        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-md">
+          <CategoryForm 
+            handleClose={handleCloseModal}
+            category={selectedCategory}
           />
         </Box>
       </Modal>

@@ -12,7 +12,6 @@ import {
   FormControl,
   InputLabel,
   FormHelperText,
-  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -79,18 +78,8 @@ const Registration = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting, errors, touched, status }) => (
+          {({ isSubmitting }) => (
             <Form className="space-y-4">
-              {status?.error && (
-                <Alert severity="error" className="mb-4">
-                  {status.error}
-                </Alert>
-              )}
-              {status?.success && (
-                <Alert severity="success" className="mb-4">
-                  {status.success}
-                </Alert>
-              )}
 
               {/* Username Input */}
               <div className="mb-4">

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import RestaurantCard from "./RestaurantCard";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getRestaurantByUserId } from "../../redux/actions/restaurantActions";
 import AddRestaurantCard from "./AddRestaurantCard";

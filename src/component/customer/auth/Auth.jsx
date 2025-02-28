@@ -1,5 +1,6 @@
-import { Alert, Box, Button, Modal, Snackbar } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box, Button, Modal } from "@mui/material";
+import React, { useEffect } from "react";
+import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import LoginForm from "./Login";
@@ -24,15 +25,15 @@ const Auth = ({ handleClose }) => {
   const navigate = useNavigate();
   const success = useSelector((state) => state.auth.success);
   const error = useSelector((state) => state.auth.error);
-  const [openSnackBar,setOpenSnackBar] = useState(false);
 
-useEffect(()=>{
-  if(success || error) setOpenSnackBar(true)
-}, [success, error])
-
-const handleCloseSnackBar=()=>{
-  setOpenSnackBar(false)
-}
+  useEffect(() => {
+    if (success) {
+      toast.success(success);
+    }
+    if (error) {
+      toast.error(error);
+    }
+  }, [success, error]);
 
   return (
     <>
@@ -65,17 +66,6 @@ const handleCloseSnackBar=()=>{
                 Forgot Pasword
               </Button>
             )}
-            <Snackbar
-              sx={{ zIndex: 50 }}
-              open={openSnackBar}
-              autoHideDuration={3000}
-              onClose={handleCloseSnackBar}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            >
-              <Alert severity={error?"error":"success"} sx={{ width: "100%" }}>
-                {success || error}
-              </Alert>
-            </Snackbar>
           </div>
         </Box>
       </Modal>

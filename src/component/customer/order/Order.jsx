@@ -1,25 +1,76 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Divider,
+  CircularProgress,
+} from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 import { getUserOrders } from '../../../redux/actions/orderActions';
-import OrderCard from '../order/OrderCard'
+import OrderCard from './OrderCard';
 
 const Orders = () => {
-  const { order } = useSelector(state => state);
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt")
+  const { order } = useSelector(state => state);
+  const jwt = localStorage.getItem("jwt");
 
-  useEffect(()=>{
-    dispatch(getUserOrders(jwt))
-  },[dispatch])
+  // Fetch user orders on component mount
+  useEffect(() => {
+    dispatch(getUserOrders(jwt));
+  }, [dispatch, jwt]);
 
   return (
-    <div className='flex items-center flex-col'>
-      <h1 className='text-xl text-center py-5 font-semibold'>My Orders</h1>
-      <div className='space-y-5 w-full lg:w-1/2'>
-        { order.orders.map((item)=><OrderCard order={item} key={item.id}/>)}
-      </div>
-    </div>
-  )
-}
+    <Box className="max-w-3xl mx-auto">
+      <h1 className='py-5 text-xl font-semibold text-center'>My Orders</h1>
+      
+      {/* Loading indicator */}
+      {order.loading && (
+        <Box className="flex justify-center py-8">
+          <CircularProgress />
+        </Box>
+      )}
+      
+      {/* Empty state */}
+      {!order.loading && order.orders.length === 0 && (
+        <Box className="text-center py-8">
+          <Typography variant="body1" color="text.secondary">
+            You haven't placed any orders yet.
+          </Typography>
+        </Box>
+      )}
+      
+      {/* Orders list */}
+      {order.orders.length > 0 && (
+        <Box>
+          {/* Order summary */}
+          <Box className="bg-gray-50 p-4 rounded-lg mb-4">
+            <Typography variant="subtitle1" className="mb-2">
+              Order Summary
+            </Typography>
+            <Box className="flex justify-between mb-1">
+              <Typography variant="body2">Total Orders</Typography>
+              <Typography variant="body2" className="font-medium">{order.orders.length}</Typography>
+            </Box>
+            <Box className="flex justify-between">
+              <Typography variant="body2">Recent Orders</Typography>
+              <Typography variant="body2" className="font-medium">
+                {order.orders.filter(o => o.orderStatus === 'PENDING').length} pending
+              </Typography>
+            </Box>
+          </Box>
+          
+          <Divider className="mb-4" />
+          
+          {/* Order cards */}
+          <Box className="space-y-4">
+            {order.orders.map((orderItem) => (
+              <OrderCard key={orderItem.orderId} order={orderItem} />
+            ))}
+          </Box>
+        </Box>
+      )}
+    </Box>
+  );
+};
 
-export default Orders
+export default Orders;

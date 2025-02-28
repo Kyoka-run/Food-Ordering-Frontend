@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
+import toast from 'react-hot-toast';
 
 // Action Creators
 export const createOrderRequest = createAction('order/createRequest');
@@ -27,8 +28,10 @@ export const createOrder = ({ order, jwt }) => async (dispatch) => {
       window.location.href = data.payment_url;
     }
     dispatch(createOrderSuccess(data));
+    toast.success('Order placed successfully');
   } catch (error) {
     dispatch(createOrderFailure(error.message));
+    toast.error('Failed to place order');
   }
 };
 
@@ -43,12 +46,14 @@ export const getUserOrders = (jwt) => async (dispatch) => {
     dispatch(getUserOrdersSuccess(data));
   } catch (error) {
     dispatch(getUserOrdersFailure(error.message));
+    toast.error('Failed to load your orders');
   }
 };
 
 export const getUserNotification = () => async (dispatch) => {
   dispatch(getNotificationsRequest());
   try {
+    const jwt = localStorage.getItem("jwt");
     const { data } = await api.get('/notifications', {
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -57,5 +62,6 @@ export const getUserNotification = () => async (dispatch) => {
     dispatch(getNotificationsSuccess(data));
   } catch (error) {
     dispatch(getNotificationsFailure(error.message));
+    toast.error('Failed to load notifications');
   }
 };

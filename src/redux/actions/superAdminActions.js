@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
+import toast from 'react-hot-toast';
 
 // Action Creators
 export const getCustomersRequest = createAction('superAdmin/getCustomersRequest');
@@ -20,5 +21,6 @@ export const getCustomers = (jwt) => async (dispatch) => {
     dispatch(getCustomersSuccess(data));
   } catch (error) {
     dispatch(getCustomersFailure(error.message));
+    toast.error("Failed to load customers");
   }
 };

@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
+import toast from 'react-hot-toast';
 
-// Action Creators
-// Restaurant Basic Operations
+// Action Creators - Restaurant Basic Operations
 export const getAllRestaurantsRequest = createAction('restaurant/getAllRequest');
 export const getAllRestaurantsSuccess = createAction('restaurant/getAllSuccess');
 export const getAllRestaurantsFailure = createAction('restaurant/getAllFailure');
@@ -61,6 +61,10 @@ export const updateCategoryRequest = createAction('restaurant/updateCategoryRequ
 export const updateCategorySuccess = createAction('restaurant/updateCategorySuccess');
 export const updateCategoryFailure = createAction('restaurant/updateCategoryFailure');
 
+export const deleteCategoryRequest = createAction('restaurant/deleteCategoryRequest');
+export const deleteCategorySuccess = createAction('restaurant/deleteCategorySuccess');
+export const deleteCategoryFailure = createAction('restaurant/deleteCategoryFailure');
+
 // Async Actions
 export const getAllRestaurants = (jwt) => async (dispatch) => {
   dispatch(getAllRestaurantsRequest());
@@ -73,6 +77,7 @@ export const getAllRestaurants = (jwt) => async (dispatch) => {
     dispatch(getAllRestaurantsSuccess(data));
   } catch (error) {
     dispatch(getAllRestaurantsFailure(error.message));
+    toast.error("Failed to load restaurants");
   }
 };
 
@@ -87,6 +92,7 @@ export const getRestaurantById = ({ restaurantId, jwt }) => async (dispatch) => 
     dispatch(getRestaurantByIdSuccess(response.data));
   } catch (error) {
     dispatch(getRestaurantByIdFailure(error.message));
+    toast.error("Failed to load restaurant details");
   }
 };
 
@@ -101,6 +107,7 @@ export const getRestaurantByUserId = (jwt) => async (dispatch) => {
     dispatch(getRestaurantByUserIdSuccess(data));
   } catch (error) {
     dispatch(getRestaurantByUserIdFailure(error.message));
+    toast.error("Failed to load your restaurant");
   }
 };
 
@@ -113,8 +120,10 @@ export const createRestaurant = ({ data, token }) => async (dispatch) => {
       },
     });
     dispatch(createRestaurantSuccess(responseData));
+    toast.success("Restaurant created successfully");
   } catch (error) {
     dispatch(createRestaurantFailure(error.message));
+    toast.error("Failed to create restaurant");
   }
 };
 
@@ -131,8 +140,12 @@ export const updateRestaurant = ({ restaurantId, restaurantData, jwt }) => async
       }
     );
     dispatch(updateRestaurantSuccess(response.data));
+    toast.success("Restaurant updated successfully");
+    return response.data;
   } catch (error) {
     dispatch(updateRestaurantFailure(error.message));
+    toast.error("Failed to update restaurant");
+    throw error;
   }
 };
 
@@ -141,8 +154,10 @@ export const deleteRestaurant = (restaurantId) => async (dispatch) => {
   try {
     await api.delete(`/admin/restaurants/${restaurantId}`);
     dispatch(deleteRestaurantSuccess(restaurantId));
+    toast.success("Restaurant deleted successfully");
   } catch (error) {
     dispatch(deleteRestaurantFailure(error.message));
+    toast.error("Failed to delete restaurant");
   }
 };
 
@@ -159,8 +174,11 @@ export const updateRestaurantStatus = ({ restaurantId, jwt }) => async (dispatch
       }
     );
     dispatch(updateRestaurantStatusSuccess(response.data));
+    const statusMessage = response.data.open ? "Restaurant is now open" : "Restaurant is now closed";
+    toast.success(statusMessage);
   } catch (error) {
     dispatch(updateRestaurantStatusFailure(error.message));
+    toast.error("Failed to update restaurant status");
   }
 };
 
@@ -168,7 +186,7 @@ export const createEvent = ({ data, jwt, restaurantId }) => async (dispatch) => 
   dispatch(createEventRequest());
   try {
     const response = await api.post(
-      `/admin/events/restaurant/${restaurantId}`,
+      `/admin/events`,
       data,
       {
         headers: {
@@ -177,8 +195,10 @@ export const createEvent = ({ data, jwt, restaurantId }) => async (dispatch) => 
       }
     );
     dispatch(createEventSuccess(response.data));
+    toast.success("Event created successfully");
   } catch (error) {
     dispatch(createEventFailure(error.message));
+    toast.error("Failed to create event");
   }
 };
 
@@ -193,6 +213,7 @@ export const getAllEvents = ({ jwt }) => async (dispatch) => {
     dispatch(getAllEventsSuccess(response.data));
   } catch (error) {
     dispatch(getAllEventsFailure(error.message));
+    toast.error("Failed to load events");
   }
 };
 
@@ -201,8 +222,10 @@ export const deleteEvent = (eventId) => async (dispatch) => {
   try {
     await api.delete(`/admin/events/${eventId}`);
     dispatch(deleteEventSuccess(eventId));
+    toast.success("Event deleted successfully");
   } catch (error) {
     dispatch(deleteEventFailure(error.message));
+    toast.error("Failed to delete event");
   }
 };
 
@@ -220,6 +243,7 @@ export const getRestaurantEvents = ({ restaurantId, jwt }) => async (dispatch) =
     dispatch(getRestaurantEventsSuccess(response.data));
   } catch (error) {
     dispatch(getRestaurantEventsFailure(error.message));
+    toast.error("Failed to load restaurant events");
   }
 };
 
@@ -232,8 +256,10 @@ export const createCategory = ({ reqData, jwt }) => async (dispatch) => {
       },
     });
     dispatch(createCategorySuccess(response.data));
+    toast.success("Category created successfully");
   } catch (error) {
     dispatch(createCategoryFailure(error.message));
+    toast.error("Failed to create category");
   }
 };
 
@@ -248,6 +274,7 @@ export const getRestaurantsCategory = ({ jwt, restaurantId }) => async (dispatch
     dispatch(getRestaurantsCategorySuccess(response.data));
   } catch (error) {
     dispatch(getRestaurantsCategoryFailure(error.message));
+    toast.error("Failed to load categories");
   }
 };
 
@@ -260,7 +287,26 @@ export const updateCategory = ({ reqData, jwt }) => async (dispatch) => {
       },
     });
     dispatch(updateCategorySuccess(data));
+    toast.success("Category updated successfully");
   } catch (error) {
     dispatch(updateCategoryFailure(error.message));
+    toast.error("Failed to update category");
+  }
+};
+
+export const deleteCategory = (categoryId) => async (dispatch) => {
+  dispatch(deleteCategoryRequest());
+  const jwt = localStorage.getItem("jwt");
+  try {
+    await api.delete(`/admin/category/${categoryId}`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    dispatch(deleteCategorySuccess(categoryId));
+    toast.success("Category deleted successfully");
+  } catch (error) {
+    dispatch(deleteCategoryFailure(error.message));
+    toast.error("Failed to delete category");
   }
 };

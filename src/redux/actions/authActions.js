@@ -2,6 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
 import { findCart } from "./cartActions";
 import { getRestaurantByUserId } from "./restaurantActions";
+import toast from 'react-hot-toast';
 
 // Action Creators
 export const loginRequest = createAction('auth/loginRequest');
@@ -37,11 +38,15 @@ export const loginUser = (reqData) => async (dispatch) => {
     dispatch(loginSuccess(data.jwtToken));
     dispatch(getUser(data.jwtToken));
     dispatch(findCart(data.jwtToken));
+
+    toast.success("Logged in successfully");
+
     if (data.roles.includes("ROLE_RESTAURANT_OWNER")) {
       dispatch(getRestaurantByUserId(data.jwtToken));
     }
   } catch (error) {
     dispatch(loginFailure(error.message));
+    toast.error(error?.response?.data?.message || "Login failed");
   }
 };
 
@@ -49,11 +54,13 @@ export const registerUser = (sendData) => async (dispatch) => {
   try {
     sendData.setLoader(true);
     const { data } = await api.post("/auth/signup", sendData.userData);
+    dispatch(registerSuccess());
     sendData.reset();
-    sendData.toast.success(data?.message || "User Registered Successfully");
+    toast.success(data?.message || "User Registered Successfully");
     sendData.navigate("/login");
   } catch (error) {
-    sendData.toast.error(error?.response?.data?.message || error?.response?.data?.password || "Internal Server Error");
+    dispatch(registerFailure(error.message));
+    toast.error(error?.response?.data?.message || error?.response?.data?.password || "Registration failed");
   } finally {
     sendData.setLoader(false);
   }
@@ -70,6 +77,7 @@ export const getUser = (token) => async (dispatch) => {
     dispatch(getUserSuccess(response.data));
   } catch (error) {
     dispatch(getUserFailure(error.message));
+    toast.error("Failed to fetch user profile");
   }
 };
 
@@ -86,8 +94,10 @@ export const addToFavorites = ({restaurantId, jwt}) => async (dispatch) => {
       }
     );
     dispatch(addToFavoritesSuccess(data));
+    toast.success("Favorites updated successfully");
   } catch (error) {
     dispatch(addToFavoritesFailure(error.message));
+    toast.error("Failed to update favorites");
   }
 };
 
@@ -96,8 +106,10 @@ export const resetPasswordRequestAction = (email) => async (dispatch) => {
   try {
     const { data } = await api.post(`/auth/reset-password-request?email=${email}`, {});
     dispatch(resetPasswordSuccess(data));
+    toast.success("Password reset link sent to your email");
   } catch (error) {
     dispatch(resetPasswordFailure(error.message));
+    toast.error("Failed to send reset password link");
   }
 };
 
@@ -107,11 +119,14 @@ export const resetPassword = (reqData) => async (dispatch) => {
     const { data } = await api.post(`/auth/reset-password`, reqData.data);
     reqData.navigate("/password-change-success");
     dispatch(resetPasswordSuccess(data));
+    toast.success("Password changed successfully");
   } catch (error) {
     dispatch(resetPasswordFailure(error.message));
+    toast.error("Failed to reset password");
   }
 };
 
 export const logoutUser = (navigate) => (dispatch) => {
   dispatch(logout());
+  toast.success("Logged out successfully");
 };

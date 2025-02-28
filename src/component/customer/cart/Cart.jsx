@@ -4,7 +4,7 @@ import { RemoveShoppingCart } from '@mui/icons-material';
 import { Divider, Typography } from '@mui/material';
 import CartItemCard from './CartItemCard';
 import AddressCard from '../address/AddressCard';
-import AddressFormModal from '../address/AddressFormModal';
+import AddressForm from '../address/AddressForm';
 import { createOrder } from '../../../redux/actions/orderActions';
 import { findCart } from '../../../redux/actions/cartActions';
 import { deleteAddress } from '../../../redux/actions/addressActions';
@@ -30,6 +30,7 @@ const Cart = () => {
   // Handle address selection by clicking the card
   const handleAddressSelect = (address) => {
     setSelectedAddressId(address.addressId);
+    setError(null);
   };
 
   // Handle address editing
@@ -61,7 +62,15 @@ const Cart = () => {
     const orderData = {
       restaurantId: cart.cartItems[0]?.foodRestaurantId,
       amount: amount + 5,
-      addressId: selectedAddressId
+      addressId: selectedAddressId,
+      items: cart.cartItems.map(item => ({
+        foodId: item.foodId,
+        foodName: item.foodName,
+        foodImage: item.foodImage,
+        quantity: item.quantity,
+        totalPrice: item.totalPrice,
+        ingredients: item.ingredients
+      }))
     };
 
     dispatch(createOrder({ order: orderData, jwt }));
@@ -152,7 +161,7 @@ const Cart = () => {
           </div>
 
           {/* Address Form Modal */}
-          <AddressFormModal
+          <AddressForm
             open={modalOpen}
             onClose={() => {
               setModalOpen(false);

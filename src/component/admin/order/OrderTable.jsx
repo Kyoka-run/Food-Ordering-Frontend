@@ -1,13 +1,11 @@
+import React, { useState } from "react";
 import {
   Avatar,
-  AvatarGroup,
-  Backdrop,
   Box,
   Button,
   Card,
   CardHeader,
   Chip,
-  CircularProgress,
   Menu,
   MenuItem,
   Table,
@@ -16,207 +14,276 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Paper,
+  Typography,
+  Tooltip,
+  CircularProgress,
+  Collapse,
+  IconButton,
+  AvatarGroup
 } from "@mui/material";
-import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateOrderStatus } from "../../../redux/actions/restaurantOrderActions";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-const orderStatus = [
+const orderStatusOptions = [
   { label: "Pending", value: "PENDING" },
   { label: "Completed", value: "COMPLETED" },
-  { label: "Out For Delivery", value: "OUT_FOR_DELIVERY" },
-  { label: "Delivered", value: "DELIVERED" },
+  { label: "Cancelled", value: "CANCELLED" }
 ];
 
-const OrdersTable = ({ isDashboard, name }) => {
-  const [formData, setFormData] = useState({ status: "", sort: "" });
+const OrderTable = ({ isDashboard, title }) => {
   const dispatch = useDispatch();
-  const jwt = localStorage.getItem("jwt");
   const { restaurantsOrder } = useSelector((store) => store);
-  const [anchorElArray, setAnchorElArray] = useState([]);
+  const jwt = localStorage.getItem("jwt");
+  
+  // Status menu state for each order
+  const [statusMenuAnchor, setStatusMenuAnchor] = useState({});
+  
+  // Expanded row state
+  const [expandedRows, setExpandedRows] = useState({});
 
-  const handleUpdateStatusMenuClick = (event, index) => {
-    const newAnchorElArray = [...anchorElArray];
-    newAnchorElArray[index] = event.currentTarget;
-    setAnchorElArray(newAnchorElArray);
+  // Open status menu for a specific order
+  const handleOpenStatusMenu = (event, orderId) => {
+    event.stopPropagation();
+    setStatusMenuAnchor({
+      ...statusMenuAnchor,
+      [orderId]: event.currentTarget
+    });
   };
 
-  const handleUpdateStatusMenuClose = (index) => {
-    const newAnchorElArray = [...anchorElArray];
-    newAnchorElArray[index] = null;
-    setAnchorElArray(newAnchorElArray);
+  // Close status menu for a specific order
+  const handleCloseStatusMenu = (orderId) => {
+    setStatusMenuAnchor({
+      ...statusMenuAnchor,
+      [orderId]: null
+    });
   };
 
-  const handleUpdateOrder = (orderId, orderStatus, index) => {
-    handleUpdateStatusMenuClose(index);
-    dispatch(updateOrderStatus({ orderId, orderStatus, jwt }));
+  // Toggle row expansion
+  const toggleRowExpansion = (orderId) => {
+    setExpandedRows({
+      ...expandedRows,
+      [orderId]: !expandedRows[orderId]
+    });
+  };
+
+  // Update order status
+  const handleUpdateOrderStatus = (orderId, status) => {
+    dispatch(updateOrderStatus({ orderId, orderStatus: status, jwt }));
+    handleCloseStatusMenu(orderId);
+  };
+
+  // Get status chip color based on order status
+  const getStatusChipColor = (status) => {
+    switch (status) {
+      case "PENDING":
+        return "warning";
+      case "COMPLETED":
+        return "success";
+      case "CANCELLED":
+        return "error";
+      default:
+        return "default";
+    }
   };
 
   return (
-    <Box>
-      <Card className="mt-1">
-        <CardHeader
-          title={name}
-          sx={{
-            pt: 2,
-            alignItems: "center",
-            "& .MuiCardHeader-action": { mt: 0.6 },
-          }}
-        />
-        <TableContainer>
-          <Table sx={{}} aria-label="table in dashboard">
+    <Card className="shadow-md">
+      <CardHeader
+        title={title || "Orders"}
+        className="border-b"
+      />
+      
+      {restaurantsOrder.loading ? (
+        <Box className="flex justify-center items-center py-10">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <TableContainer component={Paper} className="max-h-[70vh]">
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
-              <TableCell>Id</TableCell>
-                <TableCell>Image</TableCell>
-                {/* {!isDashboard && <TableCell>Title</TableCell>} */}
-                <TableCell>Customer</TableCell>
-                <TableCell>Price</TableCell>
-             
-                <TableCell>Name</TableCell>
-                {!isDashboard && <TableCell>Ingredients</TableCell>}
-                {!isDashboard &&<TableCell>Status</TableCell>}
+                <TableCell padding="checkbox" />
+                <TableCell className="font-medium">Order ID</TableCell>
+                <TableCell className="font-medium">Restaurant</TableCell>
+                <TableCell className="font-medium">Items</TableCell>
+                <TableCell className="font-medium">Total</TableCell>
+                <TableCell className="font-medium" align="center">Status</TableCell>
                 {!isDashboard && (
-                  <TableCell sx={{ textAlign: "center" }}>Update</TableCell>
+                  <TableCell className="font-medium" align="center">Actions</TableCell>
                 )}
-                {/* {!isDashboard && (
-                  <TableCell sx={{ textAlign: "center" }}>Delete</TableCell>
-                )} */}
               </TableRow>
             </TableHead>
             <TableBody>
-              {restaurantsOrder.orders
-                ?.slice(0, isDashboard ? 7 : restaurantsOrder.orders.length)
-                .map((item, index) => (
-                  <TableRow
-                    className="cursor-pointer"
-                    hover
-                    key={item.orderId}
-                    sx={{
-                      "&:last-of-type td, &:last-of-type th": { border: 0 },
-                    }}
-                  >
-                    <TableCell>{item?.foodId}</TableCell>
-                    <TableCell sx={{}}>
-                      <AvatarGroup max={4} sx={{ justifyContent: "start" }}>
-                        {item.items.map((orderItem) => (
-                          <Avatar
-                            alt={orderItem.food.name}
-                            src={orderItem.food?.image}
-                          />
-                        ))}
-                      </AvatarGroup>{" "}
-                    </TableCell>
-
-                    <TableCell sx={{}}>
-                      {item?.customer.email}
-                    </TableCell>
-
-                    <TableCell>€{item?.totalAmount}</TableCell>
-                    
-                    <TableCell className="">
-                      {item.items.map((orderItem) => (
-                        <p>
-                          {orderItem.food?.name}
-                        </p>
-                      ))}
-                    </TableCell>
-                  {!isDashboard &&  <TableCell className="space-y-2">
-                      {item.items.map((orderItem) =>
-                      <div className="flex gap-1 flex-wrap">
-                       { orderItem.ingredients?.map((ingre) => (
-                          <Chip label={ingre} />
-                        ))}
-                      </div>
-                        
-                      )}
-                    </TableCell>}
-                    {!isDashboard &&<TableCell className="text-white">
-                      <Chip
-                        sx={{
-                          color: "white !important",
-                          fontWeight: "bold",
-                          textAlign: "center",
-                        }}
-                        label={item?.orderStatus}
-                        size="small"
-                        color={
-                          item.orderStatus === "PENDING"
-                            ? "info"
-                            : item?.orderStatus === "DELIVERED"
-                            ? "success"
-                            : "secondary"
-                        }
-                        className="text-white"
-                      />
-                    </TableCell>}
-                    {!isDashboard && (
-                      <TableCell
-                        sx={{ textAlign: "center" }}
-                        className="text-white"
+              {restaurantsOrder.orders.length > 0 ? (
+                restaurantsOrder.orders
+                  .slice(0, isDashboard ? 5 : restaurantsOrder.orders.length)
+                  .map((order) => (
+                    <React.Fragment key={order.orderId}>
+                      {/* Main Order Row */}
+                      <TableRow 
+                        hover
+                        onClick={() => toggleRowExpansion(order.orderId)} 
+                        className={`cursor-pointer transition-colors hover:bg-gray-50 ${expandedRows[order.orderId] ? 'bg-gray-50' : ''}`}
                       >
-                        <div>
-                          <Button
-                            id={`basic-button-${item?.orderId}`}
-                            aria-controls={`basic-menu-${item.orderId}`}
-                            aria-haspopup="true"
-                            aria-expanded={Boolean(anchorElArray[index])}
-                            onClick={(event) =>
-                              handleUpdateStatusMenuClick(event, index)
-                            }
-                          >
-                            Status
-                          </Button>
-                          <Menu
-                            id={`basic-menu-${item?.orderId}`}
-                            anchorEl={anchorElArray[index]}
-                            open={Boolean(anchorElArray[index])}
-                            onClose={() => handleUpdateStatusMenuClose(index)}
-                            MenuListProps={{
-                              "aria-labelledby": `basic-button-${item.orderId}`,
+                        <TableCell padding="checkbox">
+                          <IconButton
+                            aria-label="expand row"
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleRowExpansion(order.orderId);
                             }}
                           >
-                            {orderStatus.map((s) => (
-                              <MenuItem
-                                onClick={() =>
-                                  handleUpdateOrder(item.orderId, s.value, index)
-                                }
+                            {expandedRows[order.orderId] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                          </IconButton>
+                        </TableCell>
+                        <TableCell>#{order.orderId}</TableCell>
+                        <TableCell>
+                          <Typography variant="body2" className="font-medium">
+                            {order.restaurantName}
+                          </Typography>
+                          <Typography variant="caption" className="text-gray-500">
+                            User ID: {order.userId}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <AvatarGroup max={3} className="justify-start">
+                            {order.items.map((item) => (
+                              <Tooltip 
+                                key={item.orderItemId || item.foodId} 
+                                title={`${item.foodName} (x${item.quantity})`}
                               >
-                                {s.label}
-                              </MenuItem>
+                                <Avatar 
+                                  alt={item.foodName} 
+                                  src={item.foodImage} 
+                                  className="w-8 h-8"
+                                />
+                              </Tooltip>
                             ))}
-                          </Menu>
-                        </div>
-                      </TableCell>
-                    )}
-                    {/* {!isDashboard && (
-                    <TableCell
-                      sx={{ textAlign: "center" }}
-                      className="text-white"
-                    >
-                      <Button
-                        onClick={() => handleDeleteOrder(item.orderId)}
-                        variant="text"
-                      >
-                        delete
-                      </Button>
-                    </TableCell>
-                  )} */}
-                  </TableRow>
-                ))}
+                          </AvatarGroup>
+                          <Typography variant="caption" display="block" className="mt-1">
+                            {order.items.length} item(s)
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant="body2" className="font-medium">
+                            €{order.amount || order.totalAmount}
+                          </Typography>
+                          <Typography variant="caption" className="text-gray-500">
+                            {order.paymentStatus || "Not Processed"}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Chip
+                            label={order.orderStatus}
+                            color={getStatusChipColor(order.orderStatus)}
+                            size="small"
+                            className="min-w-24"
+                          />
+                        </TableCell>
+                        {!isDashboard && (
+                          <TableCell align="center">
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={(e) => handleOpenStatusMenu(e, order.orderId)}
+                            >
+                              Update Status
+                            </Button>
+                            <Menu
+                              anchorEl={statusMenuAnchor[order.orderId]}
+                              open={Boolean(statusMenuAnchor[order.orderId])}
+                              onClose={() => handleCloseStatusMenu(order.orderId)}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {orderStatusOptions.map((option) => (
+                                <MenuItem
+                                  key={option.value}
+                                  onClick={() => handleUpdateOrderStatus(order.orderId, option.value)}
+                                  disabled={order.orderStatus === option.value}
+                                  selected={order.orderStatus === option.value}
+                                >
+                                  {option.label}
+                                </MenuItem>
+                              ))}
+                            </Menu>
+                          </TableCell>
+                        )}
+                      </TableRow>
+
+                      {/* Expandable Items Row */}
+                      <TableRow>
+                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={isDashboard ? 6 : 7}>
+                          <Collapse in={expandedRows[order.orderId]} timeout="auto" unmountOnExit>
+                            <Box className="p-4">
+                              <Typography variant="subtitle2" className="mb-2 font-medium">
+                                Order Items
+                              </Typography>
+                              
+                              <Table size="small">
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell>Image</TableCell>
+                                    <TableCell>Food Name</TableCell>
+                                    <TableCell>Ingredients</TableCell>
+                                    <TableCell align="right">Quantity</TableCell>
+                                    <TableCell align="right">Price</TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {order.items.map((item) => (
+                                    <TableRow key={item.orderItemId || item.foodId}>
+                                      <TableCell>
+                                        <Avatar 
+                                          src={item.foodImage} 
+                                          alt={item.foodName}
+                                          variant="rounded"
+                                          className="w-12 h-12"
+                                        />
+                                      </TableCell>
+                                      <TableCell>{item.foodName}</TableCell>
+                                      <TableCell>
+                                        {item.ingredients && item.ingredients.length > 0 ? (
+                                          <Typography variant="caption">
+                                            {item.ingredients.join(', ')}
+                                          </Typography>
+                                        ) : (
+                                          <Typography variant="caption" className="text-gray-400">
+                                            No ingredients
+                                          </Typography>
+                                        )}
+                                      </TableCell>
+                                      <TableCell align="right">{item.quantity}</TableCell>
+                                      <TableCell align="right">€{item.totalPrice}</TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </Box>
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
+                    </React.Fragment>
+                  ))
+              ) : (
+                <TableRow>
+                  <TableCell 
+                    colSpan={isDashboard ? 6 : 7} 
+                    className="text-center py-8 text-gray-500"
+                  >
+                    No orders found.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
-      </Card>
-
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={restaurantsOrder.loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    </Box>
+      )}
+    </Card>
   );
 };
 
-export default OrdersTable;
+export default OrderTable;

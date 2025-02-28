@@ -31,7 +31,7 @@ const restaurantOrderReducer = createReducer(initialState, (builder) => {
     .addCase(actions.updateOrderStatusSuccess, (state, action) => {
       state.loading = false;
       state.orders = state.orders.map((order) => 
-        order.id === action.payload.id ? action.payload : order
+        order.orderId === action.payload.orderId ? action.payload : order
       );
     })
     .addCase(actions.updateOrderStatusFailure, (state, action) => {

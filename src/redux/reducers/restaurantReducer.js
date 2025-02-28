@@ -213,6 +213,21 @@ const restaurantReducer = createReducer(initialState, (builder) => {
     .addCase(actions.updateCategoryFailure, (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    })
+
+    .addCase(actions.deleteCategoryRequest, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(actions.deleteCategorySuccess, (state, action) => {
+      state.loading = false;
+      state.categories = state.categories.filter(
+        category => category.categoryId !== action.payload
+      );
+    })
+    .addCase(actions.deleteCategoryFailure, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     });
 });
 

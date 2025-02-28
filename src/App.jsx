@@ -1,6 +1,7 @@
 import './App.css'
 import theme from './theme/Theme'
 import Routers from './router/Routers'
+import { Toaster } from 'react-hot-toast'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -27,6 +28,7 @@ function App() {
         <CssBaseline />
         <Routers />
       </ThemeProvider>
+      <Toaster position='top-center'/>
     </>
   )
 }

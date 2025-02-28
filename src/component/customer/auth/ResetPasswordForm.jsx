@@ -1,7 +1,7 @@
 import React from "react";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
-import { TextField, Button, Alert, Typography, Container, CssBaseline } from "@mui/material";
+import { TextField, Button, Typography, Container, CssBaseline } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { resetPassword } from "../../../redux/actions/authActions";
@@ -59,14 +59,8 @@ function ResetPasswordForm() {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting, status }) => (
+        {({ isSubmitting }) => (
           <Form className="space-y-4">
-            {status?.error && (
-              <Alert severity="error" className="mb-4">
-                {status.error}
-              </Alert>
-            )}
-
             {/* New Password Input */}
             <div className="mb-4">
               <Field name="password">

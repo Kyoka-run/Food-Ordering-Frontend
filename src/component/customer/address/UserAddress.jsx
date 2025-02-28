@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import AddressCard from './AddressCard';
-import AddressFormModal from './AddressFormModal';
+import AddressForm from './AddressForm';
 import { deleteAddress } from '../../../redux/actions/addressActions';
 
 const UserAddress = () => {
@@ -51,7 +51,7 @@ const UserAddress = () => {
         </Button>
       </div>
 
-      <AddressFormModal
+      <AddressForm
         open={modalOpen}
         onClose={() => {
           setModalOpen(false);

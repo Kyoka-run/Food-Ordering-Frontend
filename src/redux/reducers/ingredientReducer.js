@@ -106,6 +106,38 @@ const ingredientReducer = createReducer(initialState, (builder) => {
     .addCase(actions.updateIngredientCategoryFailure, (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    })
+
+    // Delete Ingredient
+    .addCase(actions.deleteIngredientRequest, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(actions.deleteIngredientSuccess, (state, action) => {
+      state.loading = false;
+      state.ingredients = state.ingredients.filter(
+        ingredient => ingredient.ingredientsItemId !== action.payload
+      );
+    })
+    .addCase(actions.deleteIngredientFailure, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+
+    // Delete Ingredient Category
+    .addCase(actions.deleteIngredientCategoryRequest, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(actions.deleteIngredientCategorySuccess, (state, action) => {
+      state.loading = false;
+      state.category = state.category.filter(
+        category => category.ingredientCategoryId !== action.payload
+      );
+    })
+    .addCase(actions.deleteIngredientCategoryFailure, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     });
 });
 

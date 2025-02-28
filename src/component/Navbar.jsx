@@ -4,6 +4,7 @@ import {
   Avatar,
   Badge,
   IconButton,
+  Button
 } from "@mui/material";
 import { pink } from "@mui/material/colors";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -19,11 +20,13 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
-  const navigateToProfile = (e) => {
-    user?.roles?.includes("ROLE_RESTAURANT_OWNER")
-      ? navigate("/admin/restaurant")
-      : navigate("/my-profile");
+  const navigateToProfile = () => {
+    navigate("/my-profile");
   };
+
+  // Check user roles
+  const isAdmin = user?.roles?.includes("ROLE_RESTAURANT_OWNER");
+  const isSuperAdmin = user?.roles?.includes("ROLE_ADMIN");
 
   return (
     <div className="h-16 px-5 z-50 bg-[#ff6f00] flex justify-between items-center">
@@ -40,46 +43,58 @@ const Navbar = () => {
       </div>
 
       {/* Features section: search, user profile, cart */}
-      <div className="flex items-center space-x-2 lg:space-x-10">
+      <div className="flex items-center space-x-1 lg:space-x-7">
         {/* Search button */}
         <div className="">
           <IconButton onClick={() => navigate("/search")}>
-            <SearchIcon sx={{ fontSize: "1.5rem" }} />
+            <SearchIcon sx={{ fontSize: "1.5rem", color: "white" }} />
           </IconButton>
         </div>
 
+        {/* Admin button */}
+        {isAdmin || isSuperAdmin && (
+          <Button
+            className="text-white hover:text-gray-300"
+            onClick={() => navigate("/admin/restaurant")}
+          >
+            My Restaurant
+          </Button>
+        )}
+
+        {/* SuperAdmin button */}
+        {isSuperAdmin && (
+          <Button
+            className="text-white hover:text-gray-300"
+            onClick={() => navigate("/super-admin")}
+          >
+            Admin
+          </Button>
+        )}
+        
         {/* User profile/login button */}
         <div className="flex items-center space-x-2">
           {user?.username ? (
             // Show avatar for logged-in users
             <span
-              id="demo-positioned-button"
-              aria-controls={open ? "demo-positioned-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={
-                user?.roles?.includes("ROLE_ADMIN")
-                  ? () => navigate("/super-admin")
-                  : navigateToProfile
-              }
-              className=" font-semibold cursor-pointer"
+              onClick={navigateToProfile}
+              className="font-semibold cursor-pointer"
             >
-              <Avatar sx={{ bgcolor: "white",color:pink.A400}} className="bg-white">
+              <Avatar sx={{ bgcolor: "white", color: pink.A400 }} className="bg-white">
                 {user.username[0].toUpperCase()}
               </Avatar>
             </span>
           ) : (
             // Show login icon for guests
             <IconButton onClick={() => navigate("/account/login")}>
-              <PersonIcon sx={{ fontSize: "2rem" }} />
+              <PersonIcon sx={{ fontSize: "2rem", color: "white" }} />
             </IconButton>
           )}
         </div>
 
         {/* Shopping cart button with item count */}
         <IconButton onClick={() => navigate("/cart")}>
-          <Badge color="black" badgeContent={cartItems.length}>
-            <ShoppingCartIcon className="text-4xl" sx={{ fontSize: "2rem" }} />
+          <Badge color="error" badgeContent={cartItems.length}>
+            <ShoppingCartIcon sx={{ fontSize: "2rem", color: "white" }} />
           </Badge>
         </IconButton>
       </div>

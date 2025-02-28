@@ -1,5 +1,5 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import {
   Button,
@@ -55,14 +55,8 @@ const Login = () => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting, status }) => (
+          {({ isSubmitting }) => (
             <Form className="space-y-4">
-              {status?.error && (
-                <Alert severity="error" className="mb-4">
-                  {status.error}
-                </Alert>
-              )}
-
               {/* Username Input */}
               <div className="mb-4">
                 <Field name="username">

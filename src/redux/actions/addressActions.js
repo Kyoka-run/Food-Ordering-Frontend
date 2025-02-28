@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../config/api';
 import { getUser } from './authActions';
+import toast from 'react-hot-toast';
 
 // Action Types
 export const getUserAddressesRequest = createAction('address/getUserAddressesRequest');
@@ -31,6 +32,7 @@ export const getUserAddresses = (jwt) => async (dispatch) => {
     dispatch(getUserAddressesSuccess(response.data));
   } catch (error) {
     dispatch(getUserAddressesFailure(error.message));
+    toast.error("Failed to load addresses");
   }
 };
 
@@ -44,9 +46,11 @@ export const createAddress = ({addressData, jwt}) => async (dispatch) => {
     });
     dispatch(createAddressSuccess(response.data));
     dispatch(getUser(jwt));
+    toast.success("Address added successfully");
     return response.data;
   } catch (error) {
     dispatch(createAddressFailure(error.message));
+    toast.error("Failed to add address");
     throw error;
   }
 };
@@ -61,9 +65,11 @@ export const updateAddress = ({addressId, addressData, jwt}) => async (dispatch)
     });
     dispatch(updateAddressSuccess(response.data));
     dispatch(getUser(jwt));
+    toast.success("Address updated successfully");
     return response.data;
   } catch (error) {
     dispatch(updateAddressFailure(error.message));
+    toast.error("Failed to update address");
     throw error;
   }
 };
@@ -78,8 +84,10 @@ export const deleteAddress = ({addressId, jwt}) => async (dispatch) => {
     });
     dispatch(deleteAddressSuccess(addressId));
     dispatch(getUser(jwt));
+    toast.success("Address deleted successfully");
   } catch (error) {
     dispatch(deleteAddressFailure(error.message));
+    toast.error("Failed to delete address, it may be used by an order");
     throw error;
   }
 };

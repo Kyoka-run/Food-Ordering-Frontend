@@ -16,16 +16,16 @@ const PaymentSuccess = () => {
   }, [dispatch]);
 
   return (
-    <div className="min-h-screen  px-5">
+    <div className="min-h-screen px-5">
       <div className="flex flex-col items-center justify-center h-[90vh]">
         <div className="box w-full lg:w-1/4 flex flex-col items-center rounded-md">
           <TaskAltIcon sx={{ fontSize: "5rem", color: green[600] }} />
-          <h1 className="py-5 text-2xl font-semibold">Order Success !</h1>
+          <h1 className="py-5 text-2xl font-semibold">Order Success!</h1>
           <p className="py-3 text-center text-gray-600">
             Thank you for choosing our restaurant! We appreciate your order.
           </p>
           <p className="py-2 text-center text-gray-600 text-lg">
-            Have A Grate Day !
+            Have A Great Day!
           </p>
           <Button
             variant="contained"

@@ -10,7 +10,7 @@ import { createCategory, updateCategory } from '../../../redux/actions/restauran
  */
 const CategoryForm = ({ handleClose, category }) => {
   const dispatch = useDispatch();
-  const { restaurant } = useSelector(store => store);
+  const { restaurant } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
   const isEditMode = !!category;
 

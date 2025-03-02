@@ -9,8 +9,8 @@ import { addToFavorites } from '../../../redux/actions/authActions';
 
 const RestaurantCard = ({ data }) => {
   const navigate = useNavigate();
-  const jwt = useSelector((store) => store.auth.jwt);
-  const favorites = useSelector((store) => store.auth.favorites);
+  const jwt = useSelector((state) => state.auth.jwt);
+  const favorites = useSelector((state) => state.auth.favorites);
   const dispatch = useDispatch();
 
   const handleAddToFavorites = () => {

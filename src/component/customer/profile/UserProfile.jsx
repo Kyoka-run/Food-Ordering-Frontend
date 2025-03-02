@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { logout } from '../../../redux/actions/authActions';
 
 const UserProfile = () => {
-  const user = useSelector((store) => store.auth.user)  
+  const user = useSelector((state) => state.auth.user)  
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

@@ -1,188 +1,129 @@
+import React, { useEffect, useState } from "react";
 import {
   Box,
-  Button,
-  Grid,
+  Typography,
   Modal,
-  TextField,
+  Grid,
+  Paper,
+  IconButton
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import Add from '@mui/icons-material/Add';
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createEvent,
   getRestaurantEvents,
+  deleteEvent
 } from "../../../redux/actions/restaurantActions";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
 import EventCard from "./EventCard";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  outline: "none",
-  boxShadow: 24,
-  p: 4,
-};
-
-const initialValues = {
-  image: "",
-  location: "",
-  name: "",
-  startedAt: null,
-  endsAt: null,
-};
+import EventForm from "./EventForm";
+import GlobalLoading from "../../GlobalLoading";
 
 const Events = () => {
   const dispatch = useDispatch();
-  const { restaurant, auth } = useSelector((store) => store);
-  const [openModal, setOpenModal] = useState(false);
-  const handleCloseModal = () => setOpenModal(false);
-  const handleOpenModal = () => setOpenModal(true);
+  const loading = useSelector((state) => state.restaurant.loading);
+  const usersRestaurant = useSelector((state) => state.restaurant.usersRestaurant);
+  const restaurantsEvents = useSelector((state) => state.restaurant.restaurantsEvents);
   const jwt = localStorage.getItem("jwt");
+  
+  // State for modal and selected event
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const [formValues, setFormValues] = useState(initialValues);
-
-  const handleFormChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
-  };
-
-  const handleDateChange = (date, dateType) => {
-    const formattedDate = dayjs(date).format("MMMM DD, YYYY hh:mm A");
-    setFormValues({ ...formValues, [dateType]: formattedDate });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    dispatch(
-      createEvent({
-        data: formValues,
-        restaurantId: restaurant.usersRestaurant?.restaurantId,
-        jwt
-      })
-    );
-  };
-
+  // Fetch events when component mounts or restaurant changes
   useEffect(() => {
-    if (restaurant.usersRestaurant) {
-      dispatch(
-        getRestaurantEvents({
-          restaurantId: restaurant.usersRestaurant?.restaurantId,
-          jwt,
-        })
-      );
+    if (usersRestaurant?.restaurantId) {
+      dispatch(getRestaurantEvents({
+        restaurantId: usersRestaurant.restaurantId,
+        jwt
+      }))
     }
-  }, [restaurant.usersRestaurant]);
+  }, [dispatch, usersRestaurant, jwt]);
+
+  // Modal handlers
+  const handleOpenModal = (event = null) => {
+    setSelectedEvent(event);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedEvent(null);
+    setOpenModal(false);
+  };
+
+  // Event handlers
+  const handleDeleteEvent = (eventId) => {
+    dispatch(deleteEvent(eventId), jwt)
+  };
 
   return (
-    <div>
-     
-      <div className="p-5">
-        <Button
-          sx={{ padding: "1rem 2rem" }}
-          onClick={handleOpenModal}
+    <div className="p-4">
+      <Box className="flex justify-between items-center mb-4">
+        <Typography variant="h5">Event Management</Typography>
+        <IconButton
           variant="contained"
           color="primary"
+          onClick={() => handleOpenModal()}
         >
-          Create New Event
-        </Button>
-      </div>
+          <Add />
+        </IconButton>
+      </Box>
+      
+      {/* Events count summary */}
+      <Paper className="p-4 mb-4 bg-gray-50">
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <Typography variant="h6" gutterBottom>
+              Total Events
+            </Typography>
+            <Typography variant="h4">
+              {restaurantsEvents?.length || 0}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <Typography variant="body2" color="text.secondary">
+              Events are a great way to engage with your customers and promote your restaurant. 
+              You can create special promotions, theme nights, or holiday celebrations.
+            </Typography>
+          </Grid>
+        </Grid>
+      </Paper>
 
-      <div className="mt-5 px-5 flex flex-wrap gap-5">
-        {restaurant.restaurantsEvents.map((item) => (
-          <EventCard key={item.eventId} item={item} />
-        ))}
-        {/* <div>
-          <img
-          className="rounded-md w-[25rem] h-[25-rem] object-cover"
-            src="https://images.pexels.com/photos/5638732/pexels-photo-5638732.jpeg?auto=compress&cs=tinysrgb&w=600"
-            alt=""
-          />
-        </div> */}
-      </div>
+      {/* Events grid */}
+      {restaurantsEvents?.length > 0 ? (
+        <Box className="mt-5 flex flex-wrap justify-center">
+          {restaurantsEvents.map((item) => (
+            <EventCard 
+              key={item.eventId} 
+              item={item} 
+              isAdmin={true}
+              onEdit={handleOpenModal}
+              onDelete={handleDeleteEvent}
+            />
+          ))}
+        </Box>
+      ) : (
+        <Paper className="p-8 mt-4 text-center">
+          <Typography variant="body1" color="text.secondary">
+            No events found. Create your first event to engage with customers!
+          </Typography>
+        </Paper>
+      )}
 
+      {/* Event Form Modal */}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        aria-labelledby="event-modal-title"
       >
-        <Box sx={style}>
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <TextField
-                  name="image"
-                  label="Image URL"
-                  variant="outlined"
-                  fullWidth
-                  value={formValues.image}
-                  onChange={handleFormChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  name="location"
-                  label="Location"
-                  variant="outlined"
-                  fullWidth
-                  value={formValues.location}
-                  onChange={handleFormChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  name="name"
-                  label="Event Name"
-                  variant="outlined"
-                  fullWidth
-                  value={formValues.name}
-                  onChange={handleFormChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DateTimePicker
-                    renderInput={(props) => <TextField {...props} />}
-                    label="Start Date and Time"
-                    value={formValues.startedAt}
-                    onChange={(newValue) =>
-                      handleDateChange(newValue, "startedAt")
-                    }
-                    inputFormat="MM/dd/yyyy hh:mm a"
-                    className="w-full"
-                    sx={{ width: "100%" }}
-                  />
-                </LocalizationProvider>
-              </Grid>
-              <Grid item xs={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DateTimePicker
-                    renderInput={(props) => <TextField {...props} />}
-                    label="End Date and Time"
-                    value={formValues.endsAt}
-                    onChange={(newValue) =>
-                      handleDateChange(newValue, "endsAt")
-                    }
-                    inputFormat="MM/dd/yyyy hh:mm a"
-                    className="w-full"
-                    sx={{ width: "100%" }}
-                  />
-                </LocalizationProvider>
-              </Grid>
-            </Grid>
-            <Box mt={2}>
-              <Button variant="contained" color="primary" type="submit">
-                Submit
-              </Button>
-            </Box>
-          </form>
+        <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-4xl">
+          <EventForm 
+            handleClose={handleCloseModal}
+            event={selectedEvent}
+          />
         </Box>
       </Modal>
+
+      {/* Loading */}
+      <GlobalLoading loading={loading} />
     </div>
   );
 };

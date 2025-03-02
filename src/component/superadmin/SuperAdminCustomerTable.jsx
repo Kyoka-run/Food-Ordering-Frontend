@@ -12,15 +12,14 @@ import {
   Typography,
   Avatar,
   Chip,
-  Backdrop,
-  CircularProgress
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getCustomers } from "../../redux/actions/superAdminActions";
+import GlobalLoading from "../GlobalLoading";
 
 const SuperAdminCustomerTable = ({ isDashboard }) => {
   const dispatch = useDispatch();
-  const { superAdmin } = useSelector((store) => store);
+  const { superAdmin } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
@@ -107,12 +106,7 @@ const SuperAdminCustomerTable = ({ isDashboard }) => {
         </TableContainer>
       </Card>
 
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={superAdmin.loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <GlobalLoading loading={superAdmin.loading} />
     </Box>
   );
 };

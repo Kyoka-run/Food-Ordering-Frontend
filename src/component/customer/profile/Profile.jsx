@@ -6,7 +6,6 @@ import UsersAddresses from "../address/UserAddress";
 import Favorite from "../restaurant/Favorite";
 import UserProfile from "../profile/UserProfile";
 import CustomerEvents from "../event/CustomerEvents";
-import Notifications from "../event/Notification";
 
 const Profile = () => {
   return (
@@ -19,7 +18,6 @@ const Profile = () => {
           <Route path="/address" element={<UsersAddresses />} />
           <Route path="/favorites" element={<Favorite />} />
           <Route path="/events" element={<CustomerEvents />} />
-          <Route path="/notification" element={<Notifications />} />
         </Routes>
       </div>
     </>

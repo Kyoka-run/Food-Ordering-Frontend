@@ -22,7 +22,7 @@ import { deleteCategory } from '../../../redux/actions/restaurantActions';
 
 const Category = () => {
   const dispatch = useDispatch();
-  const { restaurant } = useSelector(store => store);
+  const { restaurant } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
   
   // Modal state

@@ -15,31 +15,31 @@ import { fetchRestaurantsOrder } from "../redux/actions/restaurantOrderActions";
 
 const AdminRouter = () => {
   const dispatch = useDispatch();
-  const { restaurant } = useSelector((store) => store);
+  const usersRestaurant = useSelector((state) => state.restaurant.usersRestaurant);
   const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
-    if (restaurant.usersRestaurant) {
+    if (usersRestaurant) {
       dispatch(
-        getIngredientCategory({ jwt, id: restaurant.usersRestaurant?.restaurantId })
+        getIngredientCategory({ jwt, id: usersRestaurant?.restaurantId })
       );
       dispatch(
-        getIngredientsOfRestaurant({ jwt, id: restaurant.usersRestaurant?.restaurantId })
+        getIngredientsOfRestaurant({ jwt, id: usersRestaurant?.restaurantId })
       );
       dispatch(
         getRestaurantsCategory({
           jwt,
-          restaurantId: restaurant.usersRestaurant?.restaurantId,
+          restaurantId: usersRestaurant?.restaurantId,
         })
       );
       dispatch(
         fetchRestaurantsOrder({
-          restaurantId: restaurant.usersRestaurant?.restaurantId,
+          restaurantId: usersRestaurant?.restaurantId,
           jwt,
         })
       );
     }
-  }, [restaurant.usersRestaurant]);
+  }, [usersRestaurant]);
 
   return (
     <div>

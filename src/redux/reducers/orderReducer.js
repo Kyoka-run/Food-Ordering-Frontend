@@ -5,7 +5,6 @@ const initialState = {
   loading: false,
   orders: [],
   error: null,
-  notifications: []
 };
 
 const orderReducer = createReducer(initialState, (builder) => {
@@ -34,19 +33,6 @@ const orderReducer = createReducer(initialState, (builder) => {
       state.orders = action.payload;
     })
     .addCase(actions.getUserOrdersFailure, (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    })
-
-    // Get Notifications
-    .addCase(actions.getNotificationsRequest, (state) => {
-      state.loading = true;
-    })
-    .addCase(actions.getNotificationsSuccess, (state, action) => {
-      state.loading = false;
-      state.notifications = action.payload;
-    })
-    .addCase(actions.getNotificationsFailure, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });

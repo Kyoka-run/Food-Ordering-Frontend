@@ -10,7 +10,7 @@ import { createIngredientCategory, updateIngredientCategory } from '../../../red
  */
 const IngredientCategoryForm = ({ handleClose, category }) => {
   const dispatch = useDispatch();
-  const { restaurant } = useSelector(store => store);
+  const { restaurant } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
   const isEditMode = !!category;
 

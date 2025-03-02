@@ -21,7 +21,7 @@ import RestaurantForm from "./RestaurantForm";
 
 const RestaurantDashboard = () => {
   const dispatch = useDispatch();
-  const { restaurant } = useSelector(state => state);
+  const usersRestaurant = useSelector(state => state.restaurant.usersRestaurant);
   const jwt = localStorage.getItem("jwt");
 
   // Modal state
@@ -56,7 +56,7 @@ const RestaurantDashboard = () => {
   };
 
   // If no restaurant is found, show the create restaurant UI
-  if (!restaurant.usersRestaurant) {
+  if (!usersRestaurant) {
     return (
       <div className="p-4">
         <Typography variant="h5" className="mb-4">
@@ -106,25 +106,25 @@ const RestaurantDashboard = () => {
         <div className="flex justify-between items-center mb-4">
           <div>
             <Typography variant="h4" className="font-bold">
-              {restaurant.usersRestaurant.name}
+              {usersRestaurant.name}
             </Typography>
             <Typography variant="body1" color="text.secondary" className="mt-1">
-              {restaurant.usersRestaurant.description}
+              {usersRestaurant.description}
             </Typography>
           </div>
           
           <div className="flex gap-2">
             <Button
-              onClick={() => handleUpdateStatus(restaurant.usersRestaurant.restaurantId)}
+              onClick={() => handleUpdateStatus(usersRestaurant.restaurantId)}
               variant="contained"
-              color={restaurant.usersRestaurant.open ? "error" : "success"}
+              color={usersRestaurant.open ? "error" : "success"}
             >
-              {restaurant.usersRestaurant.open ? "Close Restaurant" : "Open Restaurant"}
+              {usersRestaurant.open ? "Close Restaurant" : "Open Restaurant"}
             </Button>
             
             <Tooltip title="Edit Restaurant">
               <IconButton 
-                onClick={() => handleOpenModal(restaurant.usersRestaurant)}
+                onClick={() => handleOpenModal(usersRestaurant)}
                 color="primary"
               >
                 <Edit />
@@ -133,7 +133,7 @@ const RestaurantDashboard = () => {
             
             <Tooltip title="Delete Restaurant">
               <IconButton 
-                onClick={() => handleDeleteRestaurant(restaurant.usersRestaurant.restaurantId)}
+                onClick={() => handleDeleteRestaurant(usersRestaurant.restaurantId)}
                 color="error"
               >
                 <Delete />
@@ -147,11 +147,11 @@ const RestaurantDashboard = () => {
           Restaurant Images
         </Typography>
         <div className="flex gap-3 flex-wrap mb-4">
-          {restaurant.usersRestaurant.images?.map((image, index) => (
+          {usersRestaurant.images?.map((image, index) => (
             <img 
               key={index} 
               src={image} 
-              alt={`${restaurant.usersRestaurant.name} - Image ${index+1}`} 
+              alt={`${usersRestaurant.name} - Image ${index+1}`} 
               className="w-32 h-32 object-cover rounded-lg"
             />
           ))}
@@ -169,7 +169,7 @@ const RestaurantDashboard = () => {
                   Cuisine Type:
                 </Typography>
                 <Typography variant="body2">
-                  {restaurant.usersRestaurant.cuisineType}
+                  {usersRestaurant.cuisineType}
                 </Typography>
               </div>
               <div className="flex">
@@ -177,7 +177,7 @@ const RestaurantDashboard = () => {
                   Opening Hours:
                 </Typography>
                 <Typography variant="body2">
-                  {restaurant.usersRestaurant.openingHours}
+                  {usersRestaurant.openingHours}
                 </Typography>
               </div>
               <div className="flex">
@@ -185,7 +185,7 @@ const RestaurantDashboard = () => {
                   Address:
                 </Typography>
                 <Typography variant="body2">
-                  {restaurant.usersRestaurant.address}
+                  {usersRestaurant.address}
                 </Typography>
               </div>
             </div>
@@ -201,7 +201,7 @@ const RestaurantDashboard = () => {
                   Email:
                 </Typography>
                 <Typography variant="body2">
-                  {restaurant.usersRestaurant.contactInformation?.email}
+                  {usersRestaurant.contactInformation?.email}
                 </Typography>
               </div>
               <div className="flex">
@@ -209,7 +209,7 @@ const RestaurantDashboard = () => {
                   Mobile:
                 </Typography>
                 <Typography variant="body2">
-                  {restaurant.usersRestaurant.contactInformation?.mobile}
+                  {usersRestaurant.contactInformation?.mobile}
                 </Typography>
               </div>
             </div>

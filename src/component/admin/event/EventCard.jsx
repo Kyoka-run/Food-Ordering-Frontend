@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Card,
   CardActions,
@@ -5,51 +6,126 @@ import {
   CardMedia,
   IconButton,
   Typography,
+  Chip,
+  Tooltip,
+  Box
 } from "@mui/material";
-import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useDispatch } from "react-redux";
-import { deleteEvent } from "../../../redux/actions/restaurantActions";
+import EditIcon from "@mui/icons-material/Edit";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import dayjs from 'dayjs';
 
-const EventCard = ({ item,isCustomer }) => {
-  const dispatch=useDispatch();
-  const handleDeleteEvent = () => {
-    dispatch(deleteEvent(item.eventId))
+const EventCard = ({ item, isAdmin = false, onEdit, onDelete }) => {
+  // Format dates for display
+  const formatDate = (dateString) => {
+    if (!dateString) return "Not specified";
+    return dayjs(dateString).format("MMM D, YYYY h:mm A");
   };
-  return (
-    <div>
-      <Card sx={{ width: 345 }}>
-        <CardMedia
-          sx={{ height: 345,
-            '&:hover': {
-              transform: 'scale(1.1)', // Example: Scale the image on hover
-              transition: 'transform 0.5s ease-in-out', // Example: Apply a smooth transition effect
-            },
-           }}
-          image={item.image}
-          title="green iguana"
-        />
 
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="div">
-            {item.restaurant.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {item.name}
-          </Typography>
-          <div className="py-2 space-y-2">
-            <p>{item.location}</p>
-            <p className="text-sm text-blue-500">{item.startedAt}</p>
-            <p className="text-sm text-red-500">{item.endsAt}</p>
-          </div>
-        </CardContent>
-    {!isCustomer &&    <CardActions>
-          <IconButton onClick={handleDeleteEvent} aria-label="add to favorites">
-            <DeleteIcon />
-          </IconButton>
-        </CardActions>}
-      </Card>
-    </div>
+  // Generate status chip based on event dates
+  const getEventStatusChip = () => {
+    const now = dayjs();
+    const start = dayjs(item.startTime);
+    const end = dayjs(item.endTime);
+
+    if (end.isBefore(now)) {
+      return <Chip size="small" color="error" label="Ended" />;
+    } else if (start.isBefore(now) && end.isAfter(now)) {
+      return <Chip size="small" color="success" label="Ongoing" />;
+    } else {
+      return <Chip size="small" color="warning" label="Upcoming" />;
+    }
+  };
+
+  return (
+    <Card sx={{ 
+      width: 345, 
+      m: 1,
+      transition: 'transform 0.3s, box-shadow 0.3s',
+      '&:hover': {
+        transform: 'translateY(-8px)',
+        boxShadow: '0 10px 20px rgba(0,0,0,0.12)'
+      }
+    }}>
+      <CardMedia
+        sx={{ 
+          height: 220,
+          position: 'relative'
+        }}
+        image={item.image}
+        title={item.name}
+      >
+        <Box sx={{ 
+          position: 'absolute', 
+          top: 8, 
+          right: 8,
+          display: 'flex',
+          gap: 0.5
+        }}>
+          {getEventStatusChip()}
+        </Box>
+      </CardMedia>
+
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="div" className="font-medium">
+          {item.name}
+        </Typography>
+        
+        <Typography variant="body2" color="text.secondary" className="mb-3">
+          {item.description || "No description provided"}
+        </Typography>
+        
+        <Box className="space-y-2 mt-4">
+          {item.location && (
+            <Box className="flex items-center gap-2">
+              <LocationOnIcon fontSize="small" color="action" />
+              <Typography variant="body2" className="text-gray-600">
+                {item.location}
+              </Typography>
+            </Box>
+          )}
+          
+          <Box className="flex items-center gap-2">
+            <CalendarTodayIcon fontSize="small" color="primary" />
+            <Typography variant="body2" className="text-blue-500">
+              {formatDate(item.startTime)}
+            </Typography>
+          </Box>
+          
+          <Box className="flex items-center gap-2">
+            <AccessTimeIcon fontSize="small" color="error" />
+            <Typography variant="body2" className="text-red-500">
+              {formatDate(item.endTime)}
+            </Typography>
+          </Box>
+        </Box>
+      </CardContent>
+
+      {isAdmin && (
+        <CardActions disableSpacing className="flex justify-end">
+          <Tooltip title="Edit Event">
+            <IconButton 
+              aria-label="edit" 
+              onClick={() => onEdit(item)}
+              color="primary"
+            >
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete Event">
+            <IconButton 
+              aria-label="delete" 
+              onClick={() => onDelete(item.eventId)}
+              color="error"
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </CardActions>
+      )}
+    </Card>
   );
 };
 

@@ -25,7 +25,7 @@ const RestaurantsOrder = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { restaurant, restaurantsOrder } = useSelector((store) => store);
+  const { restaurant, restaurantsOrder } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
 
   // Get current status filter from URL query params

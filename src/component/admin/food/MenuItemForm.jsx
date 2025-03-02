@@ -34,7 +34,7 @@ const MenuProps = {
  */
 const MenuItemForm = ({ handleClose, menuItem }) => {
   const dispatch = useDispatch();
-  const { restaurant, ingredients } = useSelector((store) => store);
+  const { restaurant, ingredients } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
   const isEditMode = !!menuItem;
 

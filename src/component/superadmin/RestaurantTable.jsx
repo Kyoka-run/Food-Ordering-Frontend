@@ -1,10 +1,8 @@
 import {
   Avatar,
-  Backdrop,
   Box,
   Card,
   CardHeader,
-  CircularProgress,
   Table,
   TableBody,
   TableCell,
@@ -14,9 +12,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useSelector } from "react-redux";
+import GlobalLoading from "../../GlobalLoading";
 
 const RestaurantTable = ({ isDashboard, name }) => {
-  const { restaurant } = useSelector((store) => store);
+  const { restaurant } = useSelector((state) => state);
 
   return (
     <Box width={"100%"}>
@@ -83,12 +82,7 @@ const RestaurantTable = ({ isDashboard, name }) => {
         </TableContainer>
       </Card>
 
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={restaurant.loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <GlobalLoading loading={restaurant.loading} />
     </Box>
   );
 };

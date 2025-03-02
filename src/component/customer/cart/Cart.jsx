@@ -9,18 +9,17 @@ import { createOrder } from '../../../redux/actions/orderActions';
 import { findCart } from '../../../redux/actions/cartActions';
 import { deleteAddress } from '../../../redux/actions/addressActions';
 import { cartTotal } from '../../../util/TotalPay';
-import { isValid } from '../../../util/ValidToOrder';
+import toast from 'react-hot-toast';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { cart, auth } = useSelector((store) => store);
+  const { cart, auth } = useSelector((state) => state);
   const amount = cartTotal(cart.cartItems);
   
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [editingAddress, setEditingAddress] = useState(null);
-  const [orderError, setOrderError] = useState(null);
 
   // Fetch cart data when component mounts
   useEffect(() => {
@@ -30,7 +29,6 @@ const Cart = () => {
   // Handle address selection by clicking the card
   const handleAddressSelect = (address) => {
     setSelectedAddressId(address.addressId);
-    setError(null);
   };
 
   // Handle address editing
@@ -50,15 +48,20 @@ const Cart = () => {
   // Handle order placement
   const handlePlaceOrder = () => {
     if (!selectedAddressId) {
-      setOrderError("Please select a delivery address");
+      toast.error("Please select a delivery address");
       return;
     }
 
-    if (!isValid(cart.cartItems)) {
-      setOrderError("Please add items only from one restaurant");
+    const firstRestaurantId = cart.cartItems[0]?.foodRestaurantId;
+    const allSameRestaurant = cart.cartItems.every(item => 
+      item.foodRestaurantId === firstRestaurantId
+    );
+    
+    if (!allSameRestaurant) {
+      toast.error("Please add items only from one restaurant");
       return;
     }
-
+  
     const orderData = {
       restaurantId: cart.cartItems[0]?.foodRestaurantId,
       amount: amount + 5,
@@ -187,12 +190,6 @@ const Cart = () => {
           >
             Place Order
           </button>
-
-          {orderError && (
-            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
-              {orderError}
-            </div>
-          )}
         </div>
       </div>
     </div>

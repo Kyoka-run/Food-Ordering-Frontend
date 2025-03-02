@@ -3,11 +3,11 @@ import {
   Box, 
   Typography, 
   Divider,
-  CircularProgress,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserOrders } from '../../../redux/actions/orderActions';
 import OrderCard from './OrderCard';
+import GlobalLoading from "../../GlobalLoading";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -23,12 +23,8 @@ const Orders = () => {
     <Box className="max-w-3xl mx-auto">
       <h1 className='py-5 text-xl font-semibold text-center'>My Orders</h1>
       
-      {/* Loading indicator */}
-      {order.loading && (
-        <Box className="flex justify-center py-8">
-          <CircularProgress />
-        </Box>
-      )}
+      {/* Loading */}
+      <GlobalLoading loading={order.loading} />
       
       {/* Empty state */}
       {!order.loading && order.orders.length === 0 && (

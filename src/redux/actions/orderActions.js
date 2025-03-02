@@ -11,10 +11,6 @@ export const getUserOrdersRequest = createAction('order/getUserOrdersRequest');
 export const getUserOrdersSuccess = createAction('order/getUserOrdersSuccess');
 export const getUserOrdersFailure = createAction('order/getUserOrdersFailure');
 
-export const getNotificationsRequest = createAction('order/getNotificationsRequest');
-export const getNotificationsSuccess = createAction('order/getNotificationsSuccess');
-export const getNotificationsFailure = createAction('order/getNotificationsFailure');
-
 // Async Actions
 export const createOrder = ({ order, jwt }) => async (dispatch) => {
   dispatch(createOrderRequest());
@@ -47,21 +43,5 @@ export const getUserOrders = (jwt) => async (dispatch) => {
   } catch (error) {
     dispatch(getUserOrdersFailure(error.message));
     toast.error('Failed to load your orders');
-  }
-};
-
-export const getUserNotification = () => async (dispatch) => {
-  dispatch(getNotificationsRequest());
-  try {
-    const jwt = localStorage.getItem("jwt");
-    const { data } = await api.get('/notifications', {
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
-    dispatch(getNotificationsSuccess(data));
-  } catch (error) {
-    dispatch(getNotificationsFailure(error.message));
-    toast.error('Failed to load notifications');
   }
 };

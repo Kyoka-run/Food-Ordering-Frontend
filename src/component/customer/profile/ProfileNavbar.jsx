@@ -5,7 +5,6 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LogoutIcon from "@mui/icons-material/Logout";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import HomeIcon from "@mui/icons-material/Home";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import EventIcon from "@mui/icons-material/Event";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useDispatch } from "react-redux";
@@ -16,7 +15,6 @@ const tabs = [
   { path: "orders", label: "Orders", icon: <ShoppingBagIcon /> },
   { path: "favorites", label: "Favorites", icon: <FavoriteIcon /> },
   { path: "address", label: "Address", icon: <HomeIcon /> },
-  { path: "notification", label: "Notifications", icon: <NotificationsIcon /> },
   { path: "events", label: "Events", icon: <EventIcon /> },
 ];
 

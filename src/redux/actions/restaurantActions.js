@@ -36,6 +36,10 @@ export const createEventRequest = createAction('restaurant/createEventRequest');
 export const createEventSuccess = createAction('restaurant/createEventSuccess');
 export const createEventFailure = createAction('restaurant/createEventFailure');
 
+export const updateEventRequest = createAction('restaurant/updateEventRequest');
+export const updateEventSuccess = createAction('restaurant/updateEventSuccess');
+export const updateEventFailure = createAction('restaurant/updateEventFailure');
+
 export const getAllEventsRequest = createAction('restaurant/getAllEventsRequest');
 export const getAllEventsSuccess = createAction('restaurant/getAllEventsSuccess');
 export const getAllEventsFailure = createAction('restaurant/getAllEventsFailure');
@@ -181,12 +185,10 @@ export const updateRestaurantStatus = ({ restaurantId, jwt }) => async (dispatch
   }
 };
 
-export const createEvent = ({ data, jwt, restaurantId }) => async (dispatch) => {
+export const createEvent = ({ data, jwt }) => async (dispatch) => {
   dispatch(createEventRequest());
   try {
-    const response = await api.post(
-      `/admin/events`,
-      data,
+    const response = await api.post(`/admin/events`, data,
       {
         headers: {
           Authorization: `Bearer ${jwt}`,
@@ -198,6 +200,26 @@ export const createEvent = ({ data, jwt, restaurantId }) => async (dispatch) => 
   } catch (error) {
     dispatch(createEventFailure(error.message));
     toast.error("Failed to create event");
+  }
+};
+
+export const updateEvent = ({ id, eventDTO, jwt }) => async (dispatch) => {
+  dispatch(updateEventRequest());
+  try {
+    const response = await api.put(`/admin/events/${id}`, eventDTO,
+      {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      }
+    );
+    dispatch(updateEventSuccess(response.data));
+    toast.success("Event updated successfully");
+    return response.data;
+  } catch (error) {
+    dispatch(updateEventFailure(error.message));
+    toast.error("Failed to update event");
+    throw error;
   }
 };
 
@@ -216,10 +238,14 @@ export const getAllEvents = ({ jwt }) => async (dispatch) => {
   }
 };
 
-export const deleteEvent = (eventId) => async (dispatch) => {
+export const deleteEvent = (eventId, jwt) => async (dispatch) => {
   dispatch(deleteEventRequest());
   try {
-    await api.delete(`/admin/events/${eventId}`);
+    await api.delete(`/admin/events/${eventId}`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     dispatch(deleteEventSuccess(eventId));
     toast.success("Event deleted successfully");
   } catch (error) {

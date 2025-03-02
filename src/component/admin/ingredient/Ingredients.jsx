@@ -28,10 +28,11 @@ import {
 } from "../../../redux/actions/ingredientActions";
 import IngredientForm from "./IngredientForm";
 import IngredientCategoryForm from "./IngredientCategoryForm";
+import GlobalLoading from "../../GlobalLoading";
 
 const Ingredients = () => {
   const dispatch = useDispatch();
-  const { restaurant, ingredients } = useSelector((store) => store);
+  const { restaurant, ingredients } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
 
   // Modal states
@@ -97,15 +98,13 @@ const Ingredients = () => {
 
   return (
     <div className="p-4">
-      <Typography variant="h5" className="mb-4">
-        Ingredients Management
-      </Typography>
-      
       <Grid container spacing={4}>
         {/* Ingredients Table */}
         <Grid item xs={12} lg={8}>
-          <Box className="flex justify-between items-center mb-2">
-            <Typography variant="h6">Ingredients</Typography>
+          <Box className="flex justify-between items-center mb-4">
+            <Typography variant="h5" className="mb-4">
+              Ingredients Management
+            </Typography>
             <IconButton
               variant="contained"
               color="primary"
@@ -114,8 +113,11 @@ const Ingredients = () => {
               <Add />
             </IconButton>
           </Box>
-          
-          <Card className="shadow-md h-full">
+          <Card className="shadow-md">
+            <CardHeader
+              title="Ingredients"
+              className="border-b"
+            />
             <TableContainer component={Paper} className="max-h-[70vh]">
               <Table stickyHeader aria-label="ingredients table">
                 <TableHead>
@@ -190,17 +192,23 @@ const Ingredients = () => {
         {/* Categories Table */}
         <Grid item xs={12} lg={4}>
           <Box className="flex justify-between items-center mb-2">
-            <Typography variant="h6">Ingredient Categories</Typography>
+          <Typography variant="h5" className="mb-4">
+            Ingredient Categories Management
+          </Typography>
             <IconButton
               variant="contained"
               color="primary"
-              onClick={() => handleCategoryOpenModal()}
+              onClick={() => handleOpenCategoryModal()}
             >
               <Add />
             </IconButton>
           </Box>
           
-          <Card className="shadow-md h-full">
+          <Card className="shadow-md">
+            <CardHeader
+              title="Ingredient Categories"
+              className="border-b"
+            />
             <TableContainer component={Paper} className="max-h-[70vh]">
               <Table stickyHeader aria-label="categories table">
                 <TableHead>
@@ -258,6 +266,9 @@ const Ingredients = () => {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Loading */}
+      <GlobalLoading loading={ingredients.loading} />
 
       {/* Ingredient Modal */}
       <Modal

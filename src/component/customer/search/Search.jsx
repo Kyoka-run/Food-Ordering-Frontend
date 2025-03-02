@@ -8,7 +8,7 @@ import { searchMenuItem } from "../../../redux/actions/menuActions";
 
 const Search = () => {
   const dispatch = useDispatch();
-  const { search } = useSelector((store) => store.menu);
+  const { search } = useSelector((state) => state.menu);
   const jwt = localStorage.getItem("jwt")
 
   const handleSearchMenu = (keyword) => {

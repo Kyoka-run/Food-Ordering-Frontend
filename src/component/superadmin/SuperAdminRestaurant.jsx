@@ -17,7 +17,7 @@ import {
 import { useSelector } from 'react-redux';
 
 const SuperAdminRestaurant = () => {
-  const { restaurants } = useSelector((store) => store.restaurant);
+  const { restaurants } = useSelector((state) => state.restaurant);
 
   return (
     <Box className="p-4">

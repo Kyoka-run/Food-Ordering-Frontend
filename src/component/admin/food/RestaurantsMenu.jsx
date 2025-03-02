@@ -17,8 +17,6 @@ import {
   Modal,
   Paper,
   Tooltip,
-  Backdrop,
-  CircularProgress
 } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,10 +26,11 @@ import {
   updateMenuItemsAvailability 
 } from '../../../redux/actions/menuActions';
 import MenuItemForm from './MenuItemForm';
+import GlobalLoading from "../../GlobalLoading";
 
 const RestaurantsMenu = () => {
   const dispatch = useDispatch();
-  const { menu, restaurant } = useSelector((store) => store);
+  const { menu, restaurant } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
 
   // Modal state
@@ -178,13 +177,8 @@ const RestaurantsMenu = () => {
         </TableContainer>
       </Card>
 
-      {/* Loading Backdrop */}
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={menu.loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      {/* Loading */}
+      <GlobalLoading loading={menu.loading} />
 
       {/* Menu Item Form Modal */}
       <Modal

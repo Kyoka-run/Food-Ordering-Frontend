@@ -128,6 +128,22 @@ const restaurantReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
     })
 
+    // Update Event
+    .addCase(actions.updateEventRequest, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(actions.updateEventSuccess, (state, action) => {
+      state.loading = false;
+      state.restaurantsEvents = state.restaurantsEvents.map(event => 
+        event.eventId === action.payload.eventId ? action.payload : event
+      );
+    })
+    .addCase(actions.updateEventFailure, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+
     // Get All Events
     .addCase(actions.getAllEventsRequest, (state) => {
       state.loading = true;

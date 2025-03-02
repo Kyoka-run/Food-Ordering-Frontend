@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
-  Backdrop,
-  CircularProgress,
   Divider,
   FormControl,
   FormControlLabel,
@@ -14,6 +12,7 @@ import {
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TodayIcon from '@mui/icons-material/Today';
 import MenuItemCard from "./menuItemCard";
+import GlobalLoading from "../../GlobalLoading";
 import { useDispatch, useSelector } from "react-redux";
 import { getRestaurantById, getRestaurantsCategory } from "../../../redux/actions/restaurantActions";
 import { getMenuItemsByRestaurantId } from "../../../redux/actions/menuActions";
@@ -29,7 +28,7 @@ const Restaurant = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { id } = useParams();
-  const { restaurant, menu } = useSelector((store) => store);
+  const { restaurant, menu } = useSelector((state) => state);
   const navigate = useNavigate();
 
   const decodedQueryString = decodeURIComponent(location.search);
@@ -185,12 +184,7 @@ const Restaurant = () => {
           </div>
         </section>
       </div>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={menu.loading || restaurant.loading}
-        >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <GlobalLoading loading={menu.loading || restaurant.loading} />
     </>
   );
 };

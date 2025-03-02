@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Box, CircularProgress, Button, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import AddressCard from './AddressCard';
 import AddressForm from './AddressForm';
+import GlobalLoading from "../../GlobalLoading";
 import { deleteAddress } from '../../../redux/actions/addressActions';
 
 const UserAddress = () => {
@@ -29,12 +30,8 @@ const UserAddress = () => {
     <div className="flex items-center flex-col">
       <h1 className="text-xl text-center py-5 font-semibold">Addresses</h1>
       
-      {/* Loading indicator */}
-      {auth.loading && (
-        <Box className="flex justify-center py-8">
-          <CircularProgress />
-        </Box>
-      )}
+      {/* Loading */}
+      <GlobalLoading loading={auth.loading} />
       
       {/* Empty state */}
       {!auth.loading && auth?.user?.addresses?.length === 0 && (

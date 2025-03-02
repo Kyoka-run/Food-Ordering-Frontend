@@ -1,11 +1,9 @@
 import {
   Avatar,
-  Backdrop,
   Box,
   Button,
   Card,
   CardHeader,
-  CircularProgress,
   IconButton,
   Table,
   TableBody,
@@ -26,11 +24,12 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { Add } from "@mui/icons-material";
+import GlobalLoading from "../../GlobalLoading";
 
 const MenuItemTable = ({ isDashboard, name }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { menu, ingredients, restaurant } = useSelector((store) => store);
+  const { menu, ingredients, restaurant } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
@@ -171,13 +170,8 @@ const MenuItemTable = ({ isDashboard, name }) => {
         </TableContainer>
       </Card>
 
-      {/* Loading backdrop shown during data fetching */}
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={menu.loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      {/* Loading */}
+      <GlobalLoading loading={menu.loading} />
     </Box>
   );
 };

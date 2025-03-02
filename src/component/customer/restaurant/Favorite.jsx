@@ -5,20 +5,17 @@ import {
   Box, 
   Typography,
 } from '@mui/material';
+import GlobalLoading from "../../GlobalLoading";
 
 const Favorite = () => {
-  const { auth } = useSelector(store => store);
+  const { auth } = useSelector((state) => state);
 
   return (
    <div>
     <h1 className='py-5 text-xl font-semibold text-center'>My Favorites</h1>
-    {/* Loading indicator */}
-    {auth.loading && (
-      <Box className="flex justify-center py-8">
-        <CircularProgress />
-      </Box>
-    )}
-      
+    {/* Loading */}
+    <GlobalLoading loading={auth.loading} />
+
     {/* Empty state */}
     {!auth.loading && auth.favorites.length === 0 && (
       <Box className="text-center py-8">

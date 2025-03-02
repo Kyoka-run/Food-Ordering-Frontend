@@ -5,7 +5,7 @@ import { createIngredient, updateIngredient } from '../../../redux/actions/ingre
 
 const IngredientForm = ({ handleClose, ingredient }) => {
   const dispatch = useDispatch();
-  const { restaurant, ingredients } = useSelector(store => store);
+  const { restaurant, ingredients } = useSelector((state) => state);
   const jwt = localStorage.getItem("jwt");
   const isEditMode = !!ingredient;
 

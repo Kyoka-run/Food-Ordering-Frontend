@@ -3,14 +3,9 @@ import { TextField, Button, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { createIngredientCategory, updateIngredientCategory } from '../../../redux/actions/ingredientActions';
 
-/**
- * Shared form component for creating and updating ingredient categories
- * @param {function} handleClose - Function to close the modal
- * @param {object} category - Ingredient category object for edit mode (null for create mode)
- */
 const IngredientCategoryForm = ({ handleClose, category }) => {
   const dispatch = useDispatch();
-  const { restaurant } = useSelector((state) => state);
+  const restaurantId = useSelector((state) => state.restaurant.usersRestaurant?.restaurantId);
   const jwt = localStorage.getItem("jwt");
   const isEditMode = !!category;
 
@@ -38,14 +33,14 @@ const IngredientCategoryForm = ({ handleClose, category }) => {
       // Update existing category
       const data = {
         ...formData,
-        restaurantId: restaurant.usersRestaurant?.restaurantId
+        restaurantId: restaurantId
       };
       dispatch(updateIngredientCategory({ data, jwt }));
     } else {
       // Create new category
       const data = {
         name: formData.name,
-        restaurantId: restaurant.usersRestaurant?.restaurantId,
+        restaurantId: restaurantId,
       };
       dispatch(createIngredientCategory({ data, jwt }));
     }
@@ -63,10 +58,11 @@ const IngredientCategoryForm = ({ handleClose, category }) => {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-5" data-testid="ingredient-category-form">
       <Typography 
         variant="h6" 
         className="text-center text-gray-600 mb-6"
+        data-testid="form-title"
       >
         {isEditMode ? 'Update Ingredient Category' : 'Create Ingredient Category'}
       </Typography>
@@ -81,6 +77,7 @@ const IngredientCategoryForm = ({ handleClose, category }) => {
           required
           variant="outlined"
           className="mb-4"
+          inputProps={{ "data-testid": "category-name-input" }}
         />
         
         <div className="flex justify-end space-x-2">
@@ -88,6 +85,7 @@ const IngredientCategoryForm = ({ handleClose, category }) => {
             onClick={handleClose}
             variant="outlined" 
             color="secondary"
+            data-testid="cancel-button"
           >
             Cancel
           </Button>
@@ -95,6 +93,7 @@ const IngredientCategoryForm = ({ handleClose, category }) => {
             type="submit" 
             variant="contained" 
             color="primary"
+            data-testid="submit-button"
           >
             {isEditMode ? 'Update' : 'Create'}
           </Button>

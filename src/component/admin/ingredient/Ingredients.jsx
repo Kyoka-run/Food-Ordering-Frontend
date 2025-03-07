@@ -29,10 +29,14 @@ import {
 import IngredientForm from "./IngredientForm";
 import IngredientCategoryForm from "./IngredientCategoryForm";
 import GlobalLoading from "../../GlobalLoading";
+import DeleteConfirmationDialog from "../../DeleteConfirmationDialog";
 
 const Ingredients = () => {
   const dispatch = useDispatch();
-  const { restaurant, ingredients } = useSelector((state) => state);
+  const restaurantId = useSelector((state) => state.restaurant.usersRestaurant?.restaurantId);
+  const ingredients = useSelector((state) => state.ingredients.ingredients);
+  const categories = useSelector((state) => state.ingredients.category);
+  const loading = useSelector((state) => state.ingredients.loading);
   const jwt = localStorage.getItem("jwt");
 
   // Modal states
@@ -41,37 +45,56 @@ const Ingredients = () => {
   const [selectedIngredient, setSelectedIngredient] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  // Delete confirmation dialog states
+  const [deleteIngredientDialogOpen, setDeleteIngredientDialogOpen] = useState(false);
+  const [deleteCategoryDialogOpen, setDeleteCategoryDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
   // Fetch ingredient data on component mount and when restaurant changes
   useEffect(() => {
-    if (restaurant.usersRestaurant) {
+    if (restaurantId) {
       dispatch(getIngredientCategory({ 
         jwt, 
-        id: restaurant.usersRestaurant?.restaurantId 
+        id: restaurantId 
       }));
       dispatch(getIngredientsOfRestaurant({ 
         jwt, 
-        id: restaurant.usersRestaurant?.restaurantId 
+        id: restaurantId 
       }));
     }
-  }, [restaurant.usersRestaurant, dispatch, jwt]);
+  }, [restaurantId, dispatch, jwt]);
 
   // Toggle ingredient stock status
   const handleUpdateStock = (ingredientsItemId) => {
     dispatch(updateStockOfIngredient({ ingredientsItemId, jwt }));
   };
 
-  // Delete an ingredient
-  const handleDeleteIngredient = (ingredientsItemId) => {
-    if (window.confirm("Are you sure you want to delete this ingredient?")) {
-      dispatch(deleteIngredient({ ingredientsItemId, jwt }));
-    }
+  // Delete an ingredient (opens dialog)
+  const handleDeleteIngredientClick = (ingredient) => {
+    setItemToDelete(ingredient);
+    setDeleteIngredientDialogOpen(true);
   };
 
-  // Delete a category
-  const handleDeleteCategory = (ingredientCategoryId) => {
-    if (window.confirm("Are you sure you want to delete this category? This will affect all ingredients in this category.")) {
-      dispatch(deleteIngredientCategory({ ingredientCategoryId, jwt }));
+  // Delete a category (opens dialog)
+  const handleDeleteCategoryClick = (category) => {
+    setItemToDelete(category);
+    setDeleteCategoryDialogOpen(true);
+  };
+
+  // Confirm delete ingredient
+  const handleConfirmIngredientDelete = () => {
+    if (itemToDelete) {
+      dispatch(deleteIngredient({ ingredientsItemId: itemToDelete.ingredientsItemId, jwt }));
     }
+    setDeleteIngredientDialogOpen(false);
+  };
+
+  // Confirm delete category
+  const handleConfirmCategoryDelete = () => {
+    if (itemToDelete) {
+      dispatch(deleteIngredientCategory({ ingredientCategoryId: itemToDelete.ingredientCategoryId, jwt }));
+    }
+    setDeleteCategoryDialogOpen(false);
   };
 
   // Modal handlers for Ingredients
@@ -97,7 +120,7 @@ const Ingredients = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4" data-testid="ingredients-container">
       <Grid container spacing={4}>
         {/* Ingredients Table */}
         <Grid item xs={12} lg={8}>
@@ -109,6 +132,7 @@ const Ingredients = () => {
               variant="contained"
               color="primary"
               onClick={() => handleOpenIngredientModal()}
+              data-testid="add-ingredient-button"
             >
               <Add />
             </IconButton>
@@ -117,9 +141,10 @@ const Ingredients = () => {
             <CardHeader
               title="Ingredients"
               className="border-b"
+              data-testid="ingredients-card-header"
             />
             <TableContainer component={Paper} className="max-h-[70vh]">
-              <Table stickyHeader aria-label="ingredients table">
+              <Table stickyHeader aria-label="ingredients table" data-testid="ingredients-table">
                 <TableHead>
                   <TableRow>
                     <TableCell className="font-medium">ID</TableCell>
@@ -130,55 +155,60 @@ const Ingredients = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {ingredients.ingredients.map((item) => (
-                    <TableRow
-                      hover
-                      key={item.ingredientsItemId}
-                      className="transition-colors hover:bg-gray-50"
-                    >
-                      <TableCell>{item.ingredientsItemId}</TableCell>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.ingredientCategoryName}</TableCell>
-                      <TableCell align="center">
-                        <Button
-                          onClick={() => handleUpdateStock(item.ingredientsItemId)}
-                          color={item.inStock ? "success" : "primary"}
-                          variant="outlined"
-                          size="small"
-                          className="min-w-24"
-                        >
-                          {item.inStock ? "In Stock" : "Out of Stock"}
-                        </Button>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                          <Tooltip title="Edit Ingredient">
-                            <IconButton 
-                              onClick={() => handleOpenIngredientModal(item)}
-                              color="primary"
-                              size="small"
-                              className="hover:bg-blue-50"
-                            >
-                              <Edit fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Delete Ingredient">
-                            <IconButton 
-                              onClick={() => handleDeleteIngredient(item.ingredientsItemId)}
-                              color="error"
-                              size="small"
-                              className="hover:bg-red-50"
-                            >
-                              <Delete fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {ingredients.ingredients.length === 0 && (
+                  {ingredients.length > 0 ? (
+                    ingredients.map((item) => (
+                      <TableRow
+                        hover
+                        key={item.ingredientsItemId}
+                        className="transition-colors hover:bg-gray-50"
+                        data-testid={`ingredient-row-${item.ingredientsItemId}`}
+                      >
+                        <TableCell>{item.ingredientsItemId}</TableCell>
+                        <TableCell data-testid={`ingredient-name-${item.ingredientsItemId}`}>{item.name}</TableCell>
+                        <TableCell data-testid={`ingredient-category-${item.ingredientsItemId}`}>{item.ingredientCategoryName}</TableCell>
+                        <TableCell align="center">
+                          <Button
+                            onClick={() => handleUpdateStock(item.ingredientsItemId)}
+                            color={item.inStock ? "success" : "primary"}
+                            variant="outlined"
+                            size="small"
+                            className="min-w-24"
+                            data-testid={`stock-button-${item.ingredientsItemId}`}
+                          >
+                            {item.inStock ? "In Stock" : "Out of Stock"}
+                          </Button>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                            <Tooltip title="Edit Ingredient">
+                              <IconButton 
+                                onClick={() => handleOpenIngredientModal(item)}
+                                color="primary"
+                                size="small"
+                                className="hover:bg-blue-50"
+                                data-testid={`edit-button-${item.ingredientsItemId}`}
+                              >
+                                <Edit fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete Ingredient">
+                              <IconButton 
+                                onClick={() => handleDeleteIngredientClick(item)}
+                                color="error"
+                                size="small"
+                                className="hover:bg-red-50"
+                                data-testid={`delete-button-${item.ingredientsItemId}`}
+                              >
+                                <Delete fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                      <TableCell colSpan={5} className="text-center py-8 text-gray-500" data-testid="no-ingredients-message">
                         No ingredients found. Create your first ingredient.
                       </TableCell>
                     </TableRow>
@@ -193,12 +223,13 @@ const Ingredients = () => {
         <Grid item xs={12} lg={4}>
           <Box className="flex justify-between items-center mb-2">
           <Typography variant="h5" className="mb-4">
-            Ingredient Categories Management
+            Categories
           </Typography>
             <IconButton
               variant="contained"
               color="primary"
               onClick={() => handleOpenCategoryModal()}
+              data-testid="add-category-button"
             >
               <Add />
             </IconButton>
@@ -208,9 +239,10 @@ const Ingredients = () => {
             <CardHeader
               title="Ingredient Categories"
               className="border-b"
+              data-testid="categories-card-header"
             />
             <TableContainer component={Paper} className="max-h-[70vh]">
-              <Table stickyHeader aria-label="categories table">
+              <Table stickyHeader aria-label="categories table" data-testid="categories-table">
                 <TableHead>
                   <TableRow>
                     <TableCell className="font-medium">ID</TableCell>
@@ -219,43 +251,47 @@ const Ingredients = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {ingredients.category?.map((item) => (
-                    <TableRow
-                      hover
-                      key={item.ingredientCategoryId}
-                      className="transition-colors hover:bg-gray-50"
-                    >
-                      <TableCell>{item.ingredientCategoryId}</TableCell>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell align="center">
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-                          <Tooltip title="Edit Category">
-                            <IconButton 
-                              onClick={() => handleOpenCategoryModal(item)}
-                              color="primary"
-                              size="small"
-                              className="hover:bg-blue-50"
-                            >
-                              <Edit fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Delete Category">
-                            <IconButton 
-                              onClick={() => handleDeleteCategory(item.ingredientCategoryId)}
-                              color="error"
-                              size="small"
-                              className="hover:bg-red-50"
-                            >
-                              <Delete fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {ingredients.category.length === 0 && (
+                  {categories.length > 0 ? (
+                    categories.map((item) => (
+                      <TableRow
+                        hover
+                        key={item.ingredientCategoryId}
+                        className="transition-colors hover:bg-gray-50"
+                        data-testid={`category-row-${item.ingredientCategoryId}`}
+                      >
+                        <TableCell>{item.ingredientCategoryId}</TableCell>
+                        <TableCell data-testid={`category-name-${item.ingredientCategoryId}`}>{item.name}</TableCell>
+                        <TableCell align="center">
+                          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+                            <Tooltip title="Edit Category">
+                              <IconButton 
+                                onClick={() => handleOpenCategoryModal(item)}
+                                color="primary"
+                                size="small"
+                                className="hover:bg-blue-50"
+                                data-testid={`edit-category-button-${item.ingredientCategoryId}`}
+                              >
+                                <Edit fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Delete Category">
+                              <IconButton 
+                                onClick={() => handleDeleteCategoryClick(item)}
+                                color="error"
+                                size="small"
+                                className="hover:bg-red-50"
+                                data-testid={`delete-category-button-${item.ingredientCategoryId}`}
+                              >
+                                <Delete fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
                     <TableRow>
-                      <TableCell colSpan={3} className="text-center py-8 text-gray-500">
+                      <TableCell colSpan={3} className="text-center py-8 text-gray-500" data-testid="no-categories-message">
                         No categories found. Create your first category.
                       </TableCell>
                     </TableRow>
@@ -268,13 +304,14 @@ const Ingredients = () => {
       </Grid>
 
       {/* Loading */}
-      <GlobalLoading loading={ingredients.loading} />
+      <GlobalLoading loading={loading} />
 
       {/* Ingredient Modal */}
       <Modal
         open={openIngredientModal}
         onClose={handleCloseIngredientModal}
         aria-labelledby="ingredient-modal-title"
+        data-testid="ingredient-modal"
       >
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-md">
           <IngredientForm 
@@ -289,6 +326,7 @@ const Ingredients = () => {
         open={openCategoryModal}
         onClose={handleCloseCategoryModal}
         aria-labelledby="category-modal-title"
+        data-testid="category-modal"
       >
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-md">
           <IngredientCategoryForm 
@@ -297,6 +335,28 @@ const Ingredients = () => {
           />
         </Box>
       </Modal>
+
+      {/* Delete Ingredient Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        open={deleteIngredientDialogOpen}
+        onClose={() => setDeleteIngredientDialogOpen(false)}
+        onConfirm={handleConfirmIngredientDelete}
+        title="Delete Ingredient"
+        itemName={itemToDelete?.name}
+        contentText="This ingredient will be permanently removed from your inventory."
+        data-testid="delete-ingredient-dialog"
+      />
+
+      {/* Delete Category Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        open={deleteCategoryDialogOpen}
+        onClose={() => setDeleteCategoryDialogOpen(false)}
+        onConfirm={handleConfirmCategoryDelete}
+        title="Delete Ingredient Category"
+        itemName={itemToDelete?.name}
+        contentText="This will permanently delete the category and may affect all ingredients in this category."
+        data-testid="delete-category-dialog"
+      />
     </div>
   );
 };

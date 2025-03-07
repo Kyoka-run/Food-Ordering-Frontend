@@ -43,7 +43,8 @@ const SuperAdminNavbar = () => {
       zIndex: 40,
       borderBottom: 1,
       borderColor: 'divider'
-    }}>
+    }}
+    data-testid="super-admin-navbar">
       <Tabs
         value={value}
         onChange={handleChange}
@@ -67,6 +68,7 @@ const SuperAdminNavbar = () => {
                 <span>{item.label}</span>
               </div>
             }
+            data-testid={`tab-${item.path || 'dashboard'}`}
           />
         ))}
         <Tab
@@ -77,6 +79,7 @@ const SuperAdminNavbar = () => {
               <span>Logout</span>
             </div>
           }
+          data-testid="tab-logout"
         />
       </Tabs>
     </Box>

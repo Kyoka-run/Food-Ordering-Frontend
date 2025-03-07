@@ -18,6 +18,7 @@ const AddressCard = ({
 
   return (
     <Card 
+      data-testid={`address-card-${address.addressId}`}
       className={`p-4 transition-all duration-200 ${
         selected 
           ? 'border-2 border-blue-500 shadow-lg bg-blue-50' 
@@ -33,13 +34,18 @@ const AddressCard = ({
         <Home color="primary" />
         <div className="flex-grow">
           <div className="flex justify-between items-start">
-            <Typography variant="subtitle1" className="font-medium">
+            <Typography 
+              variant="subtitle1" 
+              className="font-medium"
+              data-testid={`address-street-${address.addressId}`}
+            >
               {address.street}
             </Typography>
             {showActions && (
               <div className="flex gap-1">
                 <IconButton 
                   size="small" 
+                  data-testid={`edit-address-${address.addressId}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onEdit(address);
@@ -49,6 +55,7 @@ const AddressCard = ({
                 </IconButton>
                 <IconButton 
                   size="small" 
+                  data-testid={`delete-address-${address.addressId}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onDelete(address.addressId);
@@ -59,10 +66,18 @@ const AddressCard = ({
               </div>
             )}
           </div>
-          <Typography color="text.secondary" variant="body2">
+          <Typography 
+            color="text.secondary" 
+            variant="body2"
+            data-testid={`address-city-${address.addressId}`}
+          >
             {address.city}, {address.postalCode}
           </Typography>
-          <Typography color="text.secondary" variant="body2">
+          <Typography 
+            color="text.secondary" 
+            variant="body2"
+            data-testid={`address-country-${address.addressId}`}
+          >
             {address.country}
           </Typography>
         </div>

@@ -121,15 +121,16 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
   };
 
   return (
-    <div className="p-5 max-h-[80vh] overflow-y-auto">
+    <div className="p-5 max-h-[80vh] overflow-y-auto" data-testid="restaurant-form">
       <Typography 
         variant="h5" 
         className="text-center text-gray-600 mb-6"
+        data-testid="form-title"
       >
         {isEditMode ? 'Update Restaurant' : 'Create Restaurant'}
       </Typography>
       
-      <form className="space-y-4" onSubmit={handleFormSubmit}>
+      <form className="space-y-4" onSubmit={handleFormSubmit} data-testid="restaurant-form-element">
         <Grid container spacing={2}>
           {/* Image URL input and add button */}
           <Grid item xs={12}>
@@ -139,11 +140,13 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
                 label="Image URL"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
+                inputProps={{ "data-testid": "image-url-input" }}
               />
               <Button 
                 variant="outlined" 
                 onClick={handleAddImage}
                 sx={{ whiteSpace: 'nowrap' }}
+                data-testid="add-image-button"
               >
                 Add Image
               </Button>
@@ -152,12 +155,13 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
 
           {/* Images chips */}
           <Grid item xs={12}>
-            <Box className="flex flex-wrap gap-2">
+            <Box className="flex flex-wrap gap-2" data-testid="image-chips-container">
               {formData.images.map((url, index) => (
                 <Chip
                   key={index}
                   label={url}
                   onDelete={() => handleRemoveImage(index)}
+                  data-testid={`image-chip-${index}`}
                 />
               ))}
             </Box>
@@ -172,6 +176,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
               label="Restaurant Name"
               value={formData.name}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "restaurant-name-input" }}
             />
           </Grid>
 
@@ -186,6 +191,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
               rows={2}
               value={formData.description}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "restaurant-description-input" }}
             />
           </Grid>
 
@@ -198,6 +204,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
               label="Cuisine Type"
               value={formData.cuisineType}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "restaurant-cuisine-input" }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -208,6 +215,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
               label="Opening Hours"
               value={formData.openingHours}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "restaurant-hours-input" }}
             />
           </Grid>
 
@@ -220,6 +228,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
               label="Address"
               value={formData.address}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "restaurant-address-input" }}
             />
           </Grid>
 
@@ -233,6 +242,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
               type="email"
               value={formData.contactInformation.email}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "restaurant-email-input" }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -243,6 +253,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
               label="Mobile"
               value={formData.contactInformation.mobile}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "restaurant-mobile-input" }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -252,6 +263,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
               label="Twitter"
               value={formData.contactInformation.twitter}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "restaurant-twitter-input" }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -261,6 +273,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
               label="Instagram"
               value={formData.contactInformation.instagram}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "restaurant-instagram-input" }}
             />
           </Grid>
         </Grid>
@@ -271,6 +284,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
             onClick={handleClose}
             variant="outlined" 
             color="secondary"
+            data-testid="cancel-button"
           >
             Cancel
           </Button>
@@ -278,6 +292,7 @@ const RestaurantForm = ({ handleClose, restaurant }) => {
             type="submit" 
             variant="contained" 
             color="primary"
+            data-testid="submit-button"
           >
             {isEditMode ? 'Update' : 'Create'}
           </Button>

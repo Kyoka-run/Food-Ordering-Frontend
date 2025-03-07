@@ -179,6 +179,7 @@ export const updateRestaurantStatus = ({ restaurantId, jwt }) => async (dispatch
     dispatch(updateRestaurantStatusSuccess(response.data));
     const statusMessage = response.data.open ? "Restaurant is now open" : "Restaurant is now closed";
     toast.success(statusMessage);
+    dispatch(getAllRestaurants(jwt));
   } catch (error) {
     dispatch(updateRestaurantStatusFailure(error.message));
     toast.error("Failed to update restaurant status");

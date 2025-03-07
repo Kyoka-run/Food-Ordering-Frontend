@@ -27,14 +27,11 @@ const MenuProps = {
   },
 };
 
-/**
- * Shared form component for creating and updating menu items
- * @param {function} handleClose - Function to close the modal
- * @param {object} menuItem - Menu item object for edit mode (null for create mode)
- */
 const MenuItemForm = ({ handleClose, menuItem }) => {
   const dispatch = useDispatch();
-  const { restaurant, ingredients } = useSelector((state) => state);
+  const restaurantId = useSelector((state) => state.restaurant.usersRestaurant?.restaurantId);
+  const categories = useSelector((state) => state.restaurant.categories);
+  const ingredients = useSelector((state) => state.ingredients.ingredients);
   const jwt = localStorage.getItem("jwt");
   const isEditMode = !!menuItem;
 
@@ -45,13 +42,13 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
     price: "",
     category: "",
     image: "",
-    restaurantId: restaurant.usersRestaurant?.restaurantId || "",
+    restaurantId: restaurantId || "",
     vegetarian: true,
     seasonal: false,
     ingredients: []
   });
 
-  // Initialize form data when in edit mode
+  // Initialize form data when in edit mode or when restaurantId changes
   useEffect(() => {
     if (menuItem) {
       setFormData({
@@ -61,13 +58,18 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
         price: menuItem.price || "",
         category: menuItem.category || "",
         image: menuItem.image || "",
-        restaurantId: restaurant.usersRestaurant?.restaurantId || "",
+        restaurantId: restaurantId || "",
         vegetarian: menuItem.vegetarian ?? true,
         seasonal: menuItem.seasonal ?? false,
         ingredients: menuItem.ingredients || []
       });
+    } else if (restaurantId) {
+      setFormData(prev => ({
+        ...prev,
+        restaurantId
+      }));
     }
-  }, [menuItem, restaurant.usersRestaurant]);
+  }, [menuItem, restaurantId]);
 
   // Handle form submission
   const handleFormSubmit = (event) => {
@@ -101,10 +103,11 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
   };
 
   return (
-    <div className="p-5 max-h-[80vh] overflow-y-auto">
+    <div className="p-5 max-h-[80vh] overflow-y-auto" data-testid="menu-item-form">
       <Typography 
         variant="h5" 
         className="text-center text-gray-600 mb-6"
+        data-testid="form-title"
       >
         {isEditMode ? 'Update Menu Item' : 'Create Menu Item'}
       </Typography>
@@ -120,6 +123,7 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
               label="Image URL"
               value={formData.image}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "menu-item-image-input" }}
             />
           </Grid>
 
@@ -132,6 +136,7 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
               label="Name"
               value={formData.name}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "menu-item-name-input" }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -144,6 +149,7 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
               rows={2}
               value={formData.description}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "menu-item-description-input" }}
             />
           </Grid>
 
@@ -157,18 +163,21 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
               type="number"
               value={formData.price}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "menu-item-price-input" }}
             />
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth required>
-              <InputLabel>Food Category</InputLabel>
+              <InputLabel id="category-select-label">Food Category</InputLabel>
               <Select
+                labelId="category-select-label"
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
                 label="Food Category"
+                data-testid="menu-item-category-select"
               >
-                {restaurant.categories.map((item) => (
+                {categories.map((item) => (
                   <MenuItem key={item.categoryId} value={item}>
                     {item.name}
                   </MenuItem>
@@ -180,8 +189,9 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
           {/* Ingredients multiselect */}
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <InputLabel>Ingredients</InputLabel>
+              <InputLabel id="ingredients-select-label">Ingredients</InputLabel>
               <Select
+                labelId="ingredients-select-label"
                 multiple
                 name="ingredients"
                 value={formData.ingredients}
@@ -195,11 +205,13 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
                   </Box>
                 )}
                 MenuProps={MenuProps}
+                data-testid="menu-item-ingredients-select"
               >
-                {ingredients.ingredients?.map((item) => (
+                {ingredients?.map((item) => (
                   <MenuItem
                     key={item.ingredientsItemId}
                     value={item}
+                    data-testid={`ingredient-option-${item.ingredientsItemId}`}
                   >
                     {item.name}
                   </MenuItem>
@@ -211,12 +223,14 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
           {/* Vegetarian and seasonal toggles */}
           <Grid item xs={6}>
             <FormControl fullWidth required>
-              <InputLabel>Is Vegetarian</InputLabel>
+              <InputLabel id="vegetarian-select-label">Is Vegetarian</InputLabel>
               <Select
+                labelId="vegetarian-select-label"
                 name="vegetarian"
                 value={formData.vegetarian}
                 onChange={handleInputChange}
                 label="Is Vegetarian"
+                data-testid="menu-item-vegetarian-select"
               >
                 <MenuItem value={true}>Yes</MenuItem>
                 <MenuItem value={false}>No</MenuItem>
@@ -225,12 +239,14 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
           </Grid>
           <Grid item xs={6}>
             <FormControl fullWidth required>
-              <InputLabel>Is Seasonal</InputLabel>
+              <InputLabel id="seasonal-select-label">Is Seasonal</InputLabel>
               <Select
+                labelId="seasonal-select-label"
                 name="seasonal"
                 value={formData.seasonal}
                 onChange={handleInputChange}
                 label="Is Seasonal"
+                data-testid="menu-item-seasonal-select"
               >
                 <MenuItem value={true}>Yes</MenuItem>
                 <MenuItem value={false}>No</MenuItem>
@@ -245,6 +261,7 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
             onClick={handleClose}
             variant="outlined" 
             color="secondary"
+            data-testid="cancel-button"
           >
             Cancel
           </Button>
@@ -252,6 +269,7 @@ const MenuItemForm = ({ handleClose, menuItem }) => {
             type="submit" 
             variant="contained" 
             color="primary"
+            data-testid="submit-button"
           >
             {isEditMode ? 'Update' : 'Create'}
           </Button>

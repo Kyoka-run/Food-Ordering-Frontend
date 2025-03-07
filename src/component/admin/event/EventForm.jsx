@@ -14,7 +14,7 @@ import { createEvent, updateEvent } from '../../../redux/actions/restaurantActio
 
 const EventForm = ({ handleClose, event }) => {
   const dispatch = useDispatch();
-  const { restaurant } = useSelector((state) => state);
+  const restaurantId = useSelector((state) => state.restaurant.usersRestaurant?.restaurantId);
   const jwt = localStorage.getItem("jwt");
   const isEditMode = !!event;
 
@@ -62,7 +62,7 @@ const EventForm = ({ handleClose, event }) => {
       ...formData,
       startTime: formData.startTime ? formData.startTime.format('YYYY-MM-DDTHH:mm:ss') : null,
       endTime: formData.endTime ? formData.endTime.format('YYYY-MM-DDTHH:mm:ss') : null,
-      restaurantId: restaurant.usersRestaurant?.restaurantId
+      restaurantId: restaurantId
     };
     
     if (isEditMode) {
@@ -84,10 +84,11 @@ const EventForm = ({ handleClose, event }) => {
   };
 
   return (
-    <Box className="p-5 max-h-[80vh] overflow-y-auto">
+    <Box className="p-5 max-h-[80vh] overflow-y-auto" data-testid="event-form">
       <Typography 
         variant="h5" 
         className="text-center text-gray-600 mb-6"
+        data-testid="form-title"
       >
         {isEditMode ? 'Update Event' : 'Create New Event'}
       </Typography>
@@ -103,6 +104,7 @@ const EventForm = ({ handleClose, event }) => {
               required
               value={formData.image}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "event-image-input" }}
             />
           </Grid>
           
@@ -115,6 +117,7 @@ const EventForm = ({ handleClose, event }) => {
               required
               value={formData.name}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "event-name-input" }}
             />
           </Grid>
           
@@ -128,6 +131,7 @@ const EventForm = ({ handleClose, event }) => {
               fullWidth
               value={formData.description}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "event-description-input" }}
             />
           </Grid>
           
@@ -140,6 +144,7 @@ const EventForm = ({ handleClose, event }) => {
               required
               value={formData.location}
               onChange={handleInputChange}
+              inputProps={{ "data-testid": "event-location-input" }}
             />
           </Grid>
           
@@ -150,7 +155,12 @@ const EventForm = ({ handleClose, event }) => {
                 value={formData.startTime}
                 onChange={(newValue) => handleDateChange(newValue, "startTime")}
                 sx={{ width: "100%" }}
-                slotProps={{ textField: { fullWidth: true } }}
+                slotProps={{ 
+                  textField: { 
+                    fullWidth: true,
+                    inputProps: { "data-testid": "event-start-time-input" }
+                  } 
+                }}
               />
             </LocalizationProvider>
           </Grid>
@@ -162,7 +172,12 @@ const EventForm = ({ handleClose, event }) => {
                 value={formData.endTime}
                 onChange={(newValue) => handleDateChange(newValue, "endTime")}
                 sx={{ width: "100%" }}
-                slotProps={{ textField: { fullWidth: true } }}
+                slotProps={{ 
+                  textField: { 
+                    fullWidth: true,
+                    inputProps: { "data-testid": "event-end-time-input" }
+                  } 
+                }}
               />
             </LocalizationProvider>
           </Grid>
@@ -173,6 +188,7 @@ const EventForm = ({ handleClose, event }) => {
             onClick={handleClose}
             variant="outlined" 
             color="secondary"
+            data-testid="cancel-button"
           >
             Cancel
           </Button>
@@ -180,6 +196,7 @@ const EventForm = ({ handleClose, event }) => {
             type="submit" 
             variant="contained" 
             color="primary"
+            data-testid="submit-button"
           >
             {isEditMode ? 'Update Event' : 'Create Event'}
           </Button>

@@ -13,23 +13,8 @@ export const topMeels=[
   }
   ,
   {
-      image:"https://cdn.pixabay.com/photo/2015/10/01/14/26/fried-rice-967081_640.jpg",
-      title:"Fried Rice"
-  }
-  ,
-  {
       image:"https://cdn.pixabay.com/photo/2016/03/27/22/38/cake-1284548_640.jpg",
       title:"Cake"
-  }
-  ,
-  {
-      image:"https://cdn.pixabay.com/photo/2022/06/14/18/57/chicken-biryani-7262650_640.jpg",
-      title:"Biryani"
-  }
-  ,
-  {
-      image:"https://cdn.pixabay.com/photo/2012/07/09/07/16/thali-51996_1280.jpg",
-      title:'Thali'
   }
   ,
   {
@@ -45,9 +30,4 @@ export const topMeels=[
       image:"https://images.pexels.com/photos/2764905/pexels-photo-2764905.jpeg?auto=compress&cs=tinysrgb&w=600",
       title:"Noodles"
   },
-  {
-      image:"https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=600",
-      title:"Dosa"
-  },
-
 ]

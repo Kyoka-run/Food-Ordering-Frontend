@@ -9,7 +9,7 @@ import {
   Container,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../../redux/actions/authActions";
 
 const initialValues = {
@@ -26,28 +26,31 @@ const validationSchema = Yup.object({
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const loading = useSelector(state => state.auth.isLoading);
+  const error = useSelector(state => state.auth.error);
 
   // Handle form submission
-  const handleSubmit = (values, { setSubmitting, setStatus }) => {
-    try {
-      dispatch(loginUser({
-        data: values,
-        navigate: navigate
-      }));
-    } catch (error) {
-      setStatus({ error: "Login failed. Please try again." });
-    } finally {
-      setSubmitting(false);
-    }
+  const handleSubmit = (values, { setSubmitting }) => {
+    dispatch(loginUser({
+      data: values,
+      navigate: navigate
+    }));
+    setSubmitting(false);
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" data-testid="login-container">
       <CssBaseline />
       <div>
-        <Typography className="text-center" variant="h5">
+        <Typography className="text-center" variant="h5" data-testid="form-title">
           Login
         </Typography>
+
+        {error && (
+          <Typography color="error" variant="body2" className="mt-2" data-testid="error-message">
+            {error}
+          </Typography>
+        )}
 
         {/* Login Form */}
         <Formik
@@ -56,7 +59,7 @@ const Login = () => {
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
-            <Form className="space-y-4">
+            <Form className="space-y-4" data-testid="login-form">
               {/* Username Input */}
               <div className="mb-4">
                 <Field name="username">
@@ -69,6 +72,7 @@ const Login = () => {
                       error={meta.touched && Boolean(meta.error)}
                       helperText={meta.touched && meta.error}
                       autoComplete="username"
+                      inputProps={{ "data-testid": "username-input" }}
                     />
                   )}
                 </Field>
@@ -87,6 +91,7 @@ const Login = () => {
                       error={meta.touched && Boolean(meta.error)}
                       helperText={meta.touched && meta.error}
                       autoComplete="current-password"
+                      inputProps={{ "data-testid": "password-input" }}
                     />
                   )}
                 </Field>
@@ -98,17 +103,14 @@ const Login = () => {
                 fullWidth
                 variant="contained"
                 color="primary"
-                disabled={isSubmitting}
+                disabled={isSubmitting || loading}
                 sx={{ 
                   mt: 2, 
-                  padding: "1rem",
-                  '&:disabled': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                    color: 'rgba(0, 0, 0, 0.26)'
-                  }
+                  padding: "1rem"
                 }}
+                data-testid="login-button"
               >
-                {isSubmitting ? "Logging in..." : "Login"}
+                {loading ? "Logging in..." : "Login"}
               </Button>
 
               {/* Register Link */}
@@ -117,6 +119,7 @@ const Login = () => {
                 <Button 
                   onClick={() => navigate("/account/register")}
                   color="primary"
+                  data-testid="register-link"
                 >
                   Register
                 </Button>

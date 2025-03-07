@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import SuperAdminNavbar from "../component/superadmin/SuperAdminNavbar";
-import Customers from "../component/superadmin/Customers";
+import SuperAdminCustomer from "../component/superadmin/SuperAdminCustomer";
 import SuperAdminRestaurant from "../component/superadmin/SuperAdminRestaurant";
 import SuperAdminDashboard from "../component/superadmin/SuperAdminDashboard";
 import Navbar from "../component/Navbar";
@@ -17,7 +17,7 @@ const SuperAdminRouter = () => {
       <div className="lg:px-5 lg:py-5 justify-center">
         <Routes>
           <Route path="/" element={<SuperAdminDashboard />} />
-          <Route path="/customers" element={<Customers />} />
+          <Route path="/customers" element={<SuperAdminCustomer />} />
           <Route path="/restaurants" element={<SuperAdminRestaurant />} />
         </Routes>
       </div>

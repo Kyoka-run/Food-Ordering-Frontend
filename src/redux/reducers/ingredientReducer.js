@@ -68,10 +68,10 @@ const ingredientReducer = createReducer(initialState, (builder) => {
     .addCase(actions.updateStockSuccess, (state, action) => {
       state.update = action.payload;
       state.ingredients = state.ingredients.map((item) =>
-        item.cartItemId === action.payload.cartItemId ? action.payload : item
+        item.ingredientsItemId === action.payload.ingredientsItemId ? action.payload : item
       );
     })
-
+    
     // Update Ingredient
     .addCase(actions.updateIngredientRequest, (state) => {
       state.loading = true;

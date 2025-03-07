@@ -8,7 +8,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import EventIcon from "@mui/icons-material/Event";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useDispatch } from "react-redux";
-import { logout } from "../../../redux/actions/authActions";
+import { logoutUser } from "../../../redux/actions/authActions";
 
 const tabs = [
   { path: "my-profile", label: "Profile", icon: <AccountCircleIcon /> },
@@ -28,7 +28,7 @@ const ProfileNavbar = () => {
 
   const handleChange = (event, newPath) => {
     if (newPath === "logout") {
-      dispatch(logout());
+      dispatch(logoutUser(navigate));
       navigate("/");
     } else {
       navigate(`/my-profile/${newPath === "my-profile" ? "" : newPath}`);
@@ -44,7 +44,8 @@ const ProfileNavbar = () => {
       zIndex: 40,
       borderBottom: 1,
       borderColor: 'divider'
-    }}>
+    }}
+    data-testid="profile-navbar">
       <Tabs
         value={value}
         onChange={handleChange}
@@ -68,6 +69,7 @@ const ProfileNavbar = () => {
                 <span>{tab.label}</span>
               </div>
             }
+            data-testid={`tab-${tab.path}`}
           />
         ))}
         <Tab
@@ -78,6 +80,7 @@ const ProfileNavbar = () => {
               <span>Logout</span>
             </div>
           }
+          data-testid="tab-logout"
         />
       </Tabs>
     </Box>

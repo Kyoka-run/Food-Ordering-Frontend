@@ -14,8 +14,9 @@ import toast from 'react-hot-toast';
 const Cart = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
-  const { cart, auth } = useSelector((state) => state);
-  const amount = cartTotal(cart.cartItems);
+  const cartItems = useSelector((state) => state.cart.cartItems);
+  const addresses = useSelector((state) => state.auth.user?.addresses || []);
+  const amount = cartTotal(cartItems);
   
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -52,8 +53,8 @@ const Cart = () => {
       return;
     }
 
-    const firstRestaurantId = cart.cartItems[0]?.foodRestaurantId;
-    const allSameRestaurant = cart.cartItems.every(item => 
+    const firstRestaurantId = cartItems[0]?.foodRestaurantId;
+    const allSameRestaurant = cartItems.every(item => 
       item.foodRestaurantId === firstRestaurantId
     );
     
@@ -63,10 +64,10 @@ const Cart = () => {
     }
   
     const orderData = {
-      restaurantId: cart.cartItems[0]?.foodRestaurantId,
+      restaurantId: cartItems[0]?.foodRestaurantId,
       amount: amount + 5,
       addressId: selectedAddressId,
-      items: cart.cartItems.map(item => ({
+      items: cartItems.map(item => ({
         foodId: item.foodId,
         foodName: item.foodName,
         foodImage: item.foodImage,
@@ -80,9 +81,9 @@ const Cart = () => {
   };
 
   // Show empty cart message if no items
-  if (cart.cartItems.length === 0) {
+  if (cartItems.length === 0) {
     return (
-      <div className="flex h-[90vh] justify-center items-center">
+      <div className="flex h-[90vh] justify-center items-center" data-testid="empty-cart">
         <div className="text-center space-y-5">
           <RemoveShoppingCart className="w-40 h-40" />
           <Typography variant="h4">Your Cart Is Empty</Typography>
@@ -92,24 +93,24 @@ const Cart = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8" data-testid="cart-container">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Cart Items Section */}
-        <div className="lg:w-2/3">
+        <div className="lg:w-2/3" data-testid="cart-items-section">
           <Typography variant="h5" className="mb-6">Shopping Cart</Typography>
           <div className="space-y-4">
-            {cart.cartItems.map((item) => (
+            {cartItems.map((item) => (
               <CartItemCard key={item.cartItemId} item={item} />
             ))}
           </div>
 
           {/* Order Summary */}
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+          <div className="mt-8 p-4 bg-gray-50 rounded-lg" data-testid="order-summary">
             <Typography variant="h6" className="mb-4">Order Summary</Typography>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Items Total</span>
-                <span>€{cartTotal(cart.cartItems)}</span>
+                <span data-testid="items-total">€{cartTotal(cartItems)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Delivery Fee</span>
@@ -126,18 +127,18 @@ const Cart = () => {
               <Divider />
               <div className="flex justify-between font-semibold">
                 <span>Total</span>
-                <span>€{amount + 5}</span>
+                <span data-testid="order-total">€{amount + 5}</span>
               </div>
             </div>
           </div>
         </div>
 
         {/* Address Selection Section */}
-        <div className="lg:w-1/3">
+        <div className="lg:w-1/3" data-testid="address-section">
           <Typography variant="h6" className="mb-4">Delivery Address</Typography>
           <p className="text-gray-600">Select a delivery address or add a new one</p>
           <div className="grid grid-cols-1 gap-4 mt-4">
-            {auth?.user?.addresses?.map((item) => (
+            {addresses.map((item) => (
               <AddressCard
                 key={item.addressId}
                 address={item}
@@ -145,6 +146,7 @@ const Cart = () => {
                 onSelect={handleAddressSelect}
                 onEdit={() => handleEdit(item)}
                 onDelete={() => handleDelete(item.addressId)}
+                data-testid={`address-card-${item.addressId}`}
               />
             ))}
             
@@ -155,6 +157,7 @@ const Cart = () => {
                 setEditingAddress(null);
                 setModalOpen(true);
               }}
+              data-testid="add-address-button"
             >
               <div className="text-center">
                 <div className="text-3xl mb-2">+</div>
@@ -187,6 +190,7 @@ const Cart = () => {
             className="w-full mt-6 py-3 px-4 bg-primary text-white rounded-lg 
                      disabled:bg-gray-300 disabled:cursor-not-allowed
                      hover:bg-primary-dark transition-colors"
+            data-testid="place-order-button"
           >
             Place Order
           </button>

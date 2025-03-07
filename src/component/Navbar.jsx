@@ -17,8 +17,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
 
   const navigateToProfile = () => {
     navigate("/my-profile");
@@ -29,12 +27,13 @@ const Navbar = () => {
   const isSuperAdmin = user?.roles?.includes("ROLE_ADMIN");
 
   return (
-    <div className="h-16 px-5 z-50 bg-[#ff6f00] flex justify-between items-center">
+    <div className="h-16 px-5 z-50 bg-[#ff6f00] flex justify-between items-center" data-testid="navbar">
       {/* Logo section */}
       <div className="flex items-center space-x-4">
         <div
           onClick={() => navigate("/")}
           className="lg:mr-10 cursor-pointer flex items-center space-x-4"
+          data-testid="navbar-logo"
         >
           <span className="logo font-semibold text-gray-100 text-2xl text-center">
             Home
@@ -46,7 +45,10 @@ const Navbar = () => {
       <div className="flex items-center space-x-1 lg:space-x-7">
         {/* Search button */}
         <div className="">
-          <IconButton onClick={() => navigate("/search")}>
+          <IconButton 
+            onClick={() => navigate("/search")} 
+            data-testid="search-button"
+          >
             <SearchIcon sx={{ fontSize: "1.5rem", color: "white" }} />
           </IconButton>
         </div>
@@ -56,6 +58,7 @@ const Navbar = () => {
           <Button
             className="text-white hover:text-gray-300"
             onClick={() => navigate("/admin/restaurant")}
+            data-testid="admin-button"
           >
             My Restaurant
           </Button>
@@ -66,6 +69,7 @@ const Navbar = () => {
           <Button
             className="text-white hover:text-gray-300"
             onClick={() => navigate("/super-admin")}
+            data-testid="super-admin-button"
           >
             Admin
           </Button>
@@ -78,6 +82,7 @@ const Navbar = () => {
             <span
               onClick={navigateToProfile}
               className="font-semibold cursor-pointer"
+              data-testid="user-avatar"
             >
               <Avatar sx={{ bgcolor: "white", color: pink.A400 }} className="bg-white">
                 {user.username[0].toUpperCase()}
@@ -85,15 +90,21 @@ const Navbar = () => {
             </span>
           ) : (
             // Show login icon for guests
-            <IconButton onClick={() => navigate("/account/login")}>
+            <IconButton 
+              onClick={() => navigate("/account/login")}
+              data-testid="login-button"
+            >
               <PersonIcon sx={{ fontSize: "2rem", color: "white" }} />
             </IconButton>
           )}
         </div>
 
         {/* Shopping cart button with item count */}
-        <IconButton onClick={() => navigate("/cart")}>
-          <Badge color="error" badgeContent={cartItems.length}>
+        <IconButton 
+          onClick={() => navigate("/cart")}
+          data-testid="cart-button"
+        >
+          <Badge color="error" badgeContent={cartItems.length} data-testid="cart-badge">
             <ShoppingCartIcon sx={{ fontSize: "2rem", color: "white" }} />
           </Badge>
         </IconButton>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import {
@@ -14,7 +14,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../../redux/actions/authActions";
 
 const initialValues = {
@@ -46,40 +46,44 @@ const validationSchema = Yup.object({
 const Registration = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [submitLoader, setSubmitLoader] = useState(false);
+  const error = useSelector(state => state.auth.error);
 
-  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
+  const handleSubmit = async (values) => {
+    setSubmitLoader(true);
     try {
       await dispatch(registerUser({
         userData: values,
         navigate,
-        setLoader: setSubmitting,
-        toast: {
-          success: (msg) => setStatus({ success: msg }),
-          error: (msg) => setStatus({ error: msg })
-        }
+        setLoader: setSubmitLoader,
+        reset: () => {}
       }));
-    } catch (error) {
-      setStatus({ error: "Registration failed. Please try again." });
     } finally {
-      setSubmitting(false);
+      setSubmitLoader(false);
     }
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" data-testid="register-container">
       <CssBaseline />
       <div>
-        <Typography className="text-center" variant="h5" gutterBottom>
+        <Typography className="text-center" variant="h5" gutterBottom data-testid="form-title">
           Register
         </Typography>
+
+        {error && (
+          <Typography color="error" variant="body2" className="mt-2" data-testid="error-message">
+            {error}
+          </Typography>
+        )}
 
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
-            <Form className="space-y-4">
+          {({ isSubmitting, values, setFieldValue }) => (
+            <Form className="space-y-4" data-testid="register-form">
 
               {/* Username Input */}
               <div className="mb-4">
@@ -92,6 +96,7 @@ const Registration = () => {
                       label="Username"
                       error={meta.touched && Boolean(meta.error)}
                       helperText={meta.touched && meta.error}
+                      inputProps={{ "data-testid": "username-input" }}
                     />
                   )}
                 </Field>
@@ -109,6 +114,7 @@ const Registration = () => {
                       error={meta.touched && Boolean(meta.error)}
                       helperText={meta.touched && meta.error}
                       autoComplete="email"
+                      inputProps={{ "data-testid": "email-input" }}
                     />
                   )}
                 </Field>
@@ -126,6 +132,7 @@ const Registration = () => {
                       label="Password"
                       error={meta.touched && Boolean(meta.error)}
                       helperText={meta.touched && meta.error}
+                      inputProps={{ "data-testid": "password-input" }}
                     />
                   )}
                 </Field>
@@ -134,7 +141,7 @@ const Registration = () => {
               {/* Role Selection */}
               <div className="mb-4">
                 <Field name="role">
-                  {({ field, meta, form }) => (
+                  {({ field, meta }) => (
                     <FormControl 
                       fullWidth 
                       variant="outlined"
@@ -146,9 +153,10 @@ const Registration = () => {
                         label="Role"
                         multiple
                         value={field.value}
-                        onChange={(e) => form.setFieldValue('role', e.target.value)}
+                        onChange={(e) => setFieldValue('role', e.target.value)}
                         onBlur={field.onBlur}
                         name={field.name}
+                        inputProps={{ "data-testid": "role-input" }}
                       >
                         <MenuItem value="customer">Customer</MenuItem>
                         <MenuItem value="owner">Restaurant Owner</MenuItem>
@@ -168,17 +176,14 @@ const Registration = () => {
                 fullWidth
                 variant="contained"
                 color="primary"
-                disabled={isSubmitting}
+                disabled={isSubmitting || submitLoader}
                 sx={{ 
                   mt: 2, 
-                  padding: "1rem",
-                  '&:disabled': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                    color: 'rgba(0, 0, 0, 0.26)'
-                  }
+                  padding: "1rem"
                 }}
+                data-testid="register-button"
               >
-                {isSubmitting ? "Registering..." : "Register"}
+                {submitLoader ? "Registering..." : "Register"}
               </Button>
 
               {/* Login Link */}
@@ -187,6 +192,7 @@ const Registration = () => {
                 <Button 
                   onClick={() => navigate("/account/login")}
                   color="primary"
+                  data-testid="login-link"
                 >
                   Login
                 </Button>

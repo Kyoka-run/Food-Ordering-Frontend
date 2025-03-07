@@ -2,18 +2,16 @@ import React from 'react';
 import { Card, Grid, Typography, Box } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import PeopleIcon from '@mui/icons-material/People';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import StorefrontIcon from '@mui/icons-material/Storefront';
 import { useSelector } from 'react-redux';
 
 const DashboardCard = ({ title, value, icon, color }) => (
-  <Card className="p-5">
+  <Card className="p-5" data-testid={`dashboard-card-${title.toLowerCase().replace(/\s+/g, '-')}`}>
     <div className="flex justify-between items-center">
       <div>
         <Typography variant="subtitle1" color="textSecondary">
           {title}
         </Typography>
-        <Typography variant="h4" className="mt-2">
+        <Typography variant="h4" className="mt-2" data-testid={`${title.toLowerCase().replace(/\s+/g, '-')}-count`}>
           {value}
         </Typography>
       </div>
@@ -29,27 +27,27 @@ const DashboardCard = ({ title, value, icon, color }) => (
 );
 
 const SuperAdminDashboard = () => {
-  const { restaurants } = useSelector(state => state.restaurant);
-  const { customers } = useSelector(state => state.superAdmin);
+  const restaurantsCount = useSelector(state => state.restaurant.restaurants?.length || 0);
+  const customersCount = useSelector(state => state.superAdmin.customers?.length || 0);
 
   const dashboardItems = [
     {
       title: "Total Restaurants",
-      value: restaurants?.length || 0,
+      value: restaurantsCount,
       icon: <RestaurantIcon />,
       color: "#ff6f00"
     },
     {
       title: "Total Customers",
-      value: customers?.length || 0,
+      value: customersCount,
       icon: <PeopleIcon />,
       color: "#2196f3"
-    },
+    }
   ];
 
   return (
-    <div className="p-8">
-      <Typography variant="h4" className="mb-6">
+    <div className="p-8" data-testid="super-admin-dashboard">
+      <Typography variant="h4" className="mb-6" data-testid="dashboard-title">
         Dashboard Overview
       </Typography>
       
@@ -65,7 +63,7 @@ const SuperAdminDashboard = () => {
         <Typography variant="h5" className="mb-4">
           Recent Activities
         </Typography>
-        <Card className="p-4">
+        <Card className="p-4" data-testid="recent-activities-card">
           <Typography color="textSecondary">
             No recent activities to display
           </Typography>

@@ -35,7 +35,8 @@ const orderStatusOptions = [
 
 const OrderTable = ({ isDashboard, title }) => {
   const dispatch = useDispatch();
-  const { restaurantsOrder } = useSelector((state) => state);
+  const orders = useSelector((state) => state.restaurantsOrder.orders);
+  const loading = useSelector((state) => state.restaurantsOrder.loading);
   const jwt = localStorage.getItem("jwt");
   
   // Status menu state for each order
@@ -90,10 +91,11 @@ const OrderTable = ({ isDashboard, title }) => {
   };
 
   return (
-    <Card className="shadow-md">
+    <Card className="shadow-md" data-testid="order-table">
       <CardHeader
         title={title || "Orders"}
         className="border-b"
+        data-testid="order-table-header"
       />
       <TableContainer component={Paper} className="max-h-[70vh]">
         <Table stickyHeader>
@@ -111,9 +113,9 @@ const OrderTable = ({ isDashboard, title }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {restaurantsOrder.orders.length > 0 ? (
-              restaurantsOrder.orders
-                .slice(0, isDashboard ? 5 : restaurantsOrder.orders.length)
+            {orders.length > 0 ? (
+              orders
+                .slice(0, isDashboard ? 5 : orders.length)
                 .map((order) => (
                   <React.Fragment key={order.orderId}>
                     {/* Main Order Row */}
@@ -121,6 +123,7 @@ const OrderTable = ({ isDashboard, title }) => {
                       hover
                       onClick={() => toggleRowExpansion(order.orderId)} 
                       className={`cursor-pointer transition-colors hover:bg-gray-50 ${expandedRows[order.orderId] ? 'bg-gray-50' : ''}`}
+                      data-testid={`order-row-${order.orderId}`}
                     >
                       <TableCell padding="checkbox">
                         <IconButton
@@ -130,13 +133,14 @@ const OrderTable = ({ isDashboard, title }) => {
                             e.stopPropagation();
                             toggleRowExpansion(order.orderId);
                           }}
+                          data-testid={`expand-button-${order.orderId}`}
                         >
                           {expandedRows[order.orderId] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                         </IconButton>
                       </TableCell>
-                      <TableCell>#{order.orderId}</TableCell>
+                      <TableCell data-testid={`order-id-${order.orderId}`}>#{order.orderId}</TableCell>
                       <TableCell>
-                        <Typography variant="body2" className="font-medium">
+                        <Typography variant="body2" className="font-medium" data-testid={`restaurant-name-${order.orderId}`}>
                           {order.restaurantName}
                         </Typography>
                         <Typography variant="caption" className="text-gray-500">
@@ -144,7 +148,7 @@ const OrderTable = ({ isDashboard, title }) => {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <AvatarGroup max={3} className="justify-start">
+                        <AvatarGroup max={3} className="justify-end">
                           {order.items.map((item) => (
                             <Tooltip 
                               key={item.orderItemId || item.foodId} 
@@ -158,16 +162,13 @@ const OrderTable = ({ isDashboard, title }) => {
                             </Tooltip>
                           ))}
                         </AvatarGroup>
-                        <Typography variant="caption" display="block" className="mt-1">
+                        <Typography variant="caption" display="block" className="mt-1" data-testid={`item-count-${order.orderId}`}>
                           {order.items.length} item(s)
                         </Typography>
                       </TableCell>
-                      <TableCell>
+                      <TableCell data-testid={`order-amount-${order.orderId}`}>
                         <Typography variant="body2" className="font-medium">
                           €{order.amount || order.totalAmount}
-                        </Typography>
-                        <Typography variant="caption" className="text-gray-500">
-                          {order.paymentStatus || "Not Processed"}
                         </Typography>
                       </TableCell>
                       <TableCell align="center">
@@ -176,6 +177,7 @@ const OrderTable = ({ isDashboard, title }) => {
                           color={getStatusChipColor(order.orderStatus)}
                           size="small"
                           className="min-w-24"
+                          data-testid={`status-chip-${order.orderId}`}
                         />
                       </TableCell>
                       {!isDashboard && (
@@ -184,6 +186,7 @@ const OrderTable = ({ isDashboard, title }) => {
                             variant="outlined"
                             size="small"
                             onClick={(e) => handleOpenStatusMenu(e, order.orderId)}
+                            data-testid={`status-button-${order.orderId}`}
                           >
                             Update Status
                           </Button>
@@ -192,6 +195,7 @@ const OrderTable = ({ isDashboard, title }) => {
                             open={Boolean(statusMenuAnchor[order.orderId])}
                             onClose={() => handleCloseStatusMenu(order.orderId)}
                             onClick={(e) => e.stopPropagation()}
+                            data-testid={`status-menu-${order.orderId}`}
                           >
                             {orderStatusOptions.map((option) => (
                               <MenuItem
@@ -199,6 +203,7 @@ const OrderTable = ({ isDashboard, title }) => {
                                 onClick={() => handleUpdateOrderStatus(order.orderId, option.value)}
                                 disabled={order.orderStatus === option.value}
                                 selected={order.orderStatus === option.value}
+                                data-testid={`status-option-${order.orderId}-${option.value}`}
                               >
                                 {option.label}
                               </MenuItem>
@@ -212,7 +217,7 @@ const OrderTable = ({ isDashboard, title }) => {
                     <TableRow>
                       <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={isDashboard ? 6 : 7}>
                         <Collapse in={expandedRows[order.orderId]} timeout="auto" unmountOnExit>
-                          <Box className="p-4">
+                          <Box className="p-4" data-testid={`expanded-details-${order.orderId}`}>
                             <Typography variant="subtitle2" className="mb-2 font-medium">
                               Order Items
                             </Typography>
@@ -229,7 +234,7 @@ const OrderTable = ({ isDashboard, title }) => {
                               </TableHead>
                               <TableBody>
                                 {order.items.map((item) => (
-                                  <TableRow key={item.orderItemId || item.foodId}>
+                                  <TableRow key={item.orderItemId || item.foodId} data-testid={`order-item-${item.orderItemId || item.foodId}`}>
                                     <TableCell>
                                       <Avatar 
                                         src={item.foodImage} 
@@ -267,6 +272,7 @@ const OrderTable = ({ isDashboard, title }) => {
                 <TableCell 
                   colSpan={isDashboard ? 6 : 7} 
                   className="text-center py-8 text-gray-500"
+                  data-testid="no-orders-message"
                 >
                   No orders found.
                 </TableCell>
@@ -276,7 +282,7 @@ const OrderTable = ({ isDashboard, title }) => {
         </Table>
       </TableContainer>
 
-      <GlobalLoading loading={restaurantsOrder.loading} />
+      <GlobalLoading loading={loading} />
     </Card>
   );
 };

@@ -8,8 +8,9 @@ import {
 import GlobalLoading from "../../GlobalLoading";
 
 const Favorite = () => {
-  const { auth } = useSelector((state) => state);
-
+  const loading = useSelector((state) => state.auth.loading);
+  const favorites = useSelector((state) => state.auth.favorites);
+  
   return (
    <div>
     <h1 className='py-5 text-xl font-semibold text-center'>My Favorites</h1>
@@ -17,7 +18,7 @@ const Favorite = () => {
     <GlobalLoading loading={auth.loading} />
 
     {/* Empty state */}
-    {!auth.loading && auth.favorites.length === 0 && (
+    {!loading && auth.favorites.length === 0 && (
       <Box className="text-center py-8">
         <Typography variant="body1" color="text.secondary">
           You haven't add any favorites yet.
@@ -26,7 +27,7 @@ const Favorite = () => {
     )}
     
     <div className='flex flex-wrap justify-center'>
-      {auth.favorites?.map((item) => (
+      {favorites?.map((item) => (
         <RestaurantCard key={item.restaurantId} data={item} />
       ))}
     </div>

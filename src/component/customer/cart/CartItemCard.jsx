@@ -32,7 +32,7 @@ const CartItemCard = ({ item }) => {
   };
 
   return (
-    <Card className="mb-4 mx-4">
+    <Card className="mb-4 mx-4" data-testid={`cart-item-${item.cartItemId}`}>
       <div className="p-4">
         {/* Item Details Row */}
         <div className="flex items-center gap-4">
@@ -41,13 +41,14 @@ const CartItemCard = ({ item }) => {
             className="w-20 h-20 object-cover rounded-lg shadow-sm"
             src={item.foodImage}
             alt={item.foodName}
+            data-testid={`item-image-${item.cartItemId}`}
           />
 
           {/* Item Info and Controls */}
           <div className="flex-grow flex justify-between items-center">
             <div className="space-y-2">
               {/* Food Name */}
-              <h3 className="font-medium text-lg">{item.foodName}</h3>
+              <h3 className="font-medium text-lg" data-testid={`item-name-${item.cartItemId}`}>{item.foodName}</h3>
 
               {/* Quantity Controls */}
               <div className="flex items-center gap-1">
@@ -56,11 +57,15 @@ const CartItemCard = ({ item }) => {
                   color="primary"
                   size="small"
                   className="hover:bg-blue-50"
+                  data-testid={`decrease-button-${item.cartItemId}`}
                 >
                   <RemoveCircleOutlineIcon />
                 </IconButton>
 
-                <span className="w-8 h-8 flex items-center justify-center font-medium">
+                <span 
+                  className="w-8 h-8 flex items-center justify-center font-medium"
+                  data-testid={`item-quantity-${item.cartItemId}`}
+                >
                   {item.quantity}
                 </span>
 
@@ -69,6 +74,7 @@ const CartItemCard = ({ item }) => {
                   color="primary"
                   size="small"
                   className="hover:bg-blue-50"
+                  data-testid={`increase-button-${item.cartItemId}`}
                 >
                   <AddCircleOutlineIcon />
                 </IconButton>
@@ -76,14 +82,17 @@ const CartItemCard = ({ item }) => {
             </div>
 
             {/* Price */}
-            <span className="text-lg font-semibold px-4">
+            <span 
+              className="text-lg font-semibold px-4"
+              data-testid={`item-price-${item.cartItemId}`}
+            >
               €{item.totalPrice}
             </span>
           </div>
         </div>
 
         {/* Ingredients Chips */}
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2" data-testid={`item-ingredients-${item.cartItemId}`}>
           {item.ingredients.map((ingredient, index) => (
             <Chip
               key={index}

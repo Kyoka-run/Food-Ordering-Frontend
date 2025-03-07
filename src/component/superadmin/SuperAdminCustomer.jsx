@@ -17,34 +17,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCustomers } from "../../redux/actions/superAdminActions";
 import GlobalLoading from "../GlobalLoading";
 
-const SuperAdminCustomerTable = ({ isDashboard }) => {
+const SuperAdminCustomer = ({ isDashboard }) => {
   const dispatch = useDispatch();
-  const { superAdmin } = useSelector((state) => state);
+  const customers = useSelector((state) => state.superAdmin.customers);
+  const loading = useSelector((state) => state.superAdmin.loading);
   const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
     dispatch(getCustomers(jwt));
-  }, [dispatch]);
-
-  const getRoleColor = (role) => {
-    switch (role) {
-      case "ROLE_CUSTOMER":
-        return "primary";
-      case "ROLE_RESTAURANT_OWNER":
-        return "secondary";
-      case "ROLE_ADMIN":
-        return "error";
-      default:
-        return "default";
-    }
-  };
+  }, [dispatch, jwt]);
 
   return (
-    <Box className="p-4">
+    <Box className="p-4" data-testid="customer-management">
       <Card>
         <CardHeader
           title={
-            <Typography variant="h5" className="text-gray-600">
+            <Typography variant="h5" className="text-gray-600" data-testid="card-title">
               Customer Management
             </Typography>
           }
@@ -52,9 +40,10 @@ const SuperAdminCustomerTable = ({ isDashboard }) => {
             pt: 2,
             "& .MuiCardHeader-action": { mt: 0.6 }
           }}
+          data-testid="card-header"
         />
         <TableContainer className="max-h-[70vh] overflow-auto">
-          <Table stickyHeader>
+          <Table stickyHeader data-testid="customers-table">
             <TableHead>
               <TableRow>
                 <TableCell>User</TableCell>
@@ -65,50 +54,52 @@ const SuperAdminCustomerTable = ({ isDashboard }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {superAdmin.customers.slice(0, isDashboard ? 5 : undefined).map((customer) => (
+              {customers.slice(0, isDashboard ? 5 : undefined).map((customer) => (
                 <TableRow
                   hover
                   key={customer.userId}
                   sx={{ "&:last-of-type td, &:last-of-type th": { border: 0 } }}
+                  data-testid={`customer-row-${customer.userId}`}
                 >
                   <TableCell>
                     <Box className="flex items-center gap-3">
-                      <Avatar sx={{ bgcolor: "#ff6f00" }}>
+                      <Avatar sx={{ bgcolor: "#ff6f00" }} data-testid={`customer-avatar-${customer.userId}`}>
                         {customer.username?.[0]?.toUpperCase()}
                       </Avatar>
-                      <Typography>{customer.username}</Typography>
+                      <Typography data-testid={`customer-name-${customer.userId}`}>{customer.username}</Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell align="center">{customer.userId}</TableCell>
-                  <TableCell align="center">
-                    {customer.roles?.map((role) => (
-                      <Chip
-                        key={role}
-                        label={role.replace('ROLE_', '')}
-                        color={getRoleColor(role)}
-                        size="small"
-                        className="m-1"
-                      />
-                    ))}
+                  <TableCell data-testid={`customer-email-${customer.userId}`}>{customer.email}</TableCell>
+                  <TableCell align="center" data-testid={`customer-id-${customer.userId}`}>{customer.userId}</TableCell>
+                  <TableCell align="center" data-testid={`customer-roles-${customer.userId}`}>
+                    {customer.roles?.join(", ")}
                   </TableCell>
                   <TableCell align="center">
                     <Chip
                       label={customer.status || "ACTIVE"}
                       color="success"
                       size="small"
+                      data-testid={`customer-status-${customer.userId}`}
                     />
                   </TableCell>
                 </TableRow>
               ))}
+              {customers.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-8 text-gray-500" data-testid="no-customers-message">
+                    No customers found.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       </Card>
 
-      <GlobalLoading loading={superAdmin.loading} />
+      {/* Loading */}
+      <GlobalLoading loading={loading} />
     </Box>
   );
 };
 
-export default SuperAdminCustomerTable;
+export default SuperAdminCustomer;

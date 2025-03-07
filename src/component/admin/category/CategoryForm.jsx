@@ -3,14 +3,9 @@ import { TextField, Button, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCategory, updateCategory } from '../../../redux/actions/restaurantActions';
 
-/**
- * Shared form component for creating and updating categories
- * @param {function} handleClose - Function to close the modal
- * @param {object} category - Category object for edit mode (null for create mode)
- */
 const CategoryForm = ({ handleClose, category }) => {
   const dispatch = useDispatch();
-  const { restaurant } = useSelector((state) => state);
+  const restaurantId = useSelector((state) => state.restaurant.usersRestaurant?.restaurantId);
   const jwt = localStorage.getItem("jwt");
   const isEditMode = !!category;
 
@@ -42,7 +37,7 @@ const CategoryForm = ({ handleClose, category }) => {
       const data = {
         name: formData.name,
         restaurant: {
-          restaurantId: restaurant.usersRestaurant?.restaurantId
+          restaurantId: restaurantId
         }
       };
       dispatch(createCategory({ reqData: data, jwt }));
@@ -61,10 +56,11 @@ const CategoryForm = ({ handleClose, category }) => {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-5" data-testid="category-form">
       <Typography 
         variant="h6" 
         className="text-center text-gray-600 mb-6"
+        data-testid="form-title"
       >
         {isEditMode ? 'Update Category' : 'Create Category'}
       </Typography>
@@ -79,6 +75,7 @@ const CategoryForm = ({ handleClose, category }) => {
           required
           variant="outlined"
           className="mb-4"
+          inputProps={{ "data-testid": "category-name-input" }}
         />
         
         <div className="flex justify-end space-x-2">
@@ -86,6 +83,7 @@ const CategoryForm = ({ handleClose, category }) => {
             onClick={handleClose}
             variant="outlined" 
             color="secondary"
+            data-testid="cancel-button"
           >
             Cancel
           </Button>
@@ -93,6 +91,7 @@ const CategoryForm = ({ handleClose, category }) => {
             type="submit" 
             variant="contained" 
             color="primary"
+            data-testid="submit-button"
           >
             {isEditMode ? 'Update' : 'Create'}
           </Button>

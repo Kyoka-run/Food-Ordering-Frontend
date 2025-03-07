@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import TodayIcon from '@mui/icons-material/Today';
-import MenuItemCard from "./menuItemCard";
+import MenuItemCard from "./MenuItemCard";
 import GlobalLoading from "../../GlobalLoading";
 import { useDispatch, useSelector } from "react-redux";
 import { getRestaurantById, getRestaurantsCategory } from "../../../redux/actions/restaurantActions";
@@ -28,25 +28,34 @@ const Restaurant = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { id } = useParams();
-  const { restaurant, menu } = useSelector((state) => state);
   const navigate = useNavigate();
+  
+  const restaurant = useSelector((state) => state.restaurant.restaurant);
+  const categories = useSelector((state) => state.restaurant.categories);
+  const menuItems = useSelector((state) => state.menu.menuItems);
+  const loading = useSelector((state) => 
+    state.restaurant.loading || state.menu.loading
+  );
+  
+  const jwt = useSelector((state) => state.auth.jwt);
 
+  // Get filter values from URL
   const decodedQueryString = decodeURIComponent(location.search);
   const searchParams = new URLSearchParams(decodedQueryString);
   const foodType = searchParams.get("food_type");
   const foodCategory = searchParams.get("food_category");
-  const jwt = localStorage.getItem("jwt")
 
+  // Fetch restaurant data and menu items on component mount or when filters change
   useEffect(() => {
     dispatch(
       getRestaurantById({
-        jwt: localStorage.getItem("jwt"),
+        jwt,
         restaurantId: id,
       })
     );
     dispatch(
       getMenuItemsByRestaurantId({
-        jwt: localStorage.getItem("jwt"),
+        jwt,
         restaurantId: id,
         seasonal: foodType==="seasonal",
         vegetarian: foodType==="vegetarian",
@@ -54,9 +63,10 @@ const Restaurant = () => {
         foodCategory: foodCategory || ""
       })
     );
-    dispatch(getRestaurantsCategory({restaurantId:id,jwt}))
-  }, [id,foodType,foodCategory]);
+    dispatch(getRestaurantsCategory({restaurantId:id, jwt}))
+  }, [id, foodType, foodCategory, dispatch, jwt]);
 
+  // Handle filter changes
   const handleFilter = (e, value) => {
     const searchParams = new URLSearchParams(location.search);
   
@@ -71,60 +81,67 @@ const Restaurant = () => {
   };
 
   return (
-    <>
+    <div data-testid="restaurant-page">
       <div className="px-5 lg:px-20 ">
+        {/* Restaurant Header Section */}
         <section>
-          <h1 className="text-gray-600 py-2 mt-10">
-            {restaurant.restaurant?.name}/
-            {restaurant.restaurant?.address}/Order Online
+          <h1 className="text-gray-600 py-2 mt-10" data-testid="restaurant-breadcrumb">
+            {restaurant?.name}/
+            {restaurant?.address}/Order Online
           </h1>
-          <div>
           
+          {/* Restaurant Images */}
+          <div data-testid="restaurant-images">
             <Grid container spacing={2}>
               <Grid item xs={12}>
-              <img
-              className="w-full h-[40vh] object-cover"
-              src={restaurant.restaurant?.images[0]}
-              alt=""
-            />
+                <img
+                  className="w-full h-[40vh] object-cover"
+                  src={restaurant?.images?.[0]}
+                  alt=""
+                  data-testid="restaurant-main-image"
+                />
               </Grid>
               <Grid item xs={12} lg={6}>
-              <img
-              className="w-full h-[40vh] object-cover"
-              src={restaurant.restaurant?.images[1]}
-              alt=""
-            />
+                <img
+                  className="w-full h-[40vh] object-cover"
+                  src={restaurant?.images?.[1]}
+                  alt=""
+                />
               </Grid>
               <Grid item xs={12} lg={6}>
-              <img
-              className="w-full h-[40vh] object-cover"
-              src={restaurant.restaurant?.images[2]}
-              alt=""
-            />
+                <img
+                  className="w-full h-[40vh] object-cover"
+                  src={restaurant?.images?.[2]}
+                  alt=""
+                />
               </Grid>
             </Grid>
           </div>
-          <div className="pt-3 pb-5">
-            <h1 className="text-4xl font-semibold">
-              {restaurant.restaurant?.name}
-            </h1>
-            <p className="text-gray-500 mt-1">{restaurant.restaurant?.description}</p>
-            <div className="space-y-3 mt-3">
-                <p className="text-gray-500 flex items-center gap-3">
-              <LocationOnIcon/> <span>{restaurant.restaurant?.address}
-                </span> 
-            </p>
-            <p className="flex items-center gap-3 text-gray-500">
-            <TodayIcon/> <span className=" text-orange-300"> {restaurant.restaurant?.openingHours} (Today)</span>  
-            </p>
-            </div>
           
+          {/* Restaurant Info */}
+          <div className="pt-3 pb-5" data-testid="restaurant-info">
+            <h1 className="text-4xl font-semibold" data-testid="restaurant-name">
+              {restaurant?.name}
+            </h1>
+            <p className="text-gray-500 mt-1" data-testid="restaurant-description">
+              {restaurant?.description}
+            </p>
+            <div className="space-y-3 mt-3">
+              <p className="text-gray-500 flex items-center gap-3" data-testid="restaurant-address">
+                <LocationOnIcon/> <span>{restaurant?.address}</span> 
+              </p>
+              <p className="flex items-center gap-3 text-gray-500" data-testid="restaurant-hours">
+                <TodayIcon/> <span className="text-orange-300">{restaurant?.openingHours} (Today)</span>  
+              </p>
+            </div>
           </div>
         </section>
         <Divider />
 
-        <section className="pt-[2rem] lg:flex relative ">
-          <div className="space-y-10 lg:w-[20%] filter">
+        {/* Menu and Filter Section */}
+        <section className="pt-[2rem] lg:flex relative" data-testid="menu-section">
+          {/* Filters Sidebar */}
+          <div className="space-y-10 lg:w-[20%] filter" data-testid="filter-sidebar">
             <div className="box space-y-5 lg:sticky top-28">
               
               <div className="">
@@ -144,32 +161,34 @@ const Restaurant = () => {
                         control={<Radio />}
                         label={item.label}
                         sx={{ color: "gray" }}
+                        data-testid={`food-type-${item.value}`}
                       />
                     ))}
                   </RadioGroup>
                   <Divider/>
                   <Typography sx={{ paddingBottom: "1rem" }} variant="h5">
-                  Food Category
-                </Typography>
+                    Food Category
+                  </Typography>
                   <RadioGroup
                     name="food_category"
                     value={foodCategory || "all"}
                     onChange={handleFilter}
                   >
                     <FormControlLabel
-                        
-                        value={"all"}
-                        control={<Radio />}
-                        label={"All"}
-                        sx={{ color: "gray" }}
-                      />
-                    {restaurant?.categories.map((item, index) => (
+                      value={"all"}
+                      control={<Radio />}
+                      label={"All"}
+                      sx={{ color: "gray" }}
+                      data-testid="food-category-all"
+                    />
+                    {categories.map((item, index) => (
                       <FormControlLabel
                         key={index}
                         value={item.name}
                         control={<Radio />}
                         label={item.name}
                         sx={{ color: "gray" }}
+                        data-testid={`food-category-${item.name}`}
                       />
                     ))}
                   </RadioGroup>
@@ -177,15 +196,25 @@ const Restaurant = () => {
               </div>
             </div>
           </div>
-          <div className="lg:w-[80%] space-y-5 lg:pl-10">
-            {menu?.menuItems.map((item) => (
-              <MenuItemCard item={item} key={item.foodId} />
-            ))}
+          
+          {/* Menu Items Section */}
+          <div className="lg:w-[80%] space-y-5 lg:pl-10" data-testid="menu-items-container">
+            {menuItems.length > 0 ? (
+              menuItems.map((item) => (
+                <MenuItemCard item={item} key={item.foodId} />
+              ))
+            ) : (
+              <Typography variant="body1" color="text.secondary" data-testid="no-menu-items">
+                No menu items found. Try changing your filters.
+              </Typography>
+            )}
           </div>
         </section>
       </div>
-      <GlobalLoading loading={menu.loading || restaurant.loading} />
-    </>
+      
+      {/* Loading Indicator */}
+      <GlobalLoading loading={loading} />
+    </div>
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { 
   Box, 
-  Button, 
   Card, 
   CardHeader, 
   IconButton, 
@@ -27,21 +26,28 @@ import {
 } from '../../../redux/actions/menuActions';
 import MenuItemForm from './MenuItemForm';
 import GlobalLoading from "../../GlobalLoading";
+import DeleteConfirmationDialog from "../../DeleteConfirmationDialog";
 
 const RestaurantsMenu = () => {
   const dispatch = useDispatch();
-  const { menu, restaurant } = useSelector((state) => state);
+  const menuItems = useSelector((state) => state.menu.menuItems);
+  const loading = useSelector((state) => state.menu.loading);
+  const restaurantId = useSelector((state) => state.restaurant.usersRestaurant?.restaurantId);
   const jwt = localStorage.getItem("jwt");
 
   // Modal state
   const [openModal, setOpenModal] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
 
+  // Delete confirmation dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+
   // Fetch menu items on component mount
   useEffect(() => {
-    if (restaurant.usersRestaurant) {
+    if (restaurantId) {
       dispatch(getMenuItemsByRestaurantId({
-        restaurantId: restaurant.usersRestaurant?.restaurantId,
+        restaurantId,
         jwt,
         seasonal: false,
         vegetarian: false,
@@ -49,7 +55,7 @@ const RestaurantsMenu = () => {
         foodCategory: ""
       }));
     }
-  }, [dispatch, restaurant.usersRestaurant, jwt]);
+  }, [dispatch, restaurantId, jwt]);
 
   // Modal handlers
   const handleOpenModal = (menuItem = null) => {
@@ -63,24 +69,33 @@ const RestaurantsMenu = () => {
   };
 
   // Menu item actions
-  const handleFoodAvailability = (foodId) => {
+  const handleUpdateAvailability = (foodId) => {
     dispatch(updateMenuItemsAvailability({ foodId, jwt }));
   };
 
-  const handleDeleteFood = (foodId) => {
-    if (window.confirm("Are you sure you want to delete this menu item?")) {
-      dispatch(deleteFoodAction({ foodId, jwt }));
+  // Handle delete button click (opens dialog)
+  const handleDeleteClick = (item) => {
+    setItemToDelete(item);
+    setDeleteDialogOpen(true);
+  };
+
+  // Handle confirmed deletion
+  const handleConfirmDelete = () => {
+    if (itemToDelete) {
+      dispatch(deleteFoodAction({ foodId: itemToDelete.foodId, jwt }));
     }
+    setDeleteDialogOpen(false);
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4" data-testid="restaurants-menu-container">
       <Box className="flex justify-between items-center mb-4">
         <Typography variant="h5">Menu Items</Typography>
         <IconButton
           variant="contained"
           color="primary"
           onClick={() => handleOpenModal()}
+          data-testid="add-menu-item-button"
         >
           <Add />
         </IconButton>
@@ -90,10 +105,11 @@ const RestaurantsMenu = () => {
         <CardHeader
           title="All Menu Items"
           className="border-b"
+          data-testid="menu-items-card-header"
         />
         
         <TableContainer component={Paper} className="max-h-[70vh]">
-          <Table stickyHeader aria-label="menu items table">
+          <Table stickyHeader aria-label="menu items table" data-testid="menu-items-table">
             <TableHead>
               <TableRow>
                 <TableCell>Image</TableCell>
@@ -105,31 +121,48 @@ const RestaurantsMenu = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {menu.menuItems.length > 0 ? (
-                menu.menuItems.map((item) => (
+              {menuItems.length > 0 ? (
+                menuItems.map((item) => (
                   <TableRow
                     key={item.foodId}
                     hover
                     className="transition-colors hover:bg-gray-50"
+                    data-testid={`menu-item-row-${item.foodId}`}
                   >
                     <TableCell>
-                      <Avatar alt={item.name} src={item.image} />
+                      <Avatar 
+                        alt={item.name} 
+                        src={item.image}
+                        data-testid={`menu-item-image-${item.foodId}`}
+                      />
                     </TableCell>
                     <TableCell>
-                      <Typography variant="subtitle2">{item.name}</Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography 
+                        variant="subtitle2"
+                        data-testid={`menu-item-name-${item.foodId}`}
+                      >
+                        {item.name}
+                      </Typography>
+                      <Typography 
+                        variant="caption" 
+                        color="text.secondary"
+                        data-testid={`menu-item-description-${item.foodId}`}
+                      >
                         {item.description}
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell data-testid={`menu-item-ingredients-${item.foodId}`}>
                       {item.ingredients && item.ingredients.map((ingredient, index) => (
-                        <span key={ingredient.ingredientsItemId}>
+                        <span key={ingredient.ingredientsItemId || index}>
                           {ingredient.name}
                           {index !== item.ingredients.length - 1 ? ', ' : ''}
                         </span>
                       ))}
                     </TableCell>
-                    <TableCell align="center">
+                    <TableCell 
+                      align="center"
+                      data-testid={`menu-item-price-${item.foodId}`}
+                    >
                       €{item.price}
                     </TableCell>
                     <TableCell align="center">
@@ -137,8 +170,9 @@ const RestaurantsMenu = () => {
                         label={item.available ? "In Stock" : "Out of Stock"}
                         color={item.available ? "success" : "error"}
                         size="small"
-                        onClick={() => handleFoodAvailability(item.foodId)}
+                        onClick={() => handleUpdateAvailability(item.foodId)}
                         className="cursor-pointer min-w-24"
+                        data-testid={`menu-item-availability-${item.foodId}`}
                       />
                     </TableCell>
                     <TableCell align="center">
@@ -148,15 +182,17 @@ const RestaurantsMenu = () => {
                             onClick={() => handleOpenModal(item)}
                             color="primary"
                             size="small"
+                            data-testid={`edit-button-${item.foodId}`}
                           >
                             <Edit fontSize="small" />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete Menu Item">
                           <IconButton
-                            onClick={() => handleDeleteFood(item.foodId)}
+                            onClick={() => handleDeleteClick(item)}
                             color="error"
                             size="small"
+                            data-testid={`delete-button-${item.foodId}`}
                           >
                             <Delete fontSize="small" />
                           </IconButton>
@@ -167,7 +203,7 @@ const RestaurantsMenu = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={6} className="text-center py-8 text-gray-500" data-testid="no-menu-items-message">
                     No menu items found. Create your first menu item.
                   </TableCell>
                 </TableRow>
@@ -178,13 +214,14 @@ const RestaurantsMenu = () => {
       </Card>
 
       {/* Loading */}
-      <GlobalLoading loading={menu.loading} />
+      <GlobalLoading loading={loading} />
 
       {/* Menu Item Form Modal */}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
         aria-labelledby="menu-item-modal-title"
+        data-testid="menu-item-modal"
       >
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-4xl">
           <MenuItemForm 
@@ -193,6 +230,17 @@ const RestaurantsMenu = () => {
           />
         </Box>
       </Modal>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Menu Item"
+        itemName={itemToDelete?.name}
+        contentText="This menu item will be permanently removed from your restaurant's offerings."
+        data-testid="delete-dialog"
+      />
     </div>
   );
 };

@@ -1,23 +1,37 @@
 import React, { useState } from 'react';
-import { Button, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import AddressCard from './AddressCard';
 import AddressForm from './AddressForm';
 import GlobalLoading from "../../GlobalLoading";
+import DeleteConfirmationDialog from "../../DeleteConfirmationDialog";
 import { deleteAddress } from '../../../redux/actions/addressActions';
 
 const UserAddress = () => {
   const dispatch = useDispatch();
-  const { auth } = useSelector(state => state);
+  const addresses = useSelector(state => state.auth.user?.addresses || []);
+  const loading = useSelector(state => state.address.loading);
   const jwt = localStorage.getItem('jwt');
   
   const [modalOpen, setModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
+  
+  // Delete confirmation dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState(null);
 
-  // Handle address deletion
-  const handleDelete = (addressId) => {
-    dispatch(deleteAddress({ addressId, jwt }));
+  // Handle delete button click (opens dialog)
+  const handleDeleteClick = (address) => {
+    setAddressToDelete(address);
+    setDeleteDialogOpen(true);
+  };
+
+  // Handle confirmed deletion
+  const handleConfirmDelete = () => {
+    if (addressToDelete) {
+      dispatch(deleteAddress({ addressId: addressToDelete, jwt }));
+    }
   };
 
   // Open modal with pre-filled data for editing
@@ -27,28 +41,29 @@ const UserAddress = () => {
   };
 
   return (
-    <div className="flex items-center flex-col">
-      <h1 className="text-xl text-center py-5 font-semibold">Addresses</h1>
+    <div className="flex items-center flex-col" data-testid="user-addresses-container">
+      <h1 className="text-xl text-center py-5 font-semibold" data-testid="page-title">Addresses</h1>
       
       {/* Loading */}
-      <GlobalLoading loading={auth.loading} />
+      <GlobalLoading loading={loading} />
       
       {/* Empty state */}
-      {!auth.loading && auth?.user?.addresses?.length === 0 && (
-        <Box className="text-center py-8">
+      {!loading && addresses.length === 0 && (
+        <Box className="text-center py-8" data-testid="no-addresses-message">
           <Typography variant="body1" color="text.secondary">
             You haven't created any addresses yet.
           </Typography>
         </Box>
       )}
       
-      <div className="flex justify-center flex-wrap gap-3">
-        {auth.user?.addresses.map((item) => (
+      <div className="flex justify-center flex-wrap gap-3" data-testid="addresses-list">
+        {addresses.map((item) => (
           <AddressCard 
             key={item.addressId}
             address={item} 
             onEdit={() => handleEdit(item)}
-            onDelete={() => handleDelete(item.addressId)}
+            onDelete={() => handleDeleteClick(item.addressId)}
+            data-testid={`address-card-${item.addressId}`}
           />
         ))}
 
@@ -59,6 +74,7 @@ const UserAddress = () => {
           }}
           startIcon={<Add />}
           variant="contained"
+          data-testid="add-address-button"
         >
           Add Address
         </Button>
@@ -72,6 +88,17 @@ const UserAddress = () => {
         }}
         initialValues={editingAddress}
         isEditing={!!editingAddress}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Address"
+        itemName={addresses.find(addr => addr.addressId === addressToDelete)?.street}
+        contentText="This address will be permanently removed from your account. If it's used by any existing order, deletion may fail."
+        data-testid="delete-dialog"
       />
     </div>
   );

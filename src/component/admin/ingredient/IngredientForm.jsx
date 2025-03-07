@@ -5,7 +5,8 @@ import { createIngredient, updateIngredient } from '../../../redux/actions/ingre
 
 const IngredientForm = ({ handleClose, ingredient }) => {
   const dispatch = useDispatch();
-  const { restaurant, ingredients } = useSelector((state) => state);
+  const restaurantId = useSelector((state) => state.restaurant.usersRestaurant?.restaurantId);
+  const categories = useSelector((state) => state.ingredients.category);
   const jwt = localStorage.getItem("jwt");
   const isEditMode = !!ingredient;
 
@@ -22,7 +23,7 @@ const IngredientForm = ({ handleClose, ingredient }) => {
       setFormData({
         ingredientsItemId: ingredient.ingredientsItemId || '',
         name: ingredient.name || '',
-        ingredientCategoryId: ingredient.category?.ingredientCategoryId || '',
+        ingredientCategoryId: ingredient.category?.ingredientCategoryId || ingredient.ingredientCategoryId || '',
       });
     }
   }, [ingredient]);
@@ -35,14 +36,14 @@ const IngredientForm = ({ handleClose, ingredient }) => {
       // Update existing ingredient
       const data = {
         ...formData,
-        restaurantId: restaurant.usersRestaurant?.restaurantId
+        restaurantId: restaurantId
       };
       dispatch(updateIngredient({ data, jwt }));
     } else {
       // Create new ingredient
       const data = {
         ...formData,
-        restaurantId: restaurant.usersRestaurant?.restaurantId
+        restaurantId: restaurantId
       };
       dispatch(createIngredient({ data, jwt }));
     }
@@ -60,10 +61,11 @@ const IngredientForm = ({ handleClose, ingredient }) => {
   };
 
   return (
-    <div className="p-5">
+    <div className="p-5" data-testid="ingredient-form">
       <Typography 
         variant="h6" 
         className="text-center text-gray-600 mb-6"
+        data-testid="form-title"
       >
         {isEditMode ? 'Update Ingredient' : 'Create Ingredient'}
       </Typography>
@@ -78,6 +80,7 @@ const IngredientForm = ({ handleClose, ingredient }) => {
           required
           variant="outlined"
           className="mb-4"
+          inputProps={{ "data-testid": "ingredient-name-input" }}
         />
         
         <FormControl fullWidth className="mb-4">
@@ -90,9 +93,14 @@ const IngredientForm = ({ handleClose, ingredient }) => {
             name="ingredientCategoryId"
             onChange={handleInputChange}
             required
+            data-testid="ingredient-category-select"
           >
-            {ingredients.category.map((item) => (
-              <MenuItem key={item.ingredientCategoryId} value={item.ingredientCategoryId}>
+            {categories.map((item) => (
+              <MenuItem 
+                key={item.ingredientCategoryId} 
+                value={item.ingredientCategoryId}
+                data-testid={`category-option-${item.ingredientCategoryId}`}
+              >
                 {item.name}
               </MenuItem>
             ))}
@@ -104,6 +112,7 @@ const IngredientForm = ({ handleClose, ingredient }) => {
             onClick={handleClose}
             variant="outlined" 
             color="secondary"
+            data-testid="cancel-button"
           >
             Cancel
           </Button>
@@ -111,6 +120,7 @@ const IngredientForm = ({ handleClose, ingredient }) => {
             type="submit" 
             variant="contained" 
             color="primary"
+            data-testid="submit-button"
           >
             {isEditMode ? 'Update' : 'Create'}
           </Button>

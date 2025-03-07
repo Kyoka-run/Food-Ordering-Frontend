@@ -18,15 +18,22 @@ import {
   updateRestaurantStatus 
 } from "../../../redux/actions/restaurantActions";
 import RestaurantForm from "./RestaurantForm";
+import DeleteConfirmationDialog from "../../DeleteConfirmationDialog";
+import GlobalLoading from "../../GlobalLoading";
 
 const RestaurantDashboard = () => {
   const dispatch = useDispatch();
   const usersRestaurant = useSelector(state => state.restaurant.usersRestaurant);
+  const loading = useSelector(state => state.restaurant.loading);
   const jwt = localStorage.getItem("jwt");
 
   // Modal state
   const [openModal, setOpenModal] = useState(false);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  
+  // Delete confirmation dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [restaurantToDelete, setRestaurantToDelete] = useState(null);
 
   // Fetch restaurant data on component mount
   useEffect(() => {
@@ -45,9 +52,14 @@ const RestaurantDashboard = () => {
   };
 
   // Restaurant actions
-  const handleDeleteRestaurant = (restaurantId) => {
-    if (window.confirm("Are you sure you want to delete this restaurant?")) {
-      dispatch(deleteRestaurant(restaurantId));
+  const handleDeleteClick = (restaurant) => {
+    setRestaurantToDelete(restaurant);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (restaurantToDelete) {
+      dispatch(deleteRestaurant(restaurantToDelete.restaurantId));
     }
   };
 
@@ -58,7 +70,7 @@ const RestaurantDashboard = () => {
   // If no restaurant is found, show the create restaurant UI
   if (!usersRestaurant) {
     return (
-      <div className="p-4">
+      <div className="p-4" data-testid="no-restaurant-view">
         <Typography variant="h5" className="mb-4">
           Restaurant Dashboard
         </Typography>
@@ -73,6 +85,7 @@ const RestaurantDashboard = () => {
             color="primary"
             onClick={() => handleOpenModal()}
             sx={{ mt: 2 }}
+            data-testid="create-restaurant-button"
           >
             Create Your First Restaurant
           </Button>
@@ -83,6 +96,7 @@ const RestaurantDashboard = () => {
           open={openModal}
           onClose={handleCloseModal}
           aria-labelledby="restaurant-modal-title"
+          data-testid="restaurant-modal"
         >
           <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-4xl">
             <RestaurantForm 
@@ -96,19 +110,19 @@ const RestaurantDashboard = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4" data-testid="restaurant-dashboard">
       <Typography variant="h5" className="mb-4">
         Restaurant Dashboard
       </Typography>
       
       {/* Restaurant Basic Information Section */}
-      <Card className="p-4 mb-6">
+      <Card className="p-4 mb-6" data-testid="restaurant-card">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <Typography variant="h4" className="font-bold">
+            <Typography variant="h4" className="font-bold" data-testid="restaurant-name">
               {usersRestaurant.name}
             </Typography>
-            <Typography variant="body1" color="text.secondary" className="mt-1">
+            <Typography variant="body1" color="text.secondary" className="mt-1" data-testid="restaurant-description">
               {usersRestaurant.description}
             </Typography>
           </div>
@@ -118,6 +132,7 @@ const RestaurantDashboard = () => {
               onClick={() => handleUpdateStatus(usersRestaurant.restaurantId)}
               variant="contained"
               color={usersRestaurant.open ? "error" : "success"}
+              data-testid="status-toggle-button"
             >
               {usersRestaurant.open ? "Close Restaurant" : "Open Restaurant"}
             </Button>
@@ -126,6 +141,8 @@ const RestaurantDashboard = () => {
               <IconButton 
                 onClick={() => handleOpenModal(usersRestaurant)}
                 color="primary"
+                aria-label="edit"
+                data-testid="edit-restaurant-button"
               >
                 <Edit />
               </IconButton>
@@ -133,8 +150,10 @@ const RestaurantDashboard = () => {
             
             <Tooltip title="Delete Restaurant">
               <IconButton 
-                onClick={() => handleDeleteRestaurant(usersRestaurant.restaurantId)}
+                onClick={() => handleDeleteClick(usersRestaurant)}
                 color="error"
+                aria-label="delete"
+                data-testid="delete-restaurant-button"
               >
                 <Delete />
               </IconButton>
@@ -146,13 +165,14 @@ const RestaurantDashboard = () => {
         <Typography variant="subtitle1" className="mb-2 font-medium">
           Restaurant Images
         </Typography>
-        <div className="flex gap-3 flex-wrap mb-4">
+        <div className="flex gap-3 flex-wrap mb-4" data-testid="restaurant-images">
           {usersRestaurant.images?.map((image, index) => (
             <img 
               key={index} 
               src={image} 
               alt={`${usersRestaurant.name} - Image ${index+1}`} 
               className="w-32 h-32 object-cover rounded-lg"
+              data-testid={`restaurant-image-${index}`}
             />
           ))}
         </div>
@@ -168,7 +188,7 @@ const RestaurantDashboard = () => {
                 <Typography variant="body2" className="w-32 text-gray-500">
                   Cuisine Type:
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" data-testid="restaurant-cuisine-type">
                   {usersRestaurant.cuisineType}
                 </Typography>
               </div>
@@ -176,7 +196,7 @@ const RestaurantDashboard = () => {
                 <Typography variant="body2" className="w-32 text-gray-500">
                   Opening Hours:
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" data-testid="restaurant-opening-hours">
                   {usersRestaurant.openingHours}
                 </Typography>
               </div>
@@ -184,7 +204,7 @@ const RestaurantDashboard = () => {
                 <Typography variant="body2" className="w-32 text-gray-500">
                   Address:
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" data-testid="restaurant-address">
                   {usersRestaurant.address}
                 </Typography>
               </div>
@@ -200,7 +220,7 @@ const RestaurantDashboard = () => {
                 <Typography variant="body2" className="w-32 text-gray-500">
                   Email:
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" data-testid="restaurant-email">
                   {usersRestaurant.contactInformation?.email}
                 </Typography>
               </div>
@@ -208,7 +228,7 @@ const RestaurantDashboard = () => {
                 <Typography variant="body2" className="w-32 text-gray-500">
                   Mobile:
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" data-testid="restaurant-mobile">
                   {usersRestaurant.contactInformation?.mobile}
                 </Typography>
               </div>
@@ -222,6 +242,7 @@ const RestaurantDashboard = () => {
         open={openModal}
         onClose={handleCloseModal}
         aria-labelledby="restaurant-modal-title"
+        data-testid="restaurant-modal"
       >
         <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-full max-w-4xl">
           <RestaurantForm 
@@ -230,6 +251,20 @@ const RestaurantDashboard = () => {
           />
         </Box>
       </Modal>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Restaurant"
+        itemName={restaurantToDelete?.name}
+        contentText="This will permanently delete your restaurant, including all menu items, events, and categories associated with it. This action cannot be undone."
+        data-testid="delete-dialog"
+      />
+
+      {/* Loading */}
+      <GlobalLoading loading={loading} />
     </div>
   );
 };

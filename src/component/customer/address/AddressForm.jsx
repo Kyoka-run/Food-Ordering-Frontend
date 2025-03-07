@@ -41,9 +41,17 @@ const AddressFormModal = ({ open, onClose, initialValues, isEditing }) => {
   });
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{isEditing ? 'Edit Address' : 'Add New Address'}</DialogTitle>
-      <form onSubmit={formik.handleSubmit}>
+    <Dialog 
+      open={open} 
+      onClose={onClose} 
+      maxWidth="sm" 
+      fullWidth
+      data-testid="address-form-dialog"
+    >
+      <DialogTitle data-testid="dialog-title">
+        {isEditing ? 'Edit Address' : 'Add New Address'}
+      </DialogTitle>
+      <form onSubmit={formik.handleSubmit} data-testid="address-form">
         <DialogContent>
           <div className="space-y-4">
             <TextField
@@ -54,6 +62,7 @@ const AddressFormModal = ({ open, onClose, initialValues, isEditing }) => {
               onChange={formik.handleChange}
               error={formik.touched.street && Boolean(formik.errors.street)}
               helperText={formik.touched.street && formik.errors.street}
+              inputProps={{ "data-testid": "street-input" }}
             />
             <TextField
               fullWidth
@@ -63,6 +72,7 @@ const AddressFormModal = ({ open, onClose, initialValues, isEditing }) => {
               onChange={formik.handleChange}
               error={formik.touched.city && Boolean(formik.errors.city)}
               helperText={formik.touched.city && formik.errors.city}
+              inputProps={{ "data-testid": "city-input" }}
             />
             <TextField
               fullWidth
@@ -72,6 +82,7 @@ const AddressFormModal = ({ open, onClose, initialValues, isEditing }) => {
               onChange={formik.handleChange}
               error={formik.touched.postalCode && Boolean(formik.errors.postalCode)}
               helperText={formik.touched.postalCode && formik.errors.postalCode}
+              inputProps={{ "data-testid": "postal-code-input" }}
             />
             <TextField
               fullWidth
@@ -81,12 +92,22 @@ const AddressFormModal = ({ open, onClose, initialValues, isEditing }) => {
               onChange={formik.handleChange}
               error={formik.touched.country && Boolean(formik.errors.country)}
               helperText={formik.touched.country && formik.errors.country}
+              inputProps={{ "data-testid": "country-input" }}
             />
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" variant="contained">
+          <Button 
+            onClick={onClose}
+            data-testid="cancel-button"
+          >
+            Cancel
+          </Button>
+          <Button 
+            type="submit" 
+            variant="contained"
+            data-testid="submit-button"
+          >
             {isEditing ? 'Update' : 'Add'} Address
           </Button>
         </DialogActions>

@@ -32,28 +32,31 @@ const RestaurantCard = ({ data }) => {
   };
 
   return (
-    <Card className="m-5 w-[18rem] group">
+    <Card className="m-5 w-[18rem] group" data-testid={`restaurant-card-${data.restaurantId}`}>
       <div 
         onClick={navigateToRestaurant} 
         className={`${data.open ? "cursor-pointer" : "cursor-not-allowed"} relative`}
+        data-testid="restaurant-card-clickable"
       >
         <img
           className="w-full h-[10rem] rounded-t-md object-cover"
           src={data.images[0]}
           alt={data.name}
+          data-testid="restaurant-image"
         />
         <Chip
           size="small"
           className="absolute top-2 left-2"
           color={data.open ? "success" : "error"}
           label={data.open ? "Open" : "Closed"}
+          data-testid="restaurant-status"
         />
       </div>
       <div className="p-4 w-full transition-transform duration-300 ease-out group-hover:-translate-y-4 group-hover:bg-[#eeeeee]">
         <div className="flex justify-between">
           <div className="space-y-1">
-            <p className="font-semibold text-lg">{data.name}</p>
-            <p className="text-gray-500 text-sm">
+            <p className="font-semibold text-lg" data-testid="restaurant-name">{data.name}</p>
+            <p className="text-gray-500 text-sm" data-testid="restaurant-description">
               {data.description.length > 40
                 ? data.description.substring(0, 40) + "..."
                 : data.description}
@@ -61,11 +64,14 @@ const RestaurantCard = ({ data }) => {
           </div>
 
           <div>
-            <IconButton onClick={handleAddToFavorites}>
+            <IconButton 
+              onClick={handleAddToFavorites}
+              data-testid="favorite-button"
+            >
               {isPresentInFavorites(favorites, data) ? (
-                <FavoriteIcon color="primary" />
+                <FavoriteIcon color="primary" data-testid="favorite-icon-filled" />
               ) : (
-                <FavoriteBorderIcon />
+                <FavoriteBorderIcon data-testid="favorite-icon-outline" />
               )}
             </IconButton>
           </div>

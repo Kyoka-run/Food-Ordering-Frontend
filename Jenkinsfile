@@ -29,7 +29,6 @@ pipeline {
         stage('Build React App') {
           steps {
             bat """
-              set "REACT_APP_API_URL=${API_URL}"
               set "CI=false"
               npm run build
             """

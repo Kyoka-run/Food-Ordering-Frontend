@@ -38,7 +38,7 @@ const orderReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
     })
 
-    .addCase(actions.logout, (state) => {
+    .addCase(logout, (state) => {
       state.orders = [];
     });
 });

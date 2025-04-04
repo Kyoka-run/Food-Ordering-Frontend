@@ -141,7 +141,7 @@ const ingredientReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
     })
 
-    .addCase(actions.logout, (state) => {
+    .addCase(logout, (state) => {
       state.ingredients = [];
       state.category = [];
       state.update = null;

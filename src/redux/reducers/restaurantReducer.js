@@ -247,7 +247,7 @@ const restaurantReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
     })
 
-    .addCase(actions.logout, (state) => {
+    .addCase(logout, (state) => {
       state.usersRestaurant = null;
     });
 });

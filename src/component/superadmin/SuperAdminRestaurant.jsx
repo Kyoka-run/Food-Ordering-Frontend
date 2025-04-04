@@ -40,7 +40,7 @@ const SuperAdminRestaurant = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Restaurant</TableCell>
-                <TableCell>Owner</TableCell>
+                <TableCell>Description</TableCell>
                 <TableCell align="center">Location</TableCell>
                 <TableCell align="center">Cuisine Type</TableCell>
                 <TableCell align="center">Status</TableCell>
@@ -78,10 +78,7 @@ const SuperAdminRestaurant = () => {
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" data-testid={`restaurant-owner-${restaurant.restaurantId}`}>
-                      {restaurant.owner?.username}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary" data-testid={`restaurant-owner-email-${restaurant.restaurantId}`}>
-                      {restaurant.owner?.email}
+                      {restaurant.description}
                     </Typography>
                   </TableCell>
                   <TableCell align="center" data-testid={`restaurant-location-${restaurant.restaurantId}`}>

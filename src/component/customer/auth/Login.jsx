@@ -38,6 +38,18 @@ const Login = () => {
     setSubmitting(false);
   };
 
+  const handleDemoLogin = () => {
+    const demoCredentials = {
+      username: "Admin",
+      password: "AdminPass"
+    };
+    
+    dispatch(loginUser({
+      data: demoCredentials,
+      navigate: navigate
+    }));
+  };
+
   return (
     <Container component="main" maxWidth="xs" data-testid="login-container">
       <CssBaseline />
@@ -111,6 +123,17 @@ const Login = () => {
                 data-testid="login-button"
               >
                 {loading ? "Logging in..." : "Login"}
+              </Button>
+
+              {/* Demo Login Button */}
+              <Button
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                onClick={handleDemoLogin}
+                sx={{ padding: "1rem" }}
+              >
+                Try Trial Login
               </Button>
 
               {/* Register Link */}

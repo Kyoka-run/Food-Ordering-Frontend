@@ -54,9 +54,9 @@ export const registerUser = (sendData) => async (dispatch) => {
   try {
     sendData.setLoader(true);
     const { data } = await api.post("/auth/signup", sendData.userData);
-    dispatch(registerSuccess());
     sendData.reset();
     sendData.navigate("/account/login");
+    dispatch(registerSuccess());
   } catch (error) {
     dispatch(registerFailure(error.message));
     toast.error(error?.response?.data?.message || error?.response?.data?.password || "Registration failed");

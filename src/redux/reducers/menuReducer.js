@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import * as actions from '../actions/menuActions';
+import { logout } from '../actions/authActions';
 
 const initialState = {
   menuItems: [],
@@ -89,6 +90,11 @@ const menuReducer = createReducer(initialState, (builder) => {
     .addCase(actions.updateMenuItemFailure, (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    })
+
+    .addCase(actions.logout, (state) => {
+      state.menuItems = [];
+      state.search = [];
     });
 });
 

@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import * as actions from '../actions/ingredientActions';
+import { logout } from '../actions/authActions';
 
 const initialState = {
   ingredients: [],
@@ -138,6 +139,12 @@ const ingredientReducer = createReducer(initialState, (builder) => {
     .addCase(actions.deleteIngredientCategoryFailure, (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    })
+
+    .addCase(actions.logout, (state) => {
+      state.ingredients = [];
+      state.category = [];
+      state.update = null;
     });
 });
 

@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import * as actions from '../actions/restaurantActions';
+import { logout } from '../actions/authActions';
 
 const initialState = {
   restaurants: [], // All Restaurants
@@ -244,6 +245,10 @@ const restaurantReducer = createReducer(initialState, (builder) => {
     .addCase(actions.deleteCategoryFailure, (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    })
+
+    .addCase(actions.logout, (state) => {
+      state.usersRestaurant = null;
     });
 });
 

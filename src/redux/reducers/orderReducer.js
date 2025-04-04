@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import * as actions from '../actions/orderActions';
+import { logout } from '../actions/authActions';
 
 const initialState = {
   loading: false,
@@ -35,6 +36,10 @@ const orderReducer = createReducer(initialState, (builder) => {
     .addCase(actions.getUserOrdersFailure, (state, action) => {
       state.loading = false;
       state.error = action.payload;
+    })
+
+    .addCase(actions.logout, (state) => {
+      state.orders = [];
     });
 });
 

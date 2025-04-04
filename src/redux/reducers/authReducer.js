@@ -35,7 +35,7 @@ const authReducer = createReducer(initialState, (builder) => {
     })
     .addCase(actions.registerSuccess, (state, action) => {
       state.isLoading = false;
-      state.success = "Register Success";
+      state.success = "Register Success, you can login now";
     })
     .addCase(actions.registerFailure, (state, action) => {
       state.isLoading = false;

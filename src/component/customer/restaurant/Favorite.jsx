@@ -15,10 +15,10 @@ const Favorite = () => {
    <div>
     <h1 className='py-5 text-xl font-semibold text-center'>My Favorites</h1>
     {/* Loading */}
-    <GlobalLoading loading={auth.loading} />
+    <GlobalLoading loading={loading} />
 
     {/* Empty state */}
-    {!loading && auth.favorites.length === 0 && (
+    {!loading && favorites.length === 0 && (
       <Box className="text-center py-8">
         <Typography variant="body1" color="text.secondary">
           You haven't add any favorites yet.

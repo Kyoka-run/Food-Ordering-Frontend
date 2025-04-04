@@ -4,7 +4,6 @@ pipeline {
     environment {
       AWS_REGION = 'eu-west-1'
       S3_BUCKET = 'kyoka-food-ordering-system'
-      API_URL = 'http://54.171.153.174:8080/api'
     }
     
     stages {

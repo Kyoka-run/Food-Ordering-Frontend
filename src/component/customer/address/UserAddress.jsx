@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,11 +6,11 @@ import AddressCard from './AddressCard';
 import AddressForm from './AddressForm';
 import GlobalLoading from "../../GlobalLoading";
 import DeleteConfirmationDialog from "../../DeleteConfirmationDialog";
-import { deleteAddress } from '../../../redux/actions/addressActions';
+import { getUserAddresses, deleteAddress } from '../../../redux/actions/addressActions';
 
 const UserAddress = () => {
   const dispatch = useDispatch();
-  const addresses = useSelector(state => state.auth.user?.addresses || []);
+  const addresses = useSelector((state) => state.address);
   const loading = useSelector(state => state.address.loading);
   const jwt = localStorage.getItem('jwt');
   
@@ -39,6 +39,10 @@ const UserAddress = () => {
     setEditingAddress({...address});
     setModalOpen(true);
   };
+
+  useEffect(() => {
+    dispatch(getUserAddresses(jwt));
+  }, [dispatch, jwt]);
 
   return (
     <div className="flex items-center flex-col" data-testid="user-addresses-container">

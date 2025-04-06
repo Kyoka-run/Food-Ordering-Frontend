@@ -7,7 +7,7 @@ import AddressCard from '../address/AddressCard';
 import AddressForm from '../address/AddressForm';
 import { createOrder } from '../../../redux/actions/orderActions';
 import { findCart } from '../../../redux/actions/cartActions';
-import { getUserAddresses, deleteAddress } from '../../../redux/actions/addressActions';
+import { deleteAddress } from '../../../redux/actions/addressActions';
 import { cartTotal } from '../../../util/TotalPay';
 import toast from 'react-hot-toast';
 
@@ -15,7 +15,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const { addresses } = useSelector((state) => state.address);
+  const addresses = useSelector((state) => state.auth.user?.addresses || []);
   const amount = cartTotal(cartItems);
   
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,7 +25,6 @@ const Cart = () => {
   // Fetch cart data when component mounts
   useEffect(() => {
     dispatch(findCart(jwt));
-    dispatch(getUserAddresses(jwt));
   }, [dispatch, jwt]);
 
   // Handle address selection by clicking the card

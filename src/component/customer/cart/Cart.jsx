@@ -15,7 +15,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("jwt");
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const addresses = useSelector((state) => state.address);
+  const { addresses } = useSelector((state) => state.address);
   const amount = cartTotal(cartItems);
   
   const [modalOpen, setModalOpen] = useState(false);

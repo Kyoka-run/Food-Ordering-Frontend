@@ -10,7 +10,7 @@ import { getUserAddresses, deleteAddress } from '../../../redux/actions/addressA
 
 const UserAddress = () => {
   const dispatch = useDispatch();
-  const addresses = useSelector((state) => state.address);
+  const { addresses } = useSelector((state) => state.address);
   const loading = useSelector(state => state.address.loading);
   const jwt = localStorage.getItem('jwt');
   
